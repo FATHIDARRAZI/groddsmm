@@ -370,6 +370,84 @@ export default function Home() {
           <p className="text-sm text-slate-400 mt-2">خوادمنا تعمل على مدار 24 ساعة لضمان استلامك للخدمة المجانية.</p>
         </div>
       </div>
+
+      {/* How It Works Section */}
+      <div className="w-full max-w-5xl mt-24 mb-16 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl font-extrabold text-white mb-4">كيف يعمل نظام Grodd SMM؟</h2>
+          <p className="text-slate-400">ثلاث خطوات بسيطة تفصلك عن زيادة التفاعل في حسابك مجاناً.</p>
+        </div>
+
+        <div className="relative w-full max-w-4xl mx-auto px-4 md:px-0">
+          {/* Vertical Line */}
+          <div className="absolute right-8 md:inset-x-0 md:mx-auto md:w-0.5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-500/50 via-purple-500/50 to-transparent"></div>
+
+          {/* Step 1 */}
+          <div className="relative flex flex-col md:flex-row items-center justify-between mb-20 w-full group">
+            <div className="order-2 md:order-1 w-full md:w-5/12 pr-16 md:pr-12 text-right dir-rtl">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
+                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-pink-500 text-white font-bold text-xs">1</span>
+                اختر الخدمة واسم المستخدم
+              </h3>
+              <p className="text-slate-400 leading-relaxed md:ml-4">قم بكتابة اسم المستخدم (Username) الخاص بحسابك في إنستجرام، ثم اختر نوع الخدمة التي ترغب بها (لايكات أو مشاهدات).</p>
+            </div>
+            
+            {/* Desktop Center Circle */}
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-pink-500 items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] z-10">
+              <span className="text-white font-bold text-sm">1</span>
+            </div>
+            
+            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-6 md:mb-0 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-pink-500/20 to-purple-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
+              <img src="/img/choose_service.png" alt="الخطوة الأولى" className="relative rounded-2xl border border-white/10 shadow-2xl object-cover w-full h-auto max-w-[300px] hover:-translate-y-2 hover:scale-105 transition-transform duration-500" />
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div className="relative flex flex-col md:flex-row items-center justify-between mb-20 w-full group">
+            <div className="order-1 md:order-1 w-full md:w-5/12 flex justify-center md:justify-start pr-16 md:pr-0 mb-6 md:mb-0 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-blue-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all"></div>
+              <img src="/img/1-2-3-gooo.png" alt="الخطوة الثانية" className="relative rounded-2xl border border-white/10 shadow-2xl object-cover w-full h-auto max-w-[300px] hover:-translate-y-2 hover:scale-105 transition-transform duration-500" />
+            </div>
+
+            {/* Desktop Center Circle */}
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-purple-500 items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.5)] z-10">
+              <span className="text-white font-bold text-sm">2</span>
+            </div>
+
+            <div className="order-2 md:order-2 w-full md:w-5/12 pr-16 md:pl-12 text-right dir-rtl">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
+                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-purple-500 text-white font-bold text-xs">2</span>
+                تأكيد الطلب البشري
+              </h3>
+              <p className="text-slate-400 leading-relaxed md:ml-4">انقر على زر "إرسال الطلب الآن" وانتظر قليلاً. سيطلب منك النظام التحقق البشري لضمان جودة الخدمة واستمراريتها.</p>
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="relative flex flex-col md:flex-row items-center justify-between w-full group">
+            <div className="order-2 md:order-1 w-full md:w-5/12 pr-16 md:pr-12 text-right dir-rtl">
+              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
+                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-green-500 text-white font-bold text-xs">3</span>
+                استلام التفاعل
+              </h3>
+              <p className="text-slate-400 leading-relaxed md:ml-4">بمجرد الانتهاء، سيبدأ التفاعل بالوصول إلى حسابك مباشرة. يمكنك العودة لطلب دفعة جديدة بعد انتهاء العداد الزمني!</p>
+            </div>
+
+            {/* Desktop Center Circle */}
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-green-500 items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.5)] z-10">
+              <span className="text-white font-bold text-sm">3</span>
+            </div>
+
+            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-6 md:mb-0 relative">
+               <div className="w-full max-w-[300px] h-[200px] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-green-500/10 animate-pulse"></div>
+                  <i className="fas fa-check-circle text-6xl text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)] group-hover:scale-110 transition-transform duration-500"></i>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* Sticky Banner Ad */}
       <div 
         className={`fixed left-0 right-0 z-50 flex flex-col items-center transition-all duration-300 ease-in-out ${
