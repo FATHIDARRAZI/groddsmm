@@ -1,65 +1,311 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+
+type ServiceType = 'likes' | 'views';
 
 export default function Home() {
+  const [username, setUsername] = useState('');
+  const [service, setService] = useState<ServiceType>('likes');
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [processingTimeLeft, setProcessingTimeLeft] = useState(10);
+  const [canSubmitSmm, setCanSubmitSmm] = useState(false);
+  const [cfState, setCfState] = useState<'idle' | 'loading' | 'success'>('idle');
+
+  // Manage cooldown timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (step === 3 && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (timeLeft <= 0 && step === 3) {
+      setTimeout(() => setStep(1), 0); // Auto reset to step 1 when cooldown finishes
+    }
+    return () => clearInterval(timer);
+  }, [step, timeLeft]);
+
+  const submitSmmRequest = useCallback(async () => {
+    try {
+      const res = await fetch('/api/smm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim(), serviceType: service })
+      });
+      const data = await res.json();
+      
+      if (!res.ok) {
+        if (data.cooldownEnd) {
+          const remainingMs = data.cooldownEnd - Date.now();
+          if (remainingMs > 0) {
+            setTimeLeft(Math.ceil(remainingMs / 1000));
+            setStep(3);
+            return;
+          }
+        }
+        setErrorMsg(data.error || 'حدث خطأ. يرجى المحاولة مرة أخرى.');
+        setStep(1);
+        return;
+      }
+      
+      // Success, start 2 min cooldown timer UI
+      setTimeLeft(2 * 60);
+      setStep(3);
+      setUsername('');
+    } catch (err) {
+      void err;
+      setErrorMsg('فشل الاتصال بالخادم.');
+      setStep(1);
+    }
+  }, [username, service]);
+
+  const handleStartProcess = () => {
+    if (!username.trim()) {
+      setErrorMsg('الرجاء إدخال اسم المستخدم الخاص بك');
+      setTimeout(() => setErrorMsg(''), 3000);
+      return;
+    }
+    setErrorMsg('');
+    setStep(2);
+    setProcessingTimeLeft(10);
+    setCanSubmitSmm(false);
+    setCfState('idle');
+  };
+
+  const handleTurnstileClick = () => {
+    if (cfState !== 'idle') return;
+    setCfState('loading');
+    
+    // Open Adsterra Direct Link (Smartlink) Placeholder
+    window.open('https://your-adsterra-direct-link.com', '_blank');
+    
+    setTimeout(() => {
+      setCfState('success');
+      setCanSubmitSmm(true);
+      submitSmmRequest();
+    }, 2000);
+  };
+
+  // Manage processing state timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (step === 2 && processingTimeLeft > 0 && !canSubmitSmm) {
+      timer = setInterval(() => {
+        setProcessingTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (processingTimeLeft === 0 && step === 2 && !canSubmitSmm) {
+      // The user waited 10s, auto-trigger SMM call or let them click verify
+      setTimeout(() => submitSmmRequest(), 0);
+    }
+    return () => clearInterval(timer);
+  }, [step, processingTimeLeft, canSubmitSmm, submitSmmRequest]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
+      {/* Adsterra Social Bar Placeholder (Normally injected via script tag) */}
+      <div className="w-full max-w-4xl h-24 mb-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm flex items-center justify-center relative overflow-hidden group transition-all hover:bg-white/10">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+        <span className="text-slate-500 text-sm font-medium flex items-center gap-2">
+          <i className="fas fa-ad"></i> مساحة إعلانية
+        </span>
+      </div>
+
+      <div className="w-full max-w-md glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
+        <div className="absolute -inset-0.5 bg-gradient-to-br from-pink-500/30 to-purple-600/30 rounded-[2rem] blur opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 pointer-events-none"></div>
+        
+        <div className="relative z-10">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-extrabold text-white mb-3">اختر خدمتك المجانية</h1>
+            <p className="text-slate-400 text-sm leading-relaxed">أدخل اسم المستخدم الخاص بك (Username) واختر الخدمة التي تناسبك لتعزيز حسابك فوراً.</p>
+          </div>
+
+          {step === 1 && (
+            <div className="space-y-6 animate-fade-in">
+              <div className="relative group/input">
+                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500 font-bold text-lg group-focus-within/input:text-pink-500 transition-colors">
+                  @
+                </div>
+                <input
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="اسم المستخدم (Username)"
+                  className="w-full bg-[#0B0F19] border border-slate-700/50 rounded-xl py-4 pr-12 pl-4 text-left dir-ltr text-white placeholder-slate-500 focus:outline-none focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition-all shadow-inner"
+                />
+              </div>
+
+              {errorMsg && (
+                <div className="text-red-500 text-sm text-center font-bold animate-pulse">
+                  {errorMsg}
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-3 p-1 bg-[#0B0F19] rounded-xl border border-slate-700/50">
+                <button
+                  onClick={() => setService('likes')}
+                  className={`relative py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                    service === 'likes' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fas fa-heart text-pink-500 ml-2"></i> لايكات
+                </button>
+                <button
+                  onClick={() => setService('views')}
+                  className={`relative py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                    service === 'views' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  <i className="fas fa-play text-purple-500 ml-2"></i> مشاهدات
+                </button>
+              </div>
+
+              <button
+                onClick={handleStartProcess}
+                className="w-full py-4 rounded-xl font-bold text-white text-lg insta-gradient-bg animate-gradient-x hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.3)]"
+              >
+                إرسال الطلب الآن <i className="fas fa-rocket mr-2 text-sm"></i>
+              </button>
+
+              {/* Disclaimer */}
+              <div className="w-full mt-4 p-4 bg-pink-500/5 border border-pink-500/10 rounded-xl flex items-start gap-3 text-right">
+                <i className="fas fa-info-circle text-slate-400 mt-0.5"></i>
+                <div className="text-xs text-slate-400 leading-relaxed">
+                  <strong>Grodd SMM لا يتبع لشركة Instagram™.</strong> نحن لا نستضيف أي محتوى خاص بإنستجرام. جميع الحقوق لمعطيات الحسابات تعود لأصحابها. "نحن نحترم الخصوصية — يتوفر المحتوى العام فقط." اقرأ المزيد &lt;&lt; <a href="#" className="text-purple-400 hover:text-purple-300 underline">سياسة الاستخدام</a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6">
+              <div className="relative w-24 h-24 mx-auto">
+                <div className="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
+                <div className="absolute inset-0 border-4 border-t-pink-500 border-r-purple-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-2xl font-bold text-white">{processingTimeLeft}</span>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">جاري المعالجة...</h3>
+                <p className="text-sm text-slate-400">يرجى الانتظار {processingTimeLeft} ثواني أو تخطي الوقت بالإثبات.</p>
+              </div>
+
+              <div className="flex flex-col items-center gap-3">
+                <div 
+                  className="w-[300px] h-[74px] bg-[#f9f9f9] border border-[#e0e0e0] rounded-[3px] shadow-[0px_0px_4px_rgba(0,0,0,0.08)] flex items-center justify-between px-3 cursor-pointer hover:bg-white transition-colors"
+                  onClick={handleTurnstileClick}
+                >
+                  <div className="flex items-center gap-3">
+                    {cfState === 'idle' && (
+                      <div className="w-7 h-7 border-[2px] border-[#c1c1c1] rounded-[3px] bg-white transition-colors"></div>
+                    )}
+                    {cfState === 'loading' && (
+                      <div className="w-7 h-7 border-[3px] border-[#e0e0e0] border-t-[#F48120] rounded-full animate-spin"></div>
+                    )}
+                    {cfState === 'success' && (
+                      <div className="w-7 h-7 bg-[#009900] rounded-full flex items-center justify-center shadow-sm">
+                        <i className="fas fa-check text-white text-xs"></i>
+                      </div>
+                    )}
+                    <span className="text-[#484848] text-[14px] font-sans">
+                      {cfState === 'idle' && 'Verify you are human'}
+                      {cfState === 'loading' && 'Verifying...'}
+                      {cfState === 'success' && 'Success!'}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end justify-center">
+                    <div className="flex items-center gap-1 opacity-90 mb-0.5">
+                      <i className="fab fa-cloudflare text-[#F48120] text-xl"></i>
+                      <span className="text-[#484848] font-bold text-[10px] tracking-wide">CLOUDFLARE</span>
+                    </div>
+                    <div className="text-[9px] text-[#A9A9A9] flex gap-1 mt-0.5">
+                      <a href="#" className="hover:text-black">Privacy</a> • <a href="#" className="hover:text-black">Terms</a>
+                    </div>
+                  </div>
+                </div>
+                <div className="text-[#A9A9A9] text-xs font-sans">Not working? Click to report it</div>
+              </div>
+            </div>
+          )}
+
+          {step === 3 && (
+            <div className="text-center py-6 animate-fade-in space-y-6">
+              <div className="w-24 h-24 mx-auto bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 mb-2">
+                <i className="fas fa-check text-4xl text-green-400"></i>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-white mb-2">تم تأكيد طلبك بنجاح!</h3>
+                <p className="text-slate-400 text-sm">بدأ التفاعل بالوصول لحسابك. يرجى الانتظار لحين انتهاء العداد لطلب دفعة جديدة.</p>
+              </div>
+
+              <div className="bg-[#0B0F19] rounded-2xl p-6 border border-slate-700/50 shadow-inner">
+                <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold">الوقت المتبقي للطلب القادم</div>
+                <div className="text-5xl font-mono font-extrabold insta-gradient-text tabular-nums">
+                  {formatTime(timeLeft)}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </div>
+
+      {/* Adsterra Native Banner Placeholder */}
+      <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner">
+        <h3 className="text-slate-400 font-bold mb-4">Adsterra Native Banner</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => (
+             <div key={i} className="h-32 bg-slate-800/50 rounded-lg border border-slate-700/50 flex items-center justify-center text-slate-500 text-xs shadow-sm">
+                Native Ad {i}
+             </div>
+          ))}
         </div>
-      </main>
-    </div>
+      </div>
+
+      {/* Standard Banner Ad Placeholder */}
+      <div className="w-full max-w-4xl h-[90px] mt-8 bg-white/5 border border-dashed border-slate-600 rounded-lg flex items-center justify-center text-slate-500 group hover:bg-white/10 transition-colors">
+         <i className="fas fa-bullhorn ml-2 group-hover:text-pink-500"></i> إعلان بانر 728x90 (Banner Ad)
+      </div>
+
+      {/* Features Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-5xl">
+        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
+          <div className="w-12 h-12 mx-auto bg-yellow-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i className="fas fa-bolt text-yellow-400 text-xl"></i>
+          </div>
+          <h4 className="font-bold text-white text-lg">سرعة صاروخية</h4>
+          <p className="text-sm text-slate-400 mt-2">توصل باللايكات والمشاهدات فوراً بمجرد تأكيد طلبك عبر النظام.</p>
+        </div>
+        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
+          <div className="w-12 h-12 mx-auto bg-green-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i className="fas fa-shield-alt text-green-400 text-xl"></i>
+          </div>
+          <h4 className="font-bold text-white text-lg">أمان وموثوقية 100%</h4>
+          <p className="text-sm text-slate-400 mt-2">النظام لا يطلب كلمة مرورك إطلاقاً، فقط نحتاج اسم المستخدم.</p>
+        </div>
+        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
+          <div className="w-12 h-12 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <i className="fas fa-sync text-purple-400 text-xl"></i>
+          </div>
+          <h4 className="font-bold text-white text-lg">تحديث ومتابعة مستمرة</h4>
+          <p className="text-sm text-slate-400 mt-2">خوادمنا تعمل على مدار 24 ساعة لضمان استلامك للخدمة المجانية.</p>
+        </div>
+      </div>
+      {/* Sticky Banner Ad */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)]">
+        <a href="#" className="w-full max-w-7xl h-[60px] bg-white/5 rounded-lg flex items-center justify-center text-slate-400 text-sm border border-dashed border-slate-600 hover:bg-white/10 transition-colors cursor-pointer group">
+          <i className="fas fa-ad ml-2 group-hover:text-pink-500 transition-colors"></i> 
+          مساحة إعلانية (Sticky Banner Ad)
+        </a>
+      </div>
+    </main>
   );
 }

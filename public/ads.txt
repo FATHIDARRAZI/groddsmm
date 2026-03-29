@@ -1,0 +1,4 @@
+# Adsterra ads.txt configuration
+# Replace this line with the exact ads.txt record provided by Adsterra after your website is approved.
+# For example: 
+# adsterra.com, 123456, DIRECT, abcdef1234567890 
