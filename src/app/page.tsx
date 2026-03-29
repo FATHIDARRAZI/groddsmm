@@ -30,6 +30,7 @@ export default function Home() {
   const [canSubmitSmm, setCanSubmitSmm] = useState(false);
   const [cfState, setCfState] = useState<'idle' | 'loading' | 'success'>('idle');
   const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
+  const [isStickyVisible, setIsStickyVisible] = useState(true);
 
   // Manage cooldown timer
   useEffect(() => {
@@ -348,12 +349,24 @@ export default function Home() {
         </div>
       </div>
       {/* Sticky Banner Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[70px]">
-        <div className="hidden md:flex w-full items-center justify-center">
-          <iframe src="/ad-468.html" width="468" height="60" frameBorder="0" scrolling="no" />
-        </div>
-        <div className="flex md:hidden w-full items-center justify-center">
-          <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" />
+      <div 
+        className={`fixed left-0 right-0 z-50 flex flex-col items-center transition-all duration-300 ease-in-out ${
+          isStickyVisible ? 'bottom-0' : '-bottom-[80px]'
+        }`}
+      >
+        <button 
+          onClick={() => setIsStickyVisible(!isStickyVisible)}
+          className="w-12 h-6 bg-white rounded-t-lg flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.15)] hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 border-b-0"
+        >
+          <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
+        </button>
+        <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
+          <div className="hidden md:flex w-full items-center justify-center">
+            <iframe src="/ad-468.html" width="468" height="60" frameBorder="0" scrolling="no" />
+          </div>
+          <div className="flex md:hidden w-full items-center justify-center">
+            <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" />
+          </div>
         </div>
       </div>
     </main>
