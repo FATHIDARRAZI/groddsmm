@@ -95,7 +95,7 @@ export default function Home() {
     setCfState('loading');
     
     // Open Adsterra Direct Link (Smartlink)
-    window.open('https://www.profitablecpmratenetwork.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
+    window.open('https://evacuateenclose.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
     
     setTimeout(() => {
       setCfState('success');
