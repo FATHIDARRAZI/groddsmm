@@ -24,14 +24,14 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { username, serviceType } = body;
+    const { link, serviceType } = body;
 
-    if (!username || !serviceType) {
+    if (!link || !serviceType) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
     // Check Cooldown
-    const cooldownEnd = await getCooldownEnd(username);
+    const cooldownEnd = await getCooldownEnd(link);
     if (cooldownEnd) {
       return NextResponse.json(
         { error: 'User is on cooldown', cooldownEnd },
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid service type' }, { status: 400 });
     }
 
-    const smmLink = username.includes('instagram.com') ? username : `https://instagram.com/${username.replace('@', '')}`;
+    const smmLink = link.includes('http') ? link : `https://${link}`;
 
     const params = new URLSearchParams({
       key: SMM_API_KEY,
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
     if (smmData.order) {
       // Start 2 min cooldown
-      await setCooldown(username, 2);
+      await setCooldown(link, 2);
       return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
     }
 
