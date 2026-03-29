@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
   title: 'Grodd SMM | لايكات ومتابعين مجانيين',
@@ -56,7 +57,6 @@ export default function RootLayout({
 
         {children}
 
-        {/* Professional Footer */}
         <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/5 pb-10">
@@ -115,6 +115,10 @@ export default function RootLayout({
         
         {/* Adsterra Social Bar Script Placeholder */}
         {/* <script type='text/javascript' src='//your-social-bar-code.com/xx/yy/zz.js'></script> */}
+
+        {/* Adsterra Popunder & Social Bar (Global Network Trackers) */}
+        <Script strategy="afterInteractive" src="https://pl29009654.profitablecpmratenetwork.com/f5/24/1a/f5241a2e92f6cf46e0c16d5f358fe1e4.js" />
+        <Script strategy="afterInteractive" src="https://pl29009656.profitablecpmratenetwork.com/c8/a0/3c/c8a03c6180d271eafc9b54b2466c235d.js" />
       </body>
     </html>
   );

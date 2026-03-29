@@ -1,6 +1,39 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+
+// Specialized Injector Component to safely load Adsterra raw scripts inside React DOM
+const AdsterraScript = ({ conf, src }: { conf: string, src: string }) => {
+  const bannerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!bannerRef.current || bannerRef.current.firstChild) return;
+    const c = document.createElement('script');
+    c.type = 'text/javascript';
+    c.innerHTML = conf;
+    const s = document.createElement('script');
+    s.type = 'text/javascript';
+    s.src = src;
+    bannerRef.current.appendChild(c);
+    bannerRef.current.appendChild(s);
+  }, [conf, src]);
+  return <div ref={bannerRef} className="w-full h-full flex items-center justify-center overflow-hidden" />;
+};
+
+const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!ref.current || ref.current.firstChild) return;
+    const s = document.createElement('script');
+    s.async = true;
+    s.dataset.cfasync = 'false';
+    s.src = src;
+    const d = document.createElement('div');
+    d.id = idStr;
+    ref.current.appendChild(s);
+    ref.current.appendChild(d);
+  }, [idStr, src]);
+  return <div ref={ref} className="w-full flex justify-center" />;
+};
 
 type ServiceType = 'likes' | 'views';
 
@@ -78,8 +111,8 @@ export default function Home() {
     if (cfState !== 'idle') return;
     setCfState('loading');
     
-    // Open Adsterra Direct Link (Smartlink) Placeholder
-    window.open('https://your-adsterra-direct-link.com', '_blank');
+    // Open Adsterra Direct Link (Smartlink)
+    window.open('https://www.profitablecpmratenetwork.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
     
     setTimeout(() => {
       setCfState('success');
@@ -258,21 +291,23 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Adsterra Native Banner Placeholder */}
-      <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner">
-        <h3 className="text-slate-400 font-bold mb-4">Adsterra Native Banner</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => (
-             <div key={i} className="h-32 bg-slate-800/50 rounded-lg border border-slate-700/50 flex items-center justify-center text-slate-500 text-xs shadow-sm">
-                Native Ad {i}
-             </div>
-          ))}
-        </div>
+      {/* Adsterra Native Banner */}
+      <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden">
+        <h3 className="text-slate-400 font-bold mb-4 text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
+        <AdsterraNative 
+           idStr="container-a026c7a487d9e7acd2f65169e285806a" 
+           src="https://pl29009657.profitablecpmratenetwork.com/a026c7a487d9e7acd2f65169e285806a/invoke.js" 
+        />
       </div>
 
-      {/* Standard Banner Ad Placeholder */}
-      <div className="w-full max-w-4xl h-[90px] mt-8 bg-white/5 border border-dashed border-slate-600 rounded-lg flex items-center justify-center text-slate-500 group hover:bg-white/10 transition-colors">
-         <i className="fas fa-bullhorn ml-2 group-hover:text-pink-500"></i> إعلان بانر 728x90 (Banner Ad)
+      {/* Adsterra 728x90 Banner */}
+      <div className="w-full max-w-4xl mt-8 flex flex-col items-center">
+        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm">
+          <AdsterraScript 
+             conf="atOptions = { 'key' : 'bac21377e2e7867dc7693fd9059b6e1e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };" 
+             src="https://www.highperformanceformat.com/bac21377e2e7867dc7693fd9059b6e1e/invoke.js" 
+          />
+        </div>
       </div>
 
       {/* Features Grid */}
