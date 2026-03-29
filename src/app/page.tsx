@@ -143,12 +143,18 @@ export default function Home() {
 
   return (
     <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
-      {/* Adsterra Social Bar Placeholder (Normally injected via script tag) */}
-      <div className="w-full max-w-4xl h-24 mb-10 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm flex items-center justify-center relative overflow-hidden group transition-all hover:bg-white/10">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
-        <span className="text-slate-500 text-sm font-medium flex items-center gap-2">
-          <i className="fas fa-ad"></i> مساحة إعلانية
-        </span>
+      {/* Top Banner Ad */}
+      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner hidden md:flex">
+        <AdsterraScript 
+           conf="atOptions = { 'key' : 'bac21377e2e7867dc7693fd9059b6e1e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };" 
+           src="https://www.highperformanceformat.com/bac21377e2e7867dc7693fd9059b6e1e/invoke.js" 
+        />
+      </div>
+      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner flex md:hidden">
+        <AdsterraScript 
+           conf="atOptions = { 'key' : 'c50dc91dd0b0c118fc5c586effb91a7e', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };" 
+           src="https://www.highperformanceformat.com/c50dc91dd0b0c118fc5c586effb91a7e/invoke.js" 
+        />
       </div>
 
       <div className="w-full max-w-md glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
