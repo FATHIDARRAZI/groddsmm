@@ -335,11 +335,19 @@ export default function Home() {
         </div>
       </div>
       {/* Sticky Banner Ad */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)]">
-        <a href="#" className="w-full max-w-7xl h-[60px] bg-white/5 rounded-lg flex items-center justify-center text-slate-400 text-sm border border-dashed border-slate-600 hover:bg-white/10 transition-colors cursor-pointer group">
-          <i className="fas fa-ad ml-2 group-hover:text-pink-500 transition-colors"></i> 
-          مساحة إعلانية (Sticky Banner Ad)
-        </a>
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[70px]">
+        <div className="hidden md:flex w-full items-center justify-center">
+          <AdsterraScript 
+             conf="atOptions = { 'key' : '1643b2425573fca2311b1414b6b2f09f', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };" 
+             src="https://www.highperformanceformat.com/1643b2425573fca2311b1414b6b2f09f/invoke.js" 
+          />
+        </div>
+        <div className="flex md:hidden w-full items-center justify-center">
+          <AdsterraScript 
+             conf="atOptions = { 'key' : '634cdebc1c3767f3b1e28c3bb6dbe247', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };" 
+             src="https://www.highperformanceformat.com/634cdebc1c3767f3b1e28c3bb6dbe247/invoke.js" 
+          />
+        </div>
       </div>
     </main>
   );
