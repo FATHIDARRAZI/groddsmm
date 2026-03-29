@@ -2,23 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-// Specialized Injector Component to safely load Adsterra raw scripts inside React DOM
-const AdsterraScript = ({ conf, src }: { conf: string, src: string }) => {
-  const bannerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!bannerRef.current || bannerRef.current.firstChild) return;
-    const c = document.createElement('script');
-    c.type = 'text/javascript';
-    c.innerHTML = conf;
-    const s = document.createElement('script');
-    s.type = 'text/javascript';
-    s.src = src;
-    bannerRef.current.appendChild(c);
-    bannerRef.current.appendChild(s);
-  }, [conf, src]);
-  return <div ref={bannerRef} className="w-full h-full flex items-center justify-center overflow-hidden" />;
-};
-
 const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -144,17 +127,11 @@ export default function Home() {
   return (
     <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
       {/* Top Banner Ad */}
-      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner hidden md:flex">
-        <AdsterraScript 
-           conf="atOptions = { 'key' : 'bac21377e2e7867dc7693fd9059b6e1e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };" 
-           src="https://www.highperformanceformat.com/bac21377e2e7867dc7693fd9059b6e1e/invoke.js" 
-        />
+      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner hidden md:flex min-h-[106px]">
+        <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
       </div>
-      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner flex md:hidden">
-        <AdsterraScript 
-           conf="atOptions = { 'key' : 'c50dc91dd0b0c118fc5c586effb91a7e', 'format' : 'iframe', 'height' : 250, 'width' : 300, 'params' : {} };" 
-           src="https://www.highperformanceformat.com/c50dc91dd0b0c118fc5c586effb91a7e/invoke.js" 
-        />
+      <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner flex md:hidden min-h-[266px]">
+        <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
       </div>
 
       <div className="w-full max-w-md glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
@@ -308,11 +285,8 @@ export default function Home() {
 
       {/* Adsterra 728x90 Banner */}
       <div className="w-full max-w-4xl mt-8 flex flex-col items-center">
-        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm">
-          <AdsterraScript 
-             conf="atOptions = { 'key' : 'bac21377e2e7867dc7693fd9059b6e1e', 'format' : 'iframe', 'height' : 90, 'width' : 728, 'params' : {} };" 
-             src="https://www.highperformanceformat.com/bac21377e2e7867dc7693fd9059b6e1e/invoke.js" 
-          />
+        <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm flex items-center justify-center min-h-[90px] w-full">
+          <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" />
         </div>
       </div>
 
@@ -343,16 +317,10 @@ export default function Home() {
       {/* Sticky Banner Ad */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[70px]">
         <div className="hidden md:flex w-full items-center justify-center">
-          <AdsterraScript 
-             conf="atOptions = { 'key' : '1643b2425573fca2311b1414b6b2f09f', 'format' : 'iframe', 'height' : 60, 'width' : 468, 'params' : {} };" 
-             src="https://www.highperformanceformat.com/1643b2425573fca2311b1414b6b2f09f/invoke.js" 
-          />
+          <iframe src="/ad-468.html" width="468" height="60" frameBorder="0" scrolling="no" />
         </div>
         <div className="flex md:hidden w-full items-center justify-center">
-          <AdsterraScript 
-             conf="atOptions = { 'key' : '634cdebc1c3767f3b1e28c3bb6dbe247', 'format' : 'iframe', 'height' : 50, 'width' : 320, 'params' : {} };" 
-             src="https://www.highperformanceformat.com/634cdebc1c3767f3b1e28c3bb6dbe247/invoke.js" 
-          />
+          <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" />
         </div>
       </div>
     </main>
