@@ -23,12 +23,13 @@ type ServiceType = 'likes' | 'views';
 export default function Home() {
   const [username, setUsername] = useState('');
   const [service, setService] = useState<ServiceType>('likes');
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState('');
   const [processingTimeLeft, setProcessingTimeLeft] = useState(10);
   const [canSubmitSmm, setCanSubmitSmm] = useState(false);
   const [cfState, setCfState] = useState<'idle' | 'loading' | 'success'>('idle');
+  const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
 
   // Manage cooldown timer
   useEffect(() => {
@@ -84,10 +85,12 @@ export default function Home() {
       return;
     }
     setErrorMsg('');
-    setStep(2);
-    setProcessingTimeLeft(10);
-    setCanSubmitSmm(false);
-    setCfState('idle');
+    
+    // Open Adsterra Direct Link (Smartlink) instantly on click
+    window.open('https://evacuateenclose.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
+
+    setStep(1.5);
+    setSponsorTimeLeft(30);
   };
 
   const handleTurnstileClick = () => {
@@ -111,12 +114,27 @@ export default function Home() {
       timer = setInterval(() => {
         setProcessingTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (processingTimeLeft === 0 && step === 2 && !canSubmitSmm) {
-      // The user waited 10s, auto-trigger SMM call or let them click verify
+    } else if (processingTimeLeft <= 0 && step === 2 && !canSubmitSmm) {
       setTimeout(() => submitSmmRequest(), 0);
     }
     return () => clearInterval(timer);
   }, [step, processingTimeLeft, canSubmitSmm, submitSmmRequest]);
+
+  // Manage sponsor screen timer
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (step === 1.5 && sponsorTimeLeft > 0) {
+      timer = setInterval(() => {
+        setSponsorTimeLeft((prev) => prev - 1);
+      }, 1000);
+    } else if (step === 1.5 && sponsorTimeLeft <= 0) {
+      setStep(2);
+      setProcessingTimeLeft(10);
+      setCanSubmitSmm(false);
+      setCfState('idle');
+    }
+    return () => clearInterval(timer);
+  }, [step, sponsorTimeLeft]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -196,6 +214,21 @@ export default function Home() {
                 <div className="text-xs text-slate-400 leading-relaxed">
                   <strong>Grodd SMM لا يتبع لشركة Instagram™.</strong> نحن لا نستضيف أي محتوى خاص بإنستجرام. جميع الحقوق لمعطيات الحسابات تعود لأصحابها. "نحن نحترم الخصوصية — يتوفر المحتوى العام فقط." اقرأ المزيد &lt;&lt; <a href="#" className="text-purple-400 hover:text-purple-300 underline">سياسة الاستخدام</a>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {step === 1.5 && (
+            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6">
+              <h3 className="text-xl font-bold text-white mb-2">جاري تحضير طلبك...</h3>
+              <p className="text-sm text-slate-400 leading-relaxed mb-4">يرجى الانتظار {sponsorTimeLeft} ثانية للإستمرار. نحن نعتمد على الرعاة لإبقاء هذه الخدمة مجانية.</p>
+              
+              <div className="w-full flex justify-center bg-[#121827]/40 rounded-xl p-2 border border-white/5 shadow-inner">
+                <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
+              </div>
+
+              <div className="relative w-full h-2 bg-slate-800 rounded-full overflow-hidden mt-6">
+                 <div className="absolute top-0 right-0 h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-1000" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
               </div>
             </div>
           )}
