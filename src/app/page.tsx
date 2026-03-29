@@ -162,8 +162,8 @@ export default function Home() {
             <p className="text-slate-400 text-sm leading-relaxed">أدخل اسم المستخدم الخاص بك (Username) واختر الخدمة التي تناسبك لتعزيز حسابك فوراً.</p>
           </div>
 
-          {step === 1 && (
-            <div className="space-y-6 animate-fade-in">
+          {(step === 1 || step === 1.5) && (
+            <div className={`space-y-6 transition-all duration-500 relative ${step === 1.5 ? 'blur-sm pointer-events-none opacity-50' : 'animate-fade-in'}`}>
               <div className="relative group/input">
                 <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500 font-bold text-lg group-focus-within/input:text-pink-500 transition-colors">
                   @
@@ -220,16 +220,38 @@ export default function Home() {
           )}
 
           {step === 1.5 && (
-            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6">
-              <h3 className="text-xl font-bold text-white mb-2">جاري تحضير طلبك...</h3>
-              <p className="text-sm text-slate-400 leading-relaxed mb-4">يرجى الانتظار {sponsorTimeLeft} ثانية للإستمرار. نحن نعتمد على الرعاة لإبقاء هذه الخدمة مجانية.</p>
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-xl transition-all"></div>
               
-              <div className="w-full flex justify-center bg-[#121827]/40 rounded-xl p-2 border border-white/5 shadow-inner">
-                <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
-              </div>
-
-              <div className="relative w-full h-2 bg-slate-800 rounded-full overflow-hidden mt-6">
-                 <div className="absolute top-0 right-0 h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-1000" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
+              <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
+                {/* Modal Header */}
+                <div className="w-full flex justify-end mb-2">
+                  <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-t-lg text-white/50 text-[10px] uppercase font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2">
+                    <span>Please wait {sponsorTimeLeft}s</span>
+                    <i className="fas fa-times"></i>
+                  </div>
+                </div>
+                
+                {/* Adsterra Display Block */}
+                <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(236,72,153,0.15)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] md:min-h-[90px] border border-white/10 relative">
+                  <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
+                    <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
+                  </div>
+                  <div className="flex md:hidden w-full items-center justify-center min-h-[250px]">
+                    <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
+                  </div>
+                </div>
+                
+                {/* Countdown Bar */}
+                <div className="w-full mt-6 bg-[#121827] rounded-2xl p-6 border border-white/5 shadow-2xl">
+                  <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
+                    <i className="fas fa-spinner fa-spin text-pink-500"></i> جاري تحضير طلبك...
+                  </h3>
+                  <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
+                     <div className="absolute top-0 right-0 h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-1000 ease-linear" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
+                  </div>
+                  <p className="text-center text-slate-500 text-xs mt-4">نحن نعتمد على الإعلانات لإبقاء الخدمة مجانية للجميع.</p>
+                </div>
               </div>
             </div>
           )}
