@@ -29,6 +29,7 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState('');
   const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
   const [isStickyVisible, setIsStickyVisible] = useState(true);
+  const [cfToken, setCfToken] = useState<string>('');
 
   // Manage cooldown timer
   useEffect(() => {
@@ -43,12 +44,12 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [step, timeLeft]);
 
-  const submitSmmRequest = useCallback(async (token: string) => {
+  const submitSmmRequest = useCallback(async () => {
     try {
       const res = await fetch('/api/smm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: postLink.trim(), serviceType: service, cfToken: token })
+        body: JSON.stringify({ link: postLink.trim(), serviceType: service, cfToken: cfToken })
       });
       const data = await res.json();
       
@@ -70,16 +71,22 @@ export default function Home() {
       setTimeLeft(2 * 60);
       setStep(3);
       setPostLink('');
+      setCfToken('');
     } catch (err) {
       void err;
       setErrorMsg('فشل الاتصال بالخادم.');
       setStep(1);
     }
-  }, [postLink, service]);
+  }, [postLink, service, cfToken]);
 
   const handleStartProcess = () => {
     if (!postLink.trim()) {
       setErrorMsg('الرجاء إدخال رابط المنشور الخاص بك');
+      setTimeout(() => setErrorMsg(''), 3000);
+      return;
+    }
+    if (!cfToken) {
+      setErrorMsg('الرجاء إكمال التحقق البشري أولاً (Verify you are human)');
       setTimeout(() => setErrorMsg(''), 3000);
       return;
     }
@@ -96,10 +103,10 @@ export default function Home() {
         setSponsorTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (step === 1.5 && sponsorTimeLeft <= 0) {
-      setStep(2);
+      submitSmmRequest();
     }
     return () => clearInterval(timer);
-  }, [step, sponsorTimeLeft]);
+  }, [step, sponsorTimeLeft, submitSmmRequest]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -166,6 +173,17 @@ export default function Home() {
                 </button>
               </div>
 
+              <div className="flex justify-center w-full my-4">
+                <div className="bg-white p-2 rounded-xl shadow-inner border border-slate-200">
+                  <Turnstile
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                    onSuccess={(token: string) => setCfToken(token)}
+                    onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                    options={{ theme: 'light' }}
+                  />
+                </div>
+              </div>
+
               <button
                 onClick={handleStartProcess}
                 className="w-full py-4 rounded-xl font-bold text-white text-lg insta-gradient-bg animate-gradient-x hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.3)]"
@@ -220,27 +238,7 @@ export default function Home() {
             </div>
           )}
 
-          {step === 2 && (
-            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6 flex flex-col items-center">
-              <h3 className="text-xl font-bold text-white mb-2">التحقق البشري</h3>
-              <p className="text-sm text-slate-400 mb-6">يرجى تأكيد أنك لست روبوت لإرسال طلبك مجاناً.</p>
-              
-              <div className="bg-white p-4 rounded-xl shadow-[0_0_20px_rgba(236,72,153,0.2)] border border-pink-500/20 relative mx-auto inline-block min-h-[100px] min-w-[300px]">
-                <Turnstile
-                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
-                  onSuccess={(token: string) => {
-                    submitSmmRequest(token);
-                  }}
-                  onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
-                  options={{ theme: 'light' }}
-                />
-              </div>
 
-               {errorMsg && (
-                <div className="text-red-500 text-sm font-bold mt-4 animate-pulse">{errorMsg}</div>
-               )}
-            </div>
-          )}
 
           {step === 3 && (
             <div className="text-center py-6 animate-fade-in space-y-6">
