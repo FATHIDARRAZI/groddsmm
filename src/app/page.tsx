@@ -320,7 +320,7 @@ export default function Home() {
           <img 
             src="/img/grodd-mockup.png" 
             alt="Grodd SMM Mockup" 
-            className="w-full max-w-4xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(236,72,153,0.15)]" 
+            className="w-full max-w-2xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(236,72,153,0.15)]" 
           />
         </div>
       </div>
