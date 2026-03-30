@@ -30,6 +30,33 @@ export default function Home() {
   const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
   const [isStickyVisible, setIsStickyVisible] = useState(true);
   const [cfToken, setCfToken] = useState<string>('');
+  const [showIdleAd, setShowIdleAd] = useState(false);
+  const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
+
+  // Idle Timer (15s inactivity)
+  useEffect(() => {
+    if (hasSeenIdleAd || showIdleAd || step !== 1) return;
+
+    let timeout: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        setShowIdleAd(true);
+        setHasSeenIdleAd(true);
+      }, 15000);
+    };
+
+    resetTimer();
+
+    const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    events.forEach(event => document.addEventListener(event, resetTimer, true));
+
+    return () => {
+      clearTimeout(timeout);
+      events.forEach(event => document.removeEventListener(event, resetTimer, true));
+    };
+  }, [hasSeenIdleAd, showIdleAd, step]);
 
   // Manage cooldown timer
   useEffect(() => {
@@ -420,6 +447,27 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      {/* Idle Ad Modal */}
+      {showIdleAd && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-xl transition-all block"></div>
+          <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center animate-fade-in bg-[#121827] border border-white/10 rounded-2xl shadow-2xl p-6">
+            <button 
+              onClick={() => setShowIdleAd(false)} 
+              className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 rounded-full text-slate-400 hover:text-white transition-colors cursor-pointer"
+            >
+              <i className="fas fa-times"></i>
+            </button>
+            <h3 className="text-xl font-bold text-white mb-4 text-center mt-2">إعلان مدعوم</h3>
+            <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
+            
+            <div className="w-full h-[250px] bg-white/5 rounded-xl overflow-hidden flex items-center justify-center relative shadow-inner">
+              <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" />
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
