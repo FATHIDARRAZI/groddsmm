@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Script from 'next/script';
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'Grodd SMM | لايكات ومتابعين مجانيين',
@@ -39,21 +40,7 @@ export default function RootLayout({
         </div>
 
         {/* Navigation */}
-        <nav className="relative z-10 w-full border-b border-white/5 bg-[#121827]/50 backdrop-blur-md">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-              <img src="/SMMGRODD.png" alt="Grodd SMM Logo" className="h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
-            </a>
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-              <span className="flex items-center gap-2">
-                <i className="fas fa-bolt text-yellow-500"></i> تفاعل حقيقي
-              </span>
-              <span className="flex items-center gap-2">
-                <i className="fas fa-shield-alt text-green-500"></i> آمن 100%
-              </span>
-            </div>
-          </div>
-        </nav>
+        <Navbar />
 
         {children}
 
@@ -68,13 +55,13 @@ export default function RootLayout({
                   أفضل منصة للحصول على زيادات حقيقية وتفاعلات موثوقة لحسابك على إنستجرام. مطور بكل حب وإتقان بواسطة Grodd Labs لضمان أعلى جودة وخبرة مستخدم.
                 </p>
                 <div className="flex items-center gap-4">
-                  <a href="#" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://x.com/groddsmm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-twitter"></i>
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://instagram.com/grodd_smm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-instagram"></i>
                   </a>
-                  <a href="#" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://t.me/grodd_labsBot" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-telegram"></i>
                   </a>
                 </div>
