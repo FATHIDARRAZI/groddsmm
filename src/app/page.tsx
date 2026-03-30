@@ -302,6 +302,29 @@ export default function Home() {
         </div>
       </div>
 
+      {/* About Section */}
+      <div className="w-full max-w-5xl mt-24 mb-16 px-4 md:px-0 text-right dir-rtl">
+        <h2 className="text-3xl md:text-3xl font-extrabold text-white mb-6">
+          ما هو Grodd SMM؟
+        </h2>
+        <div className="text-slate-300 space-y-4 leading-relaxed mb-12">
+          <p>
+            يقدم <strong>Grodd SMM</strong> خدمات متكاملة وفعالة لتنمية حسابك على إنستجرام في مكان واحد. يمكنك الحصول على لايكات ومشاهدات عالية الجودة—مجاناً وبدون أي قيود، سواء كنت بحاجة لزيادة التفاعل على منشوراتك أو فيديوهات الريلز الخاصة بك. بالإضافة إلى ذلك، نوفر لك تجربة آمنة وسريعة دون الحاجة إلى تسجيل الدخول أو الكشف عن هويتك أو كلمة مرورك.
+          </p>
+          <p>
+            في <strong>Grodd SMM</strong>، تأتي خصوصيتك وأمانك في المقام الأول. أداتنا تسمح لك بزيادة التفاعل على المحتوى العام والمتاح للجميع فقط. نحن لا نتجسس على المستخدمين، ولا نجمع البيانات الشخصية، ولا نخزن محتوى إنستجرام على خوادمنا. جميع الحقوق لمعطيات الحسابات تعود لأصحابها الأساسيين. نحن نشجع على الاستخدام القانوني والمحترم لخدماتنا.
+          </p>
+        </div>
+        
+        <div className="flex justify-center mt-12 w-full">
+          <img 
+            src="/img/grodd-mockup.png" 
+            alt="Grodd SMM Mockup" 
+            className="w-full max-w-4xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(236,72,153,0.15)]" 
+          />
+        </div>
+      </div>
+
       {/* How It Works Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 relative">
         <div className="text-center mb-16">
