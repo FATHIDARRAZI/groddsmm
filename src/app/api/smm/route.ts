@@ -24,10 +24,26 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { link, serviceType } = body;
+    const { link, serviceType, cfToken } = body;
 
-    if (!link || !serviceType) {
+    if (!link || !serviceType || !cfToken) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Verify Cloudflare Turnstile Token
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
+    const formData = new URLSearchParams();
+    formData.append('secret', turnstileSecret);
+    formData.append('response', cfToken);
+
+    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: formData,
+    });
+    
+    const verifyData = await verifyRes.json();
+    if (!verifyData.success) {
+      return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
     }
 
     // Check Cooldown

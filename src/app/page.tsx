@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -26,9 +27,6 @@ export default function Home() {
   const [step, setStep] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState('');
-  const [processingTimeLeft, setProcessingTimeLeft] = useState(10);
-  const [canSubmitSmm, setCanSubmitSmm] = useState(false);
-  const [cfState, setCfState] = useState<'idle' | 'loading' | 'success'>('idle');
   const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
   const [isStickyVisible, setIsStickyVisible] = useState(true);
 
@@ -45,12 +43,12 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [step, timeLeft]);
 
-  const submitSmmRequest = useCallback(async () => {
+  const submitSmmRequest = useCallback(async (token: string) => {
     try {
       const res = await fetch('/api/smm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: postLink.trim(), serviceType: service })
+        body: JSON.stringify({ link: postLink.trim(), serviceType: service, cfToken: token })
       });
       const data = await res.json();
       
@@ -86,40 +84,9 @@ export default function Home() {
       return;
     }
     setErrorMsg('');
-    
-    // Open Adsterra Direct Link (Smartlink) instantly on click
-    window.open('https://evacuateenclose.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
-
     setStep(1.5);
     setSponsorTimeLeft(30);
   };
-
-  const handleTurnstileClick = () => {
-    if (cfState !== 'idle') return;
-    setCfState('loading');
-    
-    // Open Adsterra Direct Link (Smartlink)
-    window.open('https://evacuateenclose.com/kht24xw1g?key=a0a3b894e66a14b9428e1435ba61a4c9', '_blank');
-    
-    setTimeout(() => {
-      setCfState('success');
-      setCanSubmitSmm(true);
-      submitSmmRequest();
-    }, 2000);
-  };
-
-  // Manage processing state timer
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (step === 2 && processingTimeLeft > 0 && !canSubmitSmm) {
-      timer = setInterval(() => {
-        setProcessingTimeLeft((prev) => prev - 1);
-      }, 1000);
-    } else if (processingTimeLeft <= 0 && step === 2 && !canSubmitSmm) {
-      setTimeout(() => submitSmmRequest(), 0);
-    }
-    return () => clearInterval(timer);
-  }, [step, processingTimeLeft, canSubmitSmm, submitSmmRequest]);
 
   // Manage sponsor screen timer
   useEffect(() => {
@@ -130,9 +97,6 @@ export default function Home() {
       }, 1000);
     } else if (step === 1.5 && sponsorTimeLeft <= 0) {
       setStep(2);
-      setProcessingTimeLeft(10);
-      setCanSubmitSmm(false);
-      setCfState('idle');
     }
     return () => clearInterval(timer);
   }, [step, sponsorTimeLeft]);
@@ -257,55 +221,24 @@ export default function Home() {
           )}
 
           {step === 2 && (
-            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6">
-              <div className="relative w-24 h-24 mx-auto">
-                <div className="absolute inset-0 border-4 border-slate-700 rounded-full"></div>
-                <div className="absolute inset-0 border-4 border-t-pink-500 border-r-purple-500 border-b-transparent border-l-transparent rounded-full animate-spin"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-white">{processingTimeLeft}</span>
-                </div>
-              </div>
+            <div className="text-center py-6 animate-fade-in text-slate-300 space-y-6 flex flex-col items-center">
+              <h3 className="text-xl font-bold text-white mb-2">التحقق البشري</h3>
+              <p className="text-sm text-slate-400 mb-6">يرجى تأكيد أنك لست روبوت لإرسال طلبك مجاناً.</p>
               
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">جاري المعالجة...</h3>
-                <p className="text-sm text-slate-400">يرجى الانتظار {processingTimeLeft} ثواني أو تخطي الوقت بالإثبات.</p>
+              <div className="bg-white p-4 rounded-xl shadow-[0_0_20px_rgba(236,72,153,0.2)] border border-pink-500/20 relative mx-auto inline-block min-h-[100px] min-w-[300px]">
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                  onSuccess={(token: string) => {
+                    submitSmmRequest(token);
+                  }}
+                  onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                  options={{ theme: 'light' }}
+                />
               </div>
 
-              <div className="flex flex-col items-center gap-3">
-                <div 
-                  className="w-[300px] h-[74px] bg-[#f9f9f9] border border-[#e0e0e0] rounded-[3px] shadow-[0px_0px_4px_rgba(0,0,0,0.08)] flex items-center justify-between px-3 cursor-pointer hover:bg-white transition-colors"
-                  onClick={handleTurnstileClick}
-                >
-                  <div className="flex items-center gap-3">
-                    {cfState === 'idle' && (
-                      <div className="w-7 h-7 border-[2px] border-[#c1c1c1] rounded-[3px] bg-white transition-colors"></div>
-                    )}
-                    {cfState === 'loading' && (
-                      <div className="w-7 h-7 border-[3px] border-[#e0e0e0] border-t-[#F48120] rounded-full animate-spin"></div>
-                    )}
-                    {cfState === 'success' && (
-                      <div className="w-7 h-7 bg-[#009900] rounded-full flex items-center justify-center shadow-sm">
-                        <i className="fas fa-check text-white text-xs"></i>
-                      </div>
-                    )}
-                    <span className="text-[#484848] text-[14px] font-sans">
-                      {cfState === 'idle' && 'Verify you are human'}
-                      {cfState === 'loading' && 'Verifying...'}
-                      {cfState === 'success' && 'Success!'}
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-end justify-center">
-                    <div className="flex items-center gap-1 opacity-90 mb-0.5">
-                      <i className="fab fa-cloudflare text-[#F48120] text-xl"></i>
-                      <span className="text-[#484848] font-bold text-[10px] tracking-wide">CLOUDFLARE</span>
-                    </div>
-                    <div className="text-[9px] text-[#A9A9A9] flex gap-1 mt-0.5">
-                      <a href="#" className="hover:text-black">Privacy</a> • <a href="#" className="hover:text-black">Terms</a>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-[#A9A9A9] text-xs font-sans">Not working? Click to report it</div>
-              </div>
+               {errorMsg && (
+                <div className="text-red-500 text-sm font-bold mt-4 animate-pulse">{errorMsg}</div>
+               )}
             </div>
           )}
 
