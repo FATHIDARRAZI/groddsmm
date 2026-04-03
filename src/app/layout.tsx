@@ -103,8 +103,7 @@ export default function RootLayout({
         {/* Adsterra Social Bar Script Placeholder */}
         {/* <script type='text/javascript' src='//your-social-bar-code.com/xx/yy/zz.js'></script> */}
 
-        {/* Adsterra Popunder & Social Bar (Global Network Trackers) */}
-        <Script strategy="afterInteractive" src="https://evacuateenclose.com/f5/24/1a/f5241a2e92f6cf46e0c16d5f358fe1e4.js" />
+        {/* Adsterra Social Bar (Global Network Trackers) */}
         <Script strategy="afterInteractive" src="https://pl29009656.profitablecpmratenetwork.com/c8/a0/3c/c8a03c6180d271eafc9b54b2466c235d.js" />
       </body>
     </html>
