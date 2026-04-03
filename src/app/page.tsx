@@ -359,68 +359,86 @@ export default function Home() {
           <p className="text-slate-400">ثلاث خطوات بسيطة تفصلك عن زيادة التفاعل في حسابك مجاناً.</p>
         </div>
 
-        <div className="relative w-full max-w-4xl mx-auto px-4 md:px-0">
-          {/* Vertical Line */}
-          <div className="absolute right-8 md:inset-x-0 md:mx-auto md:w-0.5 top-0 bottom-0 w-0.5 bg-gradient-to-b from-pink-500/50 via-purple-500/50 to-transparent"></div>
+        <div className="relative w-full max-w-5xl mx-auto px-4 md:px-0">
+          {/* Vertical Glowing Line */}
+          <div className="absolute right-8 md:inset-x-0 md:mx-auto md:w-1 top-0 bottom-0 bg-gradient-to-b from-pink-500/50 via-purple-500/50 to-green-500/50 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.3)]"></div>
 
           {/* Step 1 */}
-          <div className="relative flex flex-col md:flex-row items-center justify-between mb-20 w-full">
+          <div className="relative flex flex-col md:flex-row items-center justify-between mb-24 w-full group">
             <div className="order-2 md:order-1 w-full md:w-5/12 pr-16 md:pr-12 text-right dir-rtl">
-              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
-                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-pink-500 text-white font-bold text-xs">1</span>
-                انسخ رابط المنشور
-              </h3>
-              <p className="text-slate-400 leading-relaxed md:ml-4">قم بالتوجه إلى تطبيق إنستجرام، اختر الصورة أو الفيديو الذي ترغب بزيادة التفاعل عليه، ثم اضغط على زر المشاركة واختر "نسخ الرابط" (Copy Link).</p>
+              <div className="glass-panel p-8 rounded-3xl relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(236,72,153,0.15)] border border-white/5">
+                <div className="absolute -right-20 -top-20 w-40 h-40 bg-pink-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-pink-500/40 transition-colors duration-500"></div>
+                <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
+                  <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-pink-500 text-pink-400 font-black text-sm shadow-[0_0_15px_rgba(236,72,153,0.4)]">1</span>
+                  انسخ رابط المنشور
+                </h3>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">قم بالتوجه إلى تطبيق إنستجرام، اختر الصورة أو الفيديو الذي ترغب بزيادة التفاعل عليه، ثم اضغط على زر المشاركة واختر <strong className="text-white">"نسخ الرابط"</strong> (Copy Link).</p>
+              </div>
             </div>
             
             {/* Desktop Center Circle */}
-            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-pink-500 items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.5)] z-10">
-              <span className="text-white font-bold text-sm">1</span>
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#0B0F19] border-[4px] border-pink-500 items-center justify-center shadow-[0_0_30px_rgba(236,72,153,0.6)] z-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+              <span className="text-white font-black text-xl">1</span>
             </div>
             
-            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-6 md:mb-0">
-              <img src="/img/choose_service.png" alt="الخطوة الأولى" className="rounded-2xl border border-white/10 shadow-2xl object-cover w-full h-auto max-w-[500px]" />
+            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-8 md:mb-0">
+              <div className="relative w-full max-w-[500px]">
+                <div className="absolute -inset-2 bg-gradient-to-tr from-pink-500 to-transparent rounded-3xl blur-xl opacity-20 group-hover:opacity-50 transition duration-500"></div>
+                <img src="/img/choose_service.png" alt="الخطوة الأولى" className="relative rounded-3xl border border-white/10 shadow-2xl object-cover w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500" />
+              </div>
             </div>
           </div>
 
           {/* Step 2 */}
-          <div className="relative flex flex-col md:flex-row items-center justify-between mb-20 w-full">
-            <div className="order-1 md:order-1 w-full md:w-5/12 flex justify-center md:justify-start pr-16 md:pr-0 mb-6 md:mb-0">
-              <img src="/img/1-2-3-gooo.png" alt="الخطوة الثانية" className="rounded-2xl border border-white/10 shadow-2xl object-cover w-full h-auto max-w-[500px]" />
+          <div className="relative flex flex-col md:flex-row items-center justify-between mb-24 w-full group">
+            <div className="order-1 md:order-1 w-full md:w-5/12 flex justify-center md:justify-start pr-16 md:pr-0 mb-8 md:mb-0">
+              <div className="relative w-full max-w-[500px]">
+                <div className="absolute -inset-2 bg-gradient-to-tl from-purple-500 to-transparent rounded-3xl blur-xl opacity-20 group-hover:opacity-50 transition duration-500"></div>
+                <img src="/img/1-2-3-gooo.png" alt="الخطوة الثانية" className="relative rounded-3xl border border-white/10 shadow-2xl object-cover w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500" />
+              </div>
             </div>
 
             {/* Desktop Center Circle */}
-            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-purple-500 items-center justify-center shadow-[0_0_15px_rgba(168,85,247,0.5)] z-10">
-              <span className="text-white font-bold text-sm">2</span>
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#0B0F19] border-[4px] border-purple-500 items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.6)] z-10 group-hover:scale-110 group-hover:-rotate-12 transition-transform duration-500">
+              <span className="text-white font-black text-xl">2</span>
             </div>
 
             <div className="order-2 md:order-2 w-full md:w-5/12 pr-16 md:pl-12 text-right dir-rtl">
-              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
-                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-purple-500 text-white font-bold text-xs">2</span>
-                الصق الرابط واختر الخدمة
-              </h3>
-              <p className="text-slate-400 leading-relaxed md:ml-4">قم بلصق الرابط في المربع المخصص، ثم حدد نوع الخدمة (لايكات أو مشاهدات)، واضغط على زر "إرسال الطلب الآن".</p>
+              <div className="glass-panel p-8 rounded-3xl relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(168,85,247,0.15)] border border-white/5">
+                <div className="absolute -right-20 -top-20 w-40 h-40 bg-purple-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-purple-500/40 transition-colors duration-500"></div>
+                <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
+                  <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-purple-500 text-purple-400 font-black text-sm shadow-[0_0_15px_rgba(168,85,247,0.4)]">2</span>
+                  الصق الرابط واختر الخدمة
+                </h3>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">قم بلصق الرابط في المربع المخصص، ثم حدد نوع الخدمة التي تريدها (<strong className="text-white">لايكات أو مشاهدات</strong>)، واضغط على زر التفعيل "إرسال الطلب الآن".</p>
+              </div>
             </div>
           </div>
 
           {/* Step 3 */}
-          <div className="relative flex flex-col md:flex-row items-center justify-between w-full">
+          <div className="relative flex flex-col md:flex-row items-center justify-between w-full group">
             <div className="order-2 md:order-1 w-full md:w-5/12 pr-16 md:pr-12 text-right dir-rtl">
-              <h3 className="text-2xl font-bold text-white mb-3 flex items-center gap-3">
-                <span className="md:hidden flex items-center justify-center w-8 h-8 rounded-full bg-[#121827] border-2 border-green-500 text-white font-bold text-xs">3</span>
-                انتظر واحصل على التفاعل
-              </h3>
-              <p className="text-slate-400 leading-relaxed md:ml-4">انتظر قليلاً حتى تكتمل عملية التحضير، وسيبدأ التفاعل بالوصول إلى حسابك مباشرة. يمكنك العودة لطلب دفعة جديدة بعد انتهاء العداد الزمني!</p>
+               <div className="glass-panel p-8 rounded-3xl relative overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(34,197,94,0.15)] border border-white/5">
+                <div className="absolute -right-20 -top-20 w-40 h-40 bg-green-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-green-500/40 transition-colors duration-500"></div>
+                <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
+                  <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-green-500 text-green-400 font-black text-sm shadow-[0_0_15px_rgba(34,197,94,0.4)]">3</span>
+                  انتظر واحصل على التفاعل
+                </h3>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">انتظر قليلاً حتى تكتمل عملية التحضير، وسيبدأ التفاعل بالوصول إلى حسابك <strong className="text-white">بشكل فوري</strong>. يمكنك العودة لطلب دفعة جديدة بعد انتهاء العداد الزمني!</p>
+              </div>
             </div>
 
             {/* Desktop Center Circle */}
-            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[#121827] border-4 border-green-500 items-center justify-center shadow-[0_0_15px_rgba(34,197,94,0.5)] z-10">
-              <span className="text-white font-bold text-sm">3</span>
+            <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-14 h-14 rounded-full bg-[#0B0F19] border-[4px] border-green-500 items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.6)] z-10 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+              <span className="text-white font-black text-xl">3</span>
             </div>
 
-            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-6 md:mb-0">
-               <div className="w-full max-w-[500px] h-[250px] bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center overflow-hidden">
-                  <i className="fas fa-check-circle text-6xl text-green-400 drop-shadow-[0_0_20px_rgba(74,222,128,0.5)]"></i>
+            <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-8 md:mb-0">
+               <div className="relative w-full max-w-[500px]">
+                 <div className="absolute -inset-2 bg-gradient-to-tr from-green-500 to-transparent rounded-3xl blur-xl opacity-20 group-hover:opacity-50 transition duration-500"></div>
+                 <div className="relative w-full h-[250px] bg-white/5 border border-white/10 rounded-3xl flex items-center justify-center overflow-hidden backdrop-blur-md transform group-hover:scale-[1.02] transition-transform duration-500 shadow-2xl">
+                    <i className="fas fa-rocket text-7xl text-green-400 drop-shadow-[0_0_30px_rgba(74,222,128,0.6)] group-hover:-translate-y-4 group-hover:translate-x-4 transition-transform duration-500"></i>
+                 </div>
                </div>
             </div>
           </div>
