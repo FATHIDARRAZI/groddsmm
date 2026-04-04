@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Turnstile } from '@marsidev/react-turnstile';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -29,13 +29,13 @@ export default function Home() {
   const [errorMsg, setErrorMsg] = useState('');
   const [sponsorTimeLeft, setSponsorTimeLeft] = useState(0);
   const [isStickyVisible, setIsStickyVisible] = useState(true);
-  const [cfToken, setCfToken] = useState<string>('');
+  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
-  // Bypass Turnstile locally so development doesn't break
+  // Bypass CAPTCHA locally so development doesn't break
   const activeSiteKey = process.env.NODE_ENV === 'development' 
-    ? '1x00000000000000000000AA' 
-    : (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA');
+    ? '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' 
+    : (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
 
   // Idle Timer (15s inactivity)
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function Home() {
       const res = await fetch('/api/smm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: postLink.trim(), serviceType: service, cfToken: cfToken })
+        body: JSON.stringify({ link: postLink.trim(), serviceType: service, recaptchaToken })
       });
       const data = await res.json();
       
@@ -102,13 +102,12 @@ export default function Home() {
       setTimeLeft(2 * 60);
       setStep(3);
       setPostLink('');
-      setCfToken('');
+      setRecaptchaToken('');
     } catch (err) {
       void err;
       setErrorMsg('فشل الاتصال بالخادم.');
-      setStep(1);
     }
-  }, [postLink, service, cfToken]);
+  }, [postLink, service, recaptchaToken]);
 
   const handleStartProcess = () => {
     if (!postLink.trim()) {
@@ -116,7 +115,7 @@ export default function Home() {
       setTimeout(() => setErrorMsg(''), 3000);
       return;
     }
-    if (!cfToken) {
+    if (!recaptchaToken) {
       setErrorMsg('الرجاء إكمال التحقق البشري أولاً (Verify you are human)');
       setTimeout(() => setErrorMsg(''), 3000);
       return;
@@ -206,11 +205,11 @@ export default function Home() {
 
               <div className="flex justify-center w-full my-4">
                 <div className="bg-white p-2 rounded-xl shadow-inner border border-slate-200">
-                  <Turnstile
-                    siteKey={activeSiteKey}
-                    onSuccess={(token: string) => setCfToken(token)}
-                    onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
-                    options={{ theme: 'light' }}
+                  <ReCAPTCHA
+                    sitekey={activeSiteKey}
+                    onChange={(token: string | null) => setRecaptchaToken(token || '')}
+                    onErrored={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                    theme="light"
                   />
                 </div>
               </div>

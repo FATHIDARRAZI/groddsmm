@@ -24,19 +24,21 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { link, serviceType, cfToken } = body;
+    const { link, serviceType, recaptchaToken } = body;
 
-    if (!link || !serviceType || !cfToken) {
+    if (!link || !serviceType || !recaptchaToken) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Verify Cloudflare Turnstile Token
-    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '1x0000000000000000000000000000000AA';
+    // Verify Google reCAPTCHA Token
+    const recaptchaSecret = process.env.NODE_ENV === 'development'
+      ? '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
+      : (process.env.RECAPTCHA_SECRET_KEY || '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
     const formData = new URLSearchParams();
-    formData.append('secret', turnstileSecret);
-    formData.append('response', cfToken);
+    formData.append('secret', recaptchaSecret);
+    formData.append('response', recaptchaToken);
 
-    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
       method: 'POST',
       body: formData,
     });
