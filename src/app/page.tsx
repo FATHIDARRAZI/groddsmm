@@ -32,6 +32,16 @@ export default function Home() {
   const [cfToken, setCfToken] = useState<string>('');
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
+  const [siteKey, setSiteKey] = useState<string>('');
+
+  // Bypass Turnstile locally so development doesn't break
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      setSiteKey('1x00000000000000000000AA');
+    } else {
+      setSiteKey(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA');
+    }
+  }, []);
 
   // Idle Timer (15s inactivity)
   useEffect(() => {
@@ -201,13 +211,17 @@ export default function Home() {
               </div>
 
               <div className="flex justify-center w-full my-4">
-                <div className="bg-white p-2 rounded-xl shadow-inner border border-slate-200">
-                  <Turnstile
-                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
-                    onSuccess={(token: string) => setCfToken(token)}
-                    onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
-                    options={{ theme: 'light' }}
-                  />
+                <div className="bg-white p-2 rounded-xl shadow-inner border border-slate-200 min-h-[74px] min-w-[300px] flex items-center justify-center relative">
+                  {siteKey ? (
+                    <Turnstile
+                      siteKey={siteKey}
+                      onSuccess={(token: string) => setCfToken(token)}
+                      onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                      options={{ theme: 'light' }}
+                    />
+                  ) : (
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-slate-200"></div>
+                  )}
                 </div>
               </div>
 
