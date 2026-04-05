@@ -10,7 +10,18 @@ const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
 export async function POST(req: Request) {
   try {
     // Basic IP rate limiting (simplified for MVP)
-    const ip = req.headers.get('x-forwarded-for') || 'unknown';
+    const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+    const ip = rawIp.split(',')[0].trim();
+    
+    // Check Global 2-Minute Cooldown across all requests from this IP FIRST
+    const cooldownEnd = await getCooldownEnd(ip);
+    if (cooldownEnd) {
+      return NextResponse.json(
+        { error: 'User is on cooldown', cooldownEnd },
+        { status: 429 }
+      );
+    }
+
     const now = Date.now();
     const rt = rateLimitMap.get(ip);
     
@@ -31,9 +42,7 @@ export async function POST(req: Request) {
     }
 
     // Verify Google reCAPTCHA Token
-    const recaptchaSecret = process.env.NODE_ENV === 'development'
-      ? '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'
-      : (process.env.RECAPTCHA_SECRET_KEY || '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe');
+    const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY || '';
     const formData = new URLSearchParams();
     formData.append('secret', recaptchaSecret);
     formData.append('response', recaptchaToken);
@@ -48,14 +57,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
     }
 
-    // Check Cooldown
-    const cooldownEnd = await getCooldownEnd(link);
-    if (cooldownEnd) {
-      return NextResponse.json(
-        { error: 'User is on cooldown', cooldownEnd },
-        { status: 429 }
-      );
-    }
+    // (Cooldown check moved to the top of the function to prevent API waste)
 
     let serviceId = '';
     let quantity = 0;
@@ -96,8 +98,8 @@ export async function POST(req: Request) {
     }
 
     if (smmData.order) {
-      // Start 2 min cooldown
-      await setCooldown(link, 2);
+      // Start 2 min cooldown for this IP
+      await setCooldown(ip, 2);
       return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
     }
 

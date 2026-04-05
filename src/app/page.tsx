@@ -32,10 +32,7 @@ export default function Home() {
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
-  // Bypass CAPTCHA locally so development doesn't break
-  const activeSiteKey = process.env.NODE_ENV === 'development' 
-    ? '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' 
-    : (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
+  const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
   // Idle Timer (15s inactivity)
   useEffect(() => {
@@ -295,8 +292,8 @@ export default function Home() {
       <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden">
         <h3 className="text-slate-400 font-bold mb-4 text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
         <AdsterraNative 
-           idStr="container-a026c7a487d9e7acd2f65169e285806a" 
-           src="https://pl29009657.profitablecpmratenetwork.com/a026c7a487d9e7acd2f65169e285806a/invoke.js" 
+           idStr="container-2700670eebf5646c9f8d65d6e35dec31" 
+           src="https://evacuateenclose.com/2700670eebf5646c9f8d65d6e35dec31/invoke.js" 
         />
       </div>
 

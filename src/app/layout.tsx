@@ -97,14 +97,11 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-        {/* Adsterra Popunder Script Placeholder */}
-        {/* <script type='text/javascript' src='//your-popunder-code.com/xx/yy/zz.js'></script> */}
+        {/* Adsterra Popunder Script */}
+        <Script strategy="afterInteractive" src="https://evacuateenclose.com/ea/d2/ad/ead2ad4dc2d1475cebad280a82b63f9a.js" />
         
-        {/* Adsterra Social Bar Script Placeholder */}
-        {/* <script type='text/javascript' src='//your-social-bar-code.com/xx/yy/zz.js'></script> */}
-
-        {/* Adsterra Social Bar (Global Network Trackers) */}
-        <Script strategy="afterInteractive" src="https://pl29009656.profitablecpmratenetwork.com/c8/a0/3c/c8a03c6180d271eafc9b54b2466c235d.js" />
+        {/* Adsterra Social Bar Script */}
+        <Script strategy="afterInteractive" src="https://evacuateenclose.com/f7/d7/6a/f7d76a7b97e962d0d3f7fcc71b3dddea.js" />
       </body>
     </html>
   );
