@@ -117,6 +117,12 @@ export default function Home() {
       setTimeout(() => setErrorMsg(''), 3000);
       return;
     }
+    
+    // Open Adsterra Smartlink in a new tab to monetize the click
+    try {
+      window.open('https://evacuateenclose.com/zp6sv5d21e?key=8550d4deddea59bbc5e5765e239b7830', '_blank');
+    } catch(e) {}
+
     setErrorMsg('');
     setStep(1.5);
     setSponsorTimeLeft(30);
