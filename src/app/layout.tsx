@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Script from 'next/script';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
@@ -102,6 +103,7 @@ export default function RootLayout({
         
         {/* Adsterra Social Bar Script */}
         <Script strategy="afterInteractive" src="https://evacuateenclose.com/f7/d7/6a/f7d76a7b97e962d0d3f7fcc71b3dddea.js" />
+        <SpeedInsights />
       </body>
     </html>
   );
