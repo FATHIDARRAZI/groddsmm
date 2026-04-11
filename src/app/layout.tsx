@@ -3,10 +3,11 @@ import './globals.css';
 import Script from 'next/script';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from '@/components/Navbar';
+import AdBlockDetector from '@/components/AdBlockDetector';
 
 export const metadata: Metadata = {
-  title: 'Grodd SMM | لايكات ومتابعين مجانيين',
-  description: 'أفضل موقع لزيادة المتابعين واللايكات مجاناً بطرق آمنة.',
+  title: 'Grodd Media | تسويق رقمي احترافي، ترويج، ووصول عضوي',
+  description: 'وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل، إدارة الحملات الترويجية، وتسريع الوصول العضوي للعلامات التجارية وصناع المحتوى.',
   verification: {
     // other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] } // Uncomment when Adsterra gives you a meta tag verification code
   }
@@ -43,6 +44,9 @@ export default function RootLayout({
         {/* Navigation */}
         <Navbar />
 
+        {/* Global AdBlock Guard */}
+        <AdBlockDetector />
+
         {children}
 
         <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
@@ -53,7 +57,7 @@ export default function RootLayout({
                   <img src="/SMMGRODD.png" alt="Grodd SMM Logo" className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
-                  أفضل منصة للحصول على زيادات حقيقية وتفاعلات موثوقة لحسابك على إنستجرام. مطور بكل حب وإتقان بواسطة Grodd Labs لضمان أعلى جودة وخبرة مستخدم.
+                  وكالة متخصصة في التسويق الرقمي، بناء الجماهير، وتحليل الخوارزميات. نساعد العلامات التجارية والمؤثرين على تحقيق نمو مستدام وموثوق لحضورهم الرقمي. مطور بواسطة Grodd Labs.
                 </p>
                 <div className="flex items-center gap-4">
                   <a href="https://x.com/groddsmm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
@@ -72,9 +76,9 @@ export default function RootLayout({
                 <h4 className="text-white font-bold mb-4">روابط سريعة</h4>
                 <ul className="space-y-3 text-sm text-slate-400">
                   <li><a href="#" className="hover:text-pink-500 transition-colors">الرئيسية</a></li>
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">الخدمات المجانية</a></li>
+                  <li><a href="#" className="hover:text-pink-500 transition-colors">الحملات التجريبية</a></li>
                   <li><a href="#" className="hover:text-pink-500 transition-colors">الأسئلة الشائعة</a></li>
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">كيف يعمل النظام</a></li>
+                  <li><a href="#" className="hover:text-pink-500 transition-colors">استراتيجية العمل</a></li>
                 </ul>
               </div>
 

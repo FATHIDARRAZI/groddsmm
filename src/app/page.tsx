@@ -162,8 +162,8 @@ export default function Home() {
         
         <div className="relative z-10">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold text-white mb-3">اختر خدمتك المجانية</h1>
-            <p className="text-slate-400 text-sm leading-relaxed">أدخل رابط المنشور الخاص بك (Post Link) واختر الخدمة التي تناسبك لتعزيز حسابك فوراً.</p>
+            <h1 className="text-3xl font-extrabold text-white mb-3">ابدأ حملتك التسويقية المجانية</h1>
+            <p className="text-slate-400 text-sm leading-relaxed">أدخل رابط المحتوى الخاص بك (Content Link) لرفع معدل التفاعل والوصول لحسابك فوراً عبر تقنياتنا المستندة للبيانات.</p>
           </div>
 
           {(step === 1 || step === 1.5) && (
@@ -194,7 +194,7 @@ export default function Home() {
                     service === 'likes' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fas fa-heart text-pink-500 ml-2"></i> لايكات
+                  <i className="fas fa-heart text-pink-500 ml-2"></i> تفاعل وتسويق
                 </button>
                 <button
                   onClick={() => setService('views')}
@@ -202,7 +202,7 @@ export default function Home() {
                     service === 'views' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
-                  <i className="fas fa-play text-purple-500 ml-2"></i> مشاهدات
+                  <i className="fas fa-play text-purple-500 ml-2"></i> وصول وانتشار
                 </button>
               </div>
 
@@ -221,14 +221,14 @@ export default function Home() {
                 onClick={handleStartProcess}
                 className="w-full py-4 rounded-xl font-bold text-white text-lg insta-gradient-bg animate-gradient-x hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.3)]"
               >
-                إرسال الطلب الآن <i className="fas fa-rocket mr-2 text-sm"></i>
+                بدأ إطلاق الحملة <i className="fas fa-rocket mr-2 text-sm"></i>
               </button>
 
               {/* Disclaimer */}
               <div className="w-full mt-4 p-4 bg-pink-500/5 border border-pink-500/10 rounded-xl flex items-start gap-3 text-right">
                 <i className="fas fa-info-circle text-slate-400 mt-0.5"></i>
                 <div className="text-xs text-slate-400 leading-relaxed">
-                  <strong>Grodd SMM لا يتبع لشركة Instagram™.</strong> نحن لا نستضيف أي محتوى خاص بإنستجرام. جميع الحقوق لمعطيات الحسابات تعود لأصحابها. "نحن نحترم الخصوصية — يتوفر المحتوى العام فقط." اقرأ المزيد &lt;&lt; <a href="#" className="text-purple-400 hover:text-purple-300 underline">سياسة الاستخدام</a>
+                  <strong>وكالة Grodd للحملات التسويقية مستقلة تماماً.</strong> حملاتنا تعمل وفق سياسات الاستخدام وتعتمد فقط على المحتوى العام لغايات التقييم والترويج. اقرأ المزيد &lt;&lt; <a href="#" className="text-purple-400 hover:text-purple-300 underline">سياسة الاستخدام للشركات</a>
                 </div>
               </div>
             </div>
@@ -279,8 +279,8 @@ export default function Home() {
                 <i className="fas fa-check text-4xl text-green-400"></i>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-2">تم تأكيد طلبك بنجاح!</h3>
-                <p className="text-slate-400 text-sm">بدأ التفاعل بالوصول لحسابك. يرجى الانتظار لحين انتهاء العداد لطلب دفعة جديدة.</p>
+                <h3 className="text-2xl font-bold text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
+                <p className="text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
               </div>
 
               <div className="bg-[#0B0F19] rounded-2xl p-6 border border-slate-700/50 shadow-inner">
@@ -316,36 +316,36 @@ export default function Home() {
           <div className="w-12 h-12 mx-auto bg-yellow-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <i className="fas fa-bolt text-yellow-400 text-xl"></i>
           </div>
-          <h4 className="font-bold text-white text-lg">سرعة صاروخية</h4>
-          <p className="text-sm text-slate-400 mt-2">توصل باللايكات والمشاهدات فوراً بمجرد تأكيد طلبك عبر النظام.</p>
+          <h4 className="font-bold text-white text-lg">تحسين وتوجيه فوري</h4>
+          <p className="text-sm text-slate-400 mt-2">نبدأ بنشر المحتوى وتحفيز الخوارزميات فور تأكيد إطلاق الحملة عبر أنظمتنا المتطورة.</p>
         </div>
         <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
           <div className="w-12 h-12 mx-auto bg-green-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <i className="fas fa-shield-alt text-green-400 text-xl"></i>
           </div>
-          <h4 className="font-bold text-white text-lg">أمان وموثوقية 100%</h4>
-          <p className="text-sm text-slate-400 mt-2">النظام لا يطلب كلمة مرورك إطلاقاً، فقط نحتاج اسم المستخدم.</p>
+          <h4 className="font-bold text-white text-lg">أمان وموثوقية قوية</h4>
+          <p className="text-sm text-slate-400 mt-2">النظام يعمل بصلاحيات آمنة تماماً دون طلب أي بيانات مرور (No Passwords Required).</p>
         </div>
         <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
           <div className="w-12 h-12 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
             <i className="fas fa-sync text-purple-400 text-xl"></i>
           </div>
-          <h4 className="font-bold text-white text-lg">تحديث ومتابعة مستمرة</h4>
-          <p className="text-sm text-slate-400 mt-2">خوادمنا تعمل على مدار 24 ساعة لضمان استلامك للخدمة المجانية.</p>
+          <h4 className="font-bold text-white text-lg">دعم ورؤى مستمرة</h4>
+          <p className="text-sm text-slate-400 mt-2">نظام التحليل لدينا يعمل باستمرار لضمان استقرار نتائج حملاتك وتقديم تقارير واقعية.</p>
         </div>
       </div>
 
       {/* About Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 px-4 md:px-0 text-right dir-rtl">
         <h2 className="text-3xl md:text-3xl font-extrabold text-white mb-6">
-          ما هو Grodd SMM؟
+          عن خدماتنا في Grodd Media
         </h2>
         <div className="text-slate-300 space-y-4 leading-relaxed mb-12">
           <p>
-            يقدم <strong>Grodd SMM</strong> خدمات متكاملة وفعالة لتنمية حسابك على إنستجرام في مكان واحد. يمكنك الحصول على لايكات ومشاهدات عالية الجودة—مجاناً وبدون أي قيود، سواء كنت بحاجة لزيادة التفاعل على منشوراتك أو فيديوهات الريلز الخاصة بك. بالإضافة إلى ذلك، نوفر لك تجربة آمنة وسريعة دون الحاجة إلى تسجيل الدخول أو الكشف عن هويتك أو كلمة مرورك.
+            تقدم وكالتنا، <strong>Grodd Media</strong>، حلولاً احترافية لتعزيز التفاعل والنمو العضوي لحسابات إنستجرام للشركات وصناع المحتوى. تتيح لك منصتنا تجربة حملات التسويق الرقمي الترويجية مجاناً لرفع كفاءة الخوارزميات وزيادة الموثوقية لحسابك من خلال تسريع الانتشار (Viral Reach) والوصول للجمهور الصحيح.
           </p>
           <p>
-            في <strong>Grodd SMM</strong>، تأتي خصوصيتك وأمانك في المقام الأول. أداتنا تسمح لك بزيادة التفاعل على المحتوى العام والمتاح للجميع فقط. نحن لا نتجسس على المستخدمين، ولا نجمع البيانات الشخصية، ولا نخزن محتوى إنستجرام على خوادمنا. جميع الحقوق لمعطيات الحسابات تعود لأصحابها الأساسيين. نحن نشجع على الاستخدام القانوني والمحترم لخدماتنا.
+            في <strong>Grodd Media</strong>، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا. كوكالة تقنية محترفة، أدواتنا التسويقية تتوافق تماماً مع سياسات الاستخدام العادل وتعمل على تضخيم وتحليل المحتوى العام فقط للوصول إلى الجمهور المستهدف، لضمان أعلى درجات الأمان لحسابات عملائنا.
           </p>
         </div>
         
@@ -361,8 +361,8 @@ export default function Home() {
       {/* How It Works Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 relative">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold text-white mb-4">كيف يعمل نظام Grodd SMM؟</h2>
-          <p className="text-slate-400">ثلاث خطوات بسيطة تفصلك عن زيادة التفاعل في حسابك مجاناً.</p>
+          <h2 className="text-3xl font-extrabold text-white mb-4">آلية إطلاق الحملة</h2>
+          <p className="text-slate-400">ثلاث خطوات استراتيجية لتوجيه الزوار نحو محتواك.</p>
         </div>
 
         <div className="relative w-full max-w-5xl mx-auto px-4 md:px-0">
@@ -376,9 +376,9 @@ export default function Home() {
                 <div className="absolute -right-20 -top-20 w-40 h-40 bg-pink-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-pink-500/40 transition-colors duration-500"></div>
                 <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
                   <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-pink-500 text-pink-400 font-black text-sm shadow-[0_0_15px_rgba(236,72,153,0.4)]">1</span>
-                  انسخ رابط المنشور
+                  تحديد مسار المحتوى
                 </h3>
-                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">قم بالتوجه إلى تطبيق إنستجرام، اختر الصورة أو الفيديو الذي ترغب بزيادة التفاعل عليه، ثم اضغط على زر المشاركة واختر <strong className="text-white">"نسخ الرابط"</strong> (Copy Link).</p>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">انتقل إلى منصة إنستغرام لنسخ مسار/رابط المحتوى العام الذي تود إدراجه كوجهة رئيسية للحملة الإعلانية والتسويقية لنظامنا، سواء كان منشور أو ريلز.</p>
               </div>
             </div>
             
@@ -414,9 +414,9 @@ export default function Home() {
                 <div className="absolute -right-20 -top-20 w-40 h-40 bg-purple-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-purple-500/40 transition-colors duration-500"></div>
                 <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
                   <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-purple-500 text-purple-400 font-black text-sm shadow-[0_0_15px_rgba(168,85,247,0.4)]">2</span>
-                  الصق الرابط واختر الخدمة
+                  إدراج وإعداد الحملة
                 </h3>
-                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">قم بلصق الرابط في المربع المخصص، ثم حدد نوع الخدمة التي تريدها (<strong className="text-white">لايكات أو مشاهدات</strong>)، واضغط على زر التفعيل "إرسال الطلب الآن".</p>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">الصق الرابط في لوحة تحكم Grodd Media، حدد الخطة الإعلانية المناسبة (<strong className="text-white">تفاعل وتسويق أو وصول وانتشار</strong>)، ثم وافق على إطلاق حملتك.</p>
               </div>
             </div>
           </div>
@@ -428,9 +428,9 @@ export default function Home() {
                 <div className="absolute -right-20 -top-20 w-40 h-40 bg-green-500/20 blur-3xl rounded-full pointer-events-none group-hover:bg-green-500/40 transition-colors duration-500"></div>
                 <h3 className="text-2xl font-black text-white mb-4 flex items-center gap-3">
                   <span className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-[#121827] border-2 border-green-500 text-green-400 font-black text-sm shadow-[0_0_15px_rgba(34,197,94,0.4)]">3</span>
-                  انتظر واحصل على التفاعل
+                  متابعة النتائج والتقارير
                 </h3>
-                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">انتظر قليلاً حتى تكتمل عملية التحضير، وسيبدأ التفاعل بالوصول إلى حسابك <strong className="text-white">بشكل فوري</strong>. يمكنك العودة لطلب دفعة جديدة بعد انتهاء العداد الزمني!</p>
+                <p className="text-slate-400 leading-relaxed md:ml-4 text-[15px]">تابع التقدم الملحوظ لمحتواك <strong className="text-white">بشكل مباشر</strong> عندما نوجّه الجماهير إليك. استخدم فترة التقييم المدرجة لتخطيط أداء حملتك السابقة والبدء مجدداً!</p>
               </div>
             </div>
 
