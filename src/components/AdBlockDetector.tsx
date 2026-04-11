@@ -11,6 +11,9 @@ export default function AdBlockDetector() {
     // Create a fake ad element that adblockers aggressively target
     const fakeAd = document.createElement('div');
     fakeAd.className = 'ad-placement adsense ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+    fakeAd.innerHTML = '&nbsp;';
+    fakeAd.style.width = '1px';
+    fakeAd.style.height = '1px';
     fakeAd.style.position = 'absolute';
     fakeAd.style.top = '-999px';
     fakeAd.style.left = '-999px';
@@ -63,7 +66,7 @@ export default function AdBlockDetector() {
         <h2 className="text-3xl font-extrabold text-white mb-4 dir-rtl">تنبيه: مانع الإعلانات مفعل</h2>
         
         <p className="text-slate-400 text-lg leading-relaxed dir-rtl mb-8">
-          نحن نقدم خدمة زيادة المتابعين واللايكات <strong className="text-red-400">مجاناً للجميع</strong> بفضل الإعلانات فقط ولا غير. يرجى إيقاف مانع الإعلانات (AdBlock) أو إضافة موقعنا للقائمة البيضاء بصلاحيات كاملة للاستمرار.
+          نحن نقدم منصة إطلاق الحملات التسويقية <strong className="text-red-400">مجاناً للجميع</strong> بفضل الإعلانات المدمجة. يرجى إيقاف مانع الإعلانات (AdBlock) أو إضافة موقعنا للقائمة البيضاء للاستمرار.
         </p>
         
         <button 
