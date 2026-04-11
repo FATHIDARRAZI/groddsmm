@@ -25,6 +25,11 @@ export default function RootLayout({
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
           rel="stylesheet"
         />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576343802973571"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body className="text-slate-200 antialiased min-h-screen flex flex-col relative">
         {/* Ambient Background Effects */}
@@ -102,11 +107,6 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
-        {/* Adsterra Popunder Script */}
-        <Script strategy="afterInteractive" src="https://evacuateenclose.com/ea/d2/ad/ead2ad4dc2d1475cebad280a82b63f9a.js" />
-        
-        {/* Adsterra Social Bar Script */}
-        <Script strategy="afterInteractive" src="https://evacuateenclose.com/f7/d7/6a/f7d76a7b97e962d0d3f7fcc71b3dddea.js" />
         <SpeedInsights />
       </body>
     </html>
