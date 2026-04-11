@@ -6,11 +6,10 @@ export default function AdBlockDetector() {
   const [isAdBlocked, setIsAdBlocked] = useState(false);
 
   useEffect(() => {
-    let adBlockDetected = false;
-
-    // Create a fake ad element that adblockers aggressively target
+    // 1. DOM Element Bait
     const fakeAd = document.createElement('div');
     fakeAd.className = 'ad-placement adsense ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+    fakeAd.id = 'adsbygoogle';
     fakeAd.innerHTML = '&nbsp;';
     fakeAd.style.width = '1px';
     fakeAd.style.height = '1px';
@@ -19,30 +18,46 @@ export default function AdBlockDetector() {
     fakeAd.style.left = '-999px';
     document.body.appendChild(fakeAd);
 
-    // Wait a short time for adblockers to process
-    setTimeout(() => {
-      // Check if the adblocker hid the element
+    const checkDomAdBlocker = () => {
+      if (!document.body.contains(fakeAd)) {
+        setIsAdBlocked(true);
+        document.body.style.overflow = 'hidden';
+        return;
+      }
+      
       const styles = window.getComputedStyle(fakeAd);
       if (
         fakeAd.offsetHeight === 0 || 
         fakeAd.clientHeight === 0 || 
         styles.display === 'none' ||
-        styles.visibility === 'hidden' ||
-        !document.body.contains(fakeAd)
+        styles.visibility === 'hidden'
       ) {
-        adBlockDetected = true;
+        setIsAdBlocked(true);
+        document.body.style.overflow = 'hidden';
       }
       
       if (document.body.contains(fakeAd)) {
         document.body.removeChild(fakeAd);
       }
-      
-      if (adBlockDetected) {
+    };
+
+    setTimeout(checkDomAdBlocker, 300);
+
+    // 2. Network Request Bait (Highly reliable against uBlock Origin, AdGuard, Brave Shields)
+    const checkNetworkAdBlocker = async () => {
+      try {
+        await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+          method: 'HEAD',
+          mode: 'no-cors',
+          cache: 'no-store'
+        });
+      } catch (err) {
+        // If the request fails entirely, it's almost certainly blocked by an adblocker
         setIsAdBlocked(true);
-        // Lock body scrolling when the modal is shown
         document.body.style.overflow = 'hidden';
       }
-    }, 500);
+    };
+    checkNetworkAdBlocker();
 
     return () => {
       if (document.body.contains(fakeAd)) {
