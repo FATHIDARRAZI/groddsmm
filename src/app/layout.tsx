@@ -90,10 +90,10 @@ export default function RootLayout({
               <div>
                 <h4 className="text-white font-bold mb-4">الدعم الفني</h4>
                 <ul className="space-y-3 text-sm text-slate-400">
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">شروط الاستخدام</a></li>
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">سياسة الخصوصية</a></li>
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">إخلاء المسؤولية</a></li>
-                  <li><a href="#" className="hover:text-pink-500 transition-colors">اتصل بنا</a></li>
+                  <li><a href="/terms" className="hover:text-pink-500 transition-colors">شروط الاستخدام</a></li>
+                  <li><a href="/privacy" className="hover:text-pink-500 transition-colors">سياسة الخصوصية</a></li>
+                  <li><a href="/disclaimer" className="hover:text-pink-500 transition-colors">إخلاء المسؤولية</a></li>
+                  <li><a href="/contact" className="hover:text-pink-500 transition-colors">اتصل بنا</a></li>
                 </ul>
               </div>
             </div>
