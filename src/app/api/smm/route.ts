@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     }
 
     // 1. Session & Auth Check
-    const supabase = createSupabaseServerClient();
+    const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
 
     // 2. Gateway Branching (Anonymous Free vs Authenticated Paid)

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Grodd Media | تسويق رقمي احترافي، ترويج، ووصول عضوي',
   description: 'وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل، إدارة الحملات الترويجية، وتسريع الوصول العضوي للعلامات التجارية وصناع المحتوى.',
   verification: {
-    // other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] } // Uncomment when Adsterra gives you a meta tag verification code
+    other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] }
   }
 };
 
