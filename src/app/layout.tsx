@@ -24,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className="dark">
       <head>
+        <script src="https://quge5.com/88/tag.min.js" data-zone="229488" async data-cfasync="false"></script>
         <link
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
           rel="stylesheet"

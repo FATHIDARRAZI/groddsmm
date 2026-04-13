@@ -29,14 +29,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <>
-      <Script 
-        src="https://quge5.com/88/tag.min.js" 
-        data-zone="229488" 
-        data-cfasync="false" 
-        strategy="afterInteractive" 
-      />
-      <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-[#0B0F19] rounded-3xl border border-white/5 shadow-2xl overflow-hidden dir-rtl mb-12 relative z-10">
+    <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-[#0B0F19] rounded-3xl border border-white/5 shadow-2xl overflow-hidden dir-rtl mb-12 relative z-10">
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-72 bg-[#121214] border-l border-white/5 shrink-0 relative z-20">
@@ -116,6 +109,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
       <DashboardAdModal />
     </div>
-    </>
   );
 }
