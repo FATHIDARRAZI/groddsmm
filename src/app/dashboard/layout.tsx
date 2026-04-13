@@ -1,13 +1,37 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import DashboardAdModal from '@/components/DashboardAdModal';
+import { createSupabaseClient } from '@/lib/supabase';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const [userName, setUserName] = useState<string>('مستخدم جديد');
+  const [points, setPoints] = useState<number>(0);
+
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+    async function fetchUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUserName(user.user_metadata?.full_name || 'مستخدم جديد');
+        // Fetch balance from profiles table
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points_balance')
+          .eq('id', user.id)
+          .single();
+          
+        if (profile) {
+          setPoints(profile.points_balance);
+        }
+      }
+    }
+    fetchUser();
+  }, []);
 
   const desktopNavLinks = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
@@ -37,9 +61,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="w-20 h-20 bg-gradient-to-tr from-[#1C1C1E] to-[#2A2A2D] rounded-full border border-white/10 mb-4 flex items-center justify-center shadow-inner overflow-hidden">
              <i className="fas fa-user-astronaut text-3xl text-[#FF8577]"></i>
           </div>
-          <h2 className="text-lg font-bold text-white mb-1">مرحباً، مستخدم جديد</h2>
+          <h2 className="text-lg font-bold text-white mb-1">مرحباً، {userName}</h2>
           <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
-            <i className="fas fa-coins"></i> الرصيد: 0 نقطة
+            <i className="fas fa-coins"></i> الرصيد: {points.toLocaleString()} نقطة
           </Link>
         </div>
 
