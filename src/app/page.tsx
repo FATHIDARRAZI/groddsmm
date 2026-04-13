@@ -59,6 +59,20 @@ export default function Home() {
     };
   }, [hasSeenIdleAd, showIdleAd, step]);
 
+  // Check localStorage for active cooldown on mount
+  useEffect(() => {
+    const savedCooldown = localStorage.getItem('smm_cooldown');
+    if (savedCooldown) {
+      const remainingMs = parseInt(savedCooldown, 10) - Date.now();
+      if (remainingMs > 0) {
+        setTimeLeft(Math.ceil(remainingMs / 1000));
+        setStep(3);
+      } else {
+        localStorage.removeItem('smm_cooldown');
+      }
+    }
+  }, []);
+
   // Manage cooldown timer
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -67,7 +81,8 @@ export default function Home() {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
     } else if (timeLeft <= 0 && step === 3) {
-      setTimeout(() => setStep(1), 0); // Auto reset to step 1 when cooldown finishes
+      localStorage.removeItem('smm_cooldown');
+      window.location.reload(); // Refresh the page automatically
     }
     return () => clearInterval(timer);
   }, [step, timeLeft]);
@@ -85,6 +100,7 @@ export default function Home() {
         if (data.cooldownEnd) {
           const remainingMs = data.cooldownEnd - Date.now();
           if (remainingMs > 0) {
+            localStorage.setItem('smm_cooldown', data.cooldownEnd.toString());
             setTimeLeft(Math.ceil(remainingMs / 1000));
             setStep(3);
             return;
@@ -96,6 +112,8 @@ export default function Home() {
       }
       
       // Success, start 2 min cooldown timer UI
+      const targetTime = Date.now() + (2 * 60 * 1000);
+      localStorage.setItem('smm_cooldown', targetTime.toString());
       setTimeLeft(2 * 60);
       setStep(3);
       setPostLink('');
@@ -153,28 +171,34 @@ export default function Home() {
         <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
       </div>
 
-      <div className="w-full max-w-md glass-panel rounded-[2rem] p-8 relative overflow-hidden group">
-        <div className="absolute -inset-0.5 bg-gradient-to-br from-pink-500/30 to-purple-600/30 rounded-[2rem] blur opacity-0 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 pointer-events-none"></div>
+      <div className="text-center mb-10 w-full z-10 relative">
+        <h1 className="text-4xl md:text-6xl font-black text-white mb-2 leading-relaxed">ابدأ إطلاق</h1>
+        <h1 className="text-4xl md:text-6xl font-black luminary-gradient-text mb-6 leading-relaxed">حملتك التسويقية المجانية</h1>
+        <p className="text-[#A3A3A3] text-sm md:text-lg max-w-md mx-auto leading-loose">أدخل رابط المحتوى الخاص بك (Content Link) لرفع معدل التفاعل والوصول لحسابك فوراً.</p>
+      </div>
+
+      <div className="w-full max-w-xl bg-gradient-to-b from-[#1C1C1E] to-[#121214] rounded-2xl p-5 sm:p-8 relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/5 z-10 mx-auto">
+        {/* Subtle top border highlight */}
+        <div className="absolute top-0 left-0 w-1/3 h-[2px] bg-gradient-to-r from-purple-500/80 to-transparent rounded-tl-2xl pointer-events-none"></div>
         
         <div className="relative z-10">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-extrabold text-white mb-3">ابدأ حملتك التسويقية المجانية</h1>
-            <p className="text-slate-400 text-sm leading-relaxed">أدخل رابط المحتوى الخاص بك (Content Link) لرفع معدل التفاعل والوصول لحسابك فوراً عبر تقنياتنا المستندة للبيانات.</p>
-          </div>
 
           {(step === 1 || step === 1.5) && (
             <div className={`space-y-6 transition-all duration-500 relative ${step === 1.5 ? 'blur-sm pointer-events-none opacity-50' : 'animate-fade-in'}`}>
-              <div className="relative group/input">
-                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500 font-bold text-lg group-focus-within/input:text-pink-500 transition-colors">
-                  <i className="fas fa-link"></i>
+              <div className="flex flex-col gap-2 relative group/input">
+                <label className="text-xs font-bold text-slate-500 tracking-widest block text-right w-full mb-1">رابط المحتوى (Post Link)</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500 font-bold group-focus-within/input:text-[#FF8577] transition-colors">
+                    <i className="fas fa-link"></i>
+                  </div>
+                  <input
+                    type="text"
+                    value={postLink}
+                    onChange={(e) => setPostLink(e.target.value)}
+                    placeholder="https://social.media/your-awesome-post"
+                    className="w-full bg-[#18181A] border border-white/5 rounded-xl py-4 pr-12 pl-4 text-left dir-ltr text-white placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={postLink}
-                  onChange={(e) => setPostLink(e.target.value)}
-                  placeholder="رابط المنشور الخاص بك (Post Link)"
-                  className="w-full bg-[#0B0F19] border border-slate-700/50 rounded-xl py-4 pr-12 pl-4 text-left dir-ltr text-white placeholder-slate-500 focus:outline-none focus:border-pink-500/50 focus:ring-2 focus:ring-pink-500/20 transition-all shadow-inner"
-                />
               </div>
 
               {errorMsg && (
@@ -183,41 +207,44 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="grid grid-cols-2 gap-3 p-1 bg-[#0B0F19] rounded-xl border border-slate-700/50">
-                <button
-                  onClick={() => setService('likes')}
-                  className={`relative py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
-                    service === 'likes' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <i className="fas fa-heart text-pink-500 ml-2"></i> تفاعل وتسويق
-                </button>
-                <button
-                  onClick={() => setService('views')}
-                  className={`relative py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
-                    service === 'views' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  <i className="fas fa-play text-purple-500 ml-2"></i> وصول وانتشار
-                </button>
+              <div className="flex flex-col gap-2 mt-6">
+                <label className="text-xs font-bold text-slate-500 tracking-widest block text-right w-full mb-1">الخطة الإعلانية (Strategy)</label>
+                <div className="flex flex-col sm:flex-row bg-[#0D0D0E] p-1 rounded-xl w-full border border-white/5 gap-1 sm:gap-0">
+                  <button
+                    onClick={() => setService('likes')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                      service === 'likes' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
+                    }`}
+                  >
+                    <i className={`fas fa-heart ${service === 'likes' ? 'text-[#FF8577]' : 'text-slate-600'}`}></i> زيادة لايكات
+                  </button>
+                  <button
+                    onClick={() => setService('views')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                      service === 'views' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
+                    }`}
+                  >
+                    <i className={`fas fa-eye ${service === 'views' ? 'text-slate-300' : 'text-slate-600'}`}></i> زيادة مشاهدات
+                  </button>
+                </div>
               </div>
 
-              <div className="flex justify-center w-full my-4">
-                <div className="bg-white p-2 rounded-xl shadow-inner border border-slate-200">
+              <div className="flex justify-center w-full my-6 max-w-full overflow-hidden">
+                <div className="bg-[#121214] p-2 rounded-xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
                   <ReCAPTCHA
                     sitekey={activeSiteKey}
                     onChange={(token: string | null) => setRecaptchaToken(token || '')}
                     onErrored={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
-                    theme="light"
+                    theme="dark"
                   />
                 </div>
               </div>
 
               <button
                 onClick={handleStartProcess}
-                className="w-full py-4 rounded-xl font-bold text-white text-lg insta-gradient-bg animate-gradient-x hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-pink-500/30 shadow-[0_0_20px_rgba(236,72,153,0.3)]"
+                className="w-full py-4 mt-2 rounded-xl font-extrabold text-[#1F0A07] text-lg bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-[#FF8577]/30 shadow-[0_4px_20px_rgba(255,133,119,0.3)] flex items-center justify-center gap-3"
               >
-                بدأ إطلاق الحملة <i className="fas fa-rocket mr-2 text-sm"></i>
+                بدء إطلاق الحملة <i className="fas fa-rocket text-sm"></i>
               </button>
 
               {/* Disclaimer */}
@@ -229,66 +256,69 @@ export default function Home() {
               </div>
             </div>
           )}
-
-          {step === 1.5 && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-              <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-xl transition-all"></div>
-              
-              <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
-                {/* Modal Header */}
-                <div className="w-full flex justify-end mb-2">
-                  <div className="bg-white/10 backdrop-blur-md px-3 py-1 rounded-t-lg text-white/50 text-[10px] uppercase font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2">
-                    <span>Please wait {sponsorTimeLeft}s</span>
-                    <i className="fas fa-times"></i>
-                  </div>
-                </div>
-                
-                {/* Adsterra Display Block */}
-                <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(236,72,153,0.15)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] md:min-h-[90px] border border-white/10 relative">
-                  <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
-                    <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
-                  </div>
-                  <div className="flex md:hidden w-full items-center justify-center min-h-[250px]">
-                    <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
-                  </div>
-                </div>
-                
-                {/* Countdown Bar */}
-                <div className="w-full mt-6 bg-[#121827] rounded-2xl p-6 border border-white/5 shadow-2xl">
-                  <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
-                    <i className="fas fa-spinner fa-spin text-pink-500"></i> جاري تحضير طلبك...
-                  </h3>
-                  <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
-                     <div className="absolute top-0 right-0 h-full bg-gradient-to-r from-pink-500 to-purple-500 transition-all duration-1000 ease-linear" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
-                  </div>
-                  <p className="text-center text-slate-500 text-xs mt-4">نحن نعتمد على الإعلانات لإبقاء الخدمة مجانية للجميع.</p>
-                </div>
-              </div>
-            </div>
-          )}
-
-
-
-          {step === 3 && (
-            <div className="text-center py-6 animate-fade-in space-y-6">
-              <div className="w-24 h-24 mx-auto bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 mb-2">
-                <i className="fas fa-check text-4xl text-green-400"></i>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
-                <p className="text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
-              </div>
-
-              <div className="bg-[#0B0F19] rounded-2xl p-6 border border-slate-700/50 shadow-inner">
-                <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold">الوقت المتبقي للطلب القادم</div>
-                <div className="text-5xl font-mono font-extrabold insta-gradient-text tabular-nums">
-                  {formatTime(timeLeft)}
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {step === 1.5 && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-md transition-all"></div>
+              
+          <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
+            {/* Modal Header */}
+            <div className="w-full flex justify-end mb-2">
+              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
+                <span>يرجى الانتظار {sponsorTimeLeft} ثانية</span>
+                <i className="fas fa-times"></i>
+              </div>
+            </div>
+            
+            {/* Adsterra Display Block */}
+            <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(255,133,119,0.1)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] md:min-h-[90px] border border-white/5 relative">
+              <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
+                <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
+              </div>
+              <div className="flex md:hidden w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
+                <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
+                  <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
+                </div>
+              </div>
+            </div>
+            
+            {/* Countdown Bar */}
+            <div className="w-full mt-6 bg-[#161618] rounded-2xl p-6 border border-white/5 shadow-2xl">
+              <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
+                <i className="fas fa-spinner fa-spin text-[#FF8577]"></i> جاري تحضير طلبك...
+              </h3>
+              <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
+                 <div className="absolute top-0 right-0 h-full luminary-gradient-bg transition-all duration-1000 ease-linear" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
+              </div>
+              <p className="text-center text-slate-500 text-xs mt-4">نحن نعتمد على الإعلانات لإبقاء الخدمة مجانية للجميع.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {step === 3 && (
+        <div className="text-center py-6 animate-fade-in space-y-6 mt-12 w-full max-w-xl mx-auto z-10 relative">
+          <div className="w-24 h-24 mx-auto bg-[#FF8577]/10 rounded-full flex items-center justify-center border border-[#FF8577]/20 mb-2 shadow-[0_0_30px_rgba(255,133,119,0.2)]">
+            <i className="fas fa-check text-4xl text-[#FF8577]"></i>
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
+            <p className="text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
+          </div>
+
+          <div className="bg-[#1C1C1E] rounded-2xl p-6 border border-white/5 shadow-2xl">
+            <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold block w-full text-center">الوقت المتبقي للطلب القادم</div>
+            <div className="text-5xl font-mono font-extrabold luminary-gradient-text tabular-nums text-center w-full block">
+              {formatTime(timeLeft)}
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
 
       {/* Adsterra Native Banner */}
       <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden">
@@ -306,28 +336,19 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Features Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-5xl">
-        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
-          <div className="w-12 h-12 mx-auto bg-yellow-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i className="fas fa-bolt text-yellow-400 text-xl"></i>
-          </div>
-          <h4 className="font-bold text-white text-lg">تحسين وتوجيه فوري</h4>
-          <p className="text-sm text-slate-400 mt-2">نبدأ بنشر المحتوى وتحفيز الخوارزميات فور تأكيد إطلاق الحملة عبر أنظمتنا المتطورة.</p>
+      {/* Sleek Horizontal Features Row */}
+      <div className="flex flex-wrap w-full justify-center mt-8 gap-4 sm:gap-6 md:gap-12 mb-16 relative z-10 px-4">
+        <div className="flex flex-col md:flex-row items-center gap-2 text-[#A3A3A3] text-xs font-bold tracking-wider">
+          <i className="fas fa-bolt text-slate-600"></i>
+          <span>تحسين وتوجيه فوري</span>
         </div>
-        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
-          <div className="w-12 h-12 mx-auto bg-green-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i className="fas fa-shield-alt text-green-400 text-xl"></i>
-          </div>
-          <h4 className="font-bold text-white text-lg">أمان وموثوقية قوية</h4>
-          <p className="text-sm text-slate-400 mt-2">النظام يعمل بصلاحيات آمنة تماماً دون طلب أي بيانات مرور (No Passwords Required).</p>
+        <div className="flex flex-col md:flex-row items-center gap-2 text-[#A3A3A3] text-xs font-bold tracking-wider">
+          <i className="fas fa-shield-alt text-slate-600"></i>
+          <span>أمان وموثوقية قوية</span>
         </div>
-        <div className="glass-panel p-6 rounded-2xl text-center group hover:-translate-y-1 transition-transform">
-          <div className="w-12 h-12 mx-auto bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <i className="fas fa-sync text-purple-400 text-xl"></i>
-          </div>
-          <h4 className="font-bold text-white text-lg">دعم ورؤى مستمرة</h4>
-          <p className="text-sm text-slate-400 mt-2">نظام التحليل لدينا يعمل باستمرار لضمان استقرار نتائج حملاتك وتقديم تقارير واقعية.</p>
+        <div className="flex flex-col md:flex-row items-center gap-2 text-[#A3A3A3] text-xs font-bold tracking-wider">
+          <i className="fas fa-chart-line text-slate-600"></i>
+          <span>دعم ورؤى مستمرة</span>
         </div>
       </div>
 

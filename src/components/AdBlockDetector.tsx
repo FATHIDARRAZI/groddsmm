@@ -6,6 +6,11 @@ export default function AdBlockDetector() {
   const [isAdBlocked, setIsAdBlocked] = useState(false);
 
   useEffect(() => {
+    // Bypass detection on localhost for testing
+    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+      return;
+    }
+
     // 1. DOM Element Bait
     const fakeAd = document.createElement('div');
     fakeAd.className = 'ad-placement adsense ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';

@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     // Basic IP rate limiting (simplified for MVP)
     const rawIp = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
     const ip = rawIp.split(',')[0].trim();
-    
+
     // Check Global 2-Minute Cooldown across all requests from this IP FIRST
     const cooldownEnd = await getCooldownEnd(ip);
     if (cooldownEnd) {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
     const now = Date.now();
     const rt = rateLimitMap.get(ip);
-    
+
     if (rt && now - rt.timestamp < RATE_LIMIT_WINDOW) {
       if (rt.count >= MAX_REQUESTS) {
         return NextResponse.json({ error: 'Rate limit exceeded. Try again later.' }, { status: 429 });
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { link, serviceType, recaptchaToken } = body;
+    const { link, serviceType, recaptchaToken, quantity: requestedQuantity } = body;
 
     if (!link || !serviceType || !recaptchaToken) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -51,23 +51,27 @@ export async function POST(req: Request) {
       method: 'POST',
       body: formData,
     });
-    
+
     const verifyData = await verifyRes.json();
     if (!verifyData.success) {
       return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
     }
 
-    // (Cooldown check moved to the top of the function to prevent API waste)
+    // Determine target quantity (use requested, or fallback to safe minimum 100)
+    let finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 100 ? requestedQuantity : 100;
 
     let serviceId = '';
-    let quantity = 0;
 
     if (serviceType === 'views') {
       serviceId = '2020';
-      quantity = 10;
+      // If no valid dynamic quantity was passed, default to minimum 100 views
+      if (!requestedQuantity || requestedQuantity < 100) finalQuantity = 100;
+      
     } else if (serviceType === 'likes') {
-      serviceId = '584';
-      quantity = 100;
+      serviceId = '917';
+      // If no valid dynamic quantity was passed, default to minimum 100 likes
+      if (!requestedQuantity || requestedQuantity < 100) finalQuantity = 100;
+      
     } else {
       return NextResponse.json({ error: 'Invalid service type' }, { status: 400 });
     }
@@ -79,7 +83,7 @@ export async function POST(req: Request) {
       action: 'add',
       service: serviceId,
       link: smmLink,
-      quantity: quantity.toString()
+      quantity: finalQuantity.toString()
     });
 
     const smmRes = await fetch(SMM_API_URL, {
@@ -104,7 +108,7 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ error: 'Unexpected response from provider' }, { status: 500 });
-    
+
   } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

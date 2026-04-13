@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   description: 'وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل، إدارة الحملات الترويجية، وتسريع الوصول العضوي للعلامات التجارية وصناع المحتوى.',
   verification: {
     // other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] } // Uncomment when Adsterra gives you a meta tag verification code
+  },
+  other: {
+    'monetag': '1c00d5c5dd81d929a136feb32779bee0'
   }
 };
 

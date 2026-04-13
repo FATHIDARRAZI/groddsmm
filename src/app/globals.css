@@ -26,13 +26,13 @@ body {
   overflow-x: hidden;
 }
 
-.insta-gradient-bg {
-  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-  background-size: 200% 200%;
+.luminary-gradient-bg {
+  background: linear-gradient(90deg, #FF8577 0%, #FF6B6B 100%);
+  background-size: 100% 100%;
 }
 
-.insta-gradient-text {
-  background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
+.luminary-gradient-text {
+  background: linear-gradient(90deg, #FF8577 0%, #FF6B6B 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;

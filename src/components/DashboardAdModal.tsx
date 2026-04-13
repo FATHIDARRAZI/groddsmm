@@ -1,0 +1,74 @@
+'use client';
+import React, { useState, useEffect } from 'react';
+
+export default function DashboardAdModal() {
+  const [showModal, setShowModal] = useState(false);
+  const [adType, setAdType] = useState<'skippable' | 'forced'>('skippable');
+  const [timeLeft, setTimeLeft] = useState(15);
+  const [hasClosed, setHasClosed] = useState(false);
+
+  // Initial 15s delay before showing the ad
+  useEffect(() => {
+    if (hasClosed) return;
+    
+    // Set a timer to trigger the modal 15 seconds after page load/navigation
+    const timer = setTimeout(() => {
+      // 50% chance of being forced or skippable
+      const type = Math.random() > 0.5 ? 'forced' : 'skippable';
+      setAdType(type);
+      setTimeLeft(15);
+      setShowModal(true);
+    }, 15000);
+    
+    return () => clearTimeout(timer);
+  }, [hasClosed]);
+
+  // Handle forced UI timer countdown
+  useEffect(() => {
+    if (showModal && adType === 'forced' && timeLeft > 0) {
+      const waitTimer = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+      return () => clearInterval(waitTimer);
+    }
+  }, [showModal, adType, timeLeft]);
+
+  if (!showModal) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-xl bg-black/60 p-4">
+      <div className="bg-[#121214] border border-[#FF8577]/20 rounded-3xl p-6 w-full max-w-md relative shadow-[0_0_100px_rgba(255,133,119,0.15)] animate-fade-in flex flex-col items-center">
+        
+        {/* Header/Close Logic */}
+        <div className="w-full flex justify-between items-center mb-6">
+          <span className="text-[10px] text-slate-500 font-bold tracking-widest bg-white/5 px-3 py-1 rounded-full">إعلان سبونسر</span>
+          
+          {adType === 'skippable' || timeLeft <= 0 ? (
+            <button 
+              onClick={() => { setShowModal(false); setHasClosed(true); }}
+              className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+            >
+              <i className="fas fa-times text-sm"></i>
+            </button>
+          ) : (
+            <div className="px-3 py-1.5 bg-[#FF8577]/10 text-[#FF8577] border border-[#FF8577]/20 rounded-full text-xs font-bold font-mono">
+              يرجى الانتظار {timeLeft}ث
+            </div>
+          )}
+        </div>
+
+        {/* Ad Container */}
+        <div className="w-[300px] h-[250px] bg-black rounded-lg overflow-hidden border border-white/5 flex items-center justify-center relative">
+           <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="border-0 relative z-10"></iframe>
+           {/* Fallback spinner while iframe loads internally */}
+           <i className="fas fa-circle-notch fa-spin absolute text-white/20 text-3xl"></i>
+        </div>
+        
+        <p className="text-xs text-slate-500 mt-6 text-center max-w-xs leading-relaxed">
+          شكراً لدعمك المنصة! مشاهدة الإعلانات تساعدنا على إبقاء الخدمات مجانية ومنخفضة التكلفة للجميع.
+        </p>
+
+      </div>
+    </div>
+  );
+}
