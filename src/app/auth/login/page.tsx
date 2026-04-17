@@ -34,14 +34,14 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="w-full bg-[#121214]/60 backdrop-blur-2xl border border-white/5 rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 shadow-2xl relative overflow-hidden animate-fade-in">
+    <div className="w-full bg-[#121214]/60 backdrop-blur-2xl border border-white/5 rounded-3xl sm:rounded-[2.5rem] p-6 sm:p-10 shadow-2xl relative overflow-hidden animate-fade-in z-30">
       
       {/* Decorative Border */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#FF8577] to-transparent opacity-50"></div>
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50"></div>
 
       <div className="text-center mb-8">
-        <h1 className="text-2xl sm:text-3xl font-black text-white mb-2 sm:mb-3">تسجيل الدخول</h1>
-        <p className="text-xs sm:text-sm text-slate-400">مرحباً بعودتك إلى لوحة التحكم الخاصة بك</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2 font-outfit uppercase tracking-tighter">Login Center</h1>
+        <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Access your command terminal</p>
       </div>
 
       {errorMsg && (
