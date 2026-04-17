@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
+import Link from 'next/link';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
@@ -246,6 +247,21 @@ export default function Home() {
               >
                 بدء إطلاق الحملة <i className="fas fa-rocket text-sm"></i>
               </button>
+
+              <div className="w-full flex items-center gap-4 mt-6">
+                <div className="h-px bg-white/5 flex-1"></div>
+                <span className="text-slate-500 text-xs font-bold px-2">أو اكتشف المزيد</span>
+                <div className="h-px bg-white/5 flex-1"></div>
+              </div>
+
+              <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
+                <Link href="/auth/login" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-slate-300 hover:text-white border border-white/5 hover:bg-white/5 transition-all text-center flex justify-center items-center gap-2">
+                  <i className="fas fa-sign-in-alt text-slate-500"></i> تسجيل الدخول
+                </Link>
+                <Link href="/auth/signup" className="flex-1 py-3 rounded-xl font-bold bg-[#ec4899]/10 text-[#ec4899] hover:bg-[#ec4899]/20 border border-[#ec4899]/20 transition-all text-center flex justify-center items-center gap-2 shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                  <i className="fas fa-user-plus"></i> إنشاء حساب
+                </Link>
+              </div>
 
               {/* Disclaimer */}
               <div className="w-full mt-4 p-4 bg-pink-500/5 border border-pink-500/10 rounded-xl flex items-start gap-3 text-right">

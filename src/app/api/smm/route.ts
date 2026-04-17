@@ -160,7 +160,18 @@ export async function POST(req: Request) {
 
       } else {
         // Anonymous Flow: Enforce subsequent cooldown block
-        await setCooldown(ip, 2);
+        // Fetch dynamic cooldown value from settings
+        let cooldownMinutes = 2; // Default fallback
+        try {
+          const { data: setting } = await supabase.from('system_settings').select('value').eq('key', 'order_cooldown_minutes').single();
+          if (setting && typeof setting.value === 'number') {
+            cooldownMinutes = setting.value;
+          }
+        } catch (e) {
+          console.error('Failed to fetch cooldown setting');
+        }
+
+        await setCooldown(ip, cooldownMinutes);
         return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
       }
     }

@@ -17,26 +17,27 @@ export default function SignupPage() {
     setIsLoading(true);
     setErrorMsg('');
 
-    const supabase = createSupabaseClient();
-    const { error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: {
-          full_name: name,
-        }
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullName: name }),
+      });
+
+      const data = await res.json();
+      setIsLoading(false);
+
+      if (!res.ok) {
+        setErrorMsg(data.error || 'تعذر إنشاء الحساب');
+        return;
       }
-    });
 
-    setIsLoading(false);
-
-    if (error) {
-      setErrorMsg(error.message);
-      return;
+      // Success
+      router.push('/dashboard');
+    } catch (err) {
+      setIsLoading(false);
+      setErrorMsg('حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.');
     }
-
-    // Success
-    router.push('/dashboard');
   };
 
   return (

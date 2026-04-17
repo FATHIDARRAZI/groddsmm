@@ -31,19 +31,13 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className="text-slate-200 antialiased min-h-screen flex flex-col relative">
-        {/* Ambient Background Effects */}
+      <body className="text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo">
+        {/* Cinematic Background Layer */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-          <div className="glow-orb pink"></div>
-          <div className="glow-orb purple"></div>
-          {/* Noise overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "url('data:image/svg+xml,%3Csvg viewBox=\"0 0 200 200\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cfilter id=\"noiseFilter\"%3E%3CfeTurbulence type=\"fractalNoise\" baseFrequency=\"0.65\" numOctaves=\"3\" stitchTiles=\"stitch\"/%3E%3C/filter%3E%3Crect width=\"100%25\" height=\"100%25\" filter=\"url(%23noiseFilter)\"/%3E%3C/svg%3E')",
-            }}
-          ></div>
+          <div className="noise-bg"></div>
+          <div className="glow-orb red" style={{ top: '-10%', right: '-5%', opacity: 0.4 }}></div>
+          <div className="glow-orb blue" style={{ bottom: '-10%', left: '-5%', opacity: 0.3 }}></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#05070A] via-transparent to-[#05070A] opacity-60"></div>
         </div>
 
         {/* Navigation */}
@@ -59,7 +53,7 @@ export default function RootLayout({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/5 pb-10">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-6">
-                  <img src="/SMMGRODD.png" alt="Grodd SMM Logo" className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
+                  <img src="/GRODD_LOGO.png" alt="Grodd SMM Logo" className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
                   وكالة متخصصة في التسويق الرقمي، بناء الجماهير، وتحليل الخوارزميات. نساعد العلامات التجارية والمؤثرين على تحقيق نمو مستدام وموثوق لحضورهم الرقمي. مطور بواسطة Grodd Labs.
