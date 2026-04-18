@@ -309,16 +309,30 @@ export default function GiftsPage() {
              </div>
           </div>
 
-          <div className="bg-white border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+             {/* Trying the Banner ID method */}
              <iframe 
-                src="https://evacuateenclose.com/zp6sv5d21e?key=8550d4deddea59bbc5e5765e239b7830" 
-                width="100%" 
-                height="400" 
+                src="/ad-smart.html" 
+                width="300" 
+                height="250" 
                 frameBorder="0" 
-                className="animate-fade-in bg-white"
+                className="animate-fade-in bg-transparent"
                 loading="lazy"
              ></iframe>
+
+             {/* Fallback Smart Link Text Link (High Revenue) */}
+             <div className="mt-4 pb-4">
+                <a 
+                   href="https://evacuateenclose.com/zp6sv5d21e?key=8550d4deddea59bbc5e5765e239b7830" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse"
+                >
+                   إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
+                </a>
+             </div>
           </div>
+
 
         </div>
       )}
