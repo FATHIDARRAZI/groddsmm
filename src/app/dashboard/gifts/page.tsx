@@ -56,7 +56,8 @@ export default function GiftsPage() {
         localStorage.removeItem('last_spin_time');
       }
     }
-  }, []);
+  }, [isMounted]);
+
 
   // Countdown timer logic
   useEffect(() => {
