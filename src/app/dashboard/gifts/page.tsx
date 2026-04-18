@@ -310,28 +310,30 @@ export default function GiftsPage() {
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
-             {/* Trying the Banner ID method */}
+             {/* Trying the Direct URL method first for the new link */}
              <iframe 
-                src="/ad-smart.html" 
-                width="300" 
-                height="250" 
+                src="https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70" 
+                width="100%" 
+                height="400" 
                 frameBorder="0" 
-                className="animate-fade-in bg-transparent"
+                className="animate-fade-in bg-white"
                 loading="lazy"
              ></iframe>
 
              {/* Fallback Smart Link Text Link (High Revenue) */}
-             <div className="mt-4 pb-4">
+             <div className="mt-4 pb-4 text-center">
                 <a 
-                   href="https://evacuateenclose.com/zp6sv5d21e?key=8550d4deddea59bbc5e5765e239b7830" 
+                   href="https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70" 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse"
+                   className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse block mb-1"
                 >
-                   إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
+                   إضغط هنا للمتابعة (Click here to continue)
                 </a>
+                <p className="text-[10px] text-slate-500">سوف يفتح الإعلان في نافذة جديدة</p>
              </div>
           </div>
+
 
 
         </div>
