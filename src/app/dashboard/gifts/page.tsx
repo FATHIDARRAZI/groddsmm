@@ -10,14 +10,15 @@ import ReCAPTCHA from 'react-google-recaptcha';
 // Unsafe: Followers/Views -> Impossible to win
 const segments = [
   { id: 0, text: '10K حسابات', type: 'followers', icon: 'fa-users', bgColor: '#0B0F19', textColor: 'text-white', isSafe: false, points: 0 },
-  { id: 1, text: '50 نقطة', type: 'points', icon: 'fa-coins', bgColor: '#FF8577', textColor: 'text-[#1F0A07]', isSafe: true, points: 50 },
+  { id: 1, text: '5 نقاط', type: 'points', icon: 'fa-coins', bgColor: '#FF8577', textColor: 'text-[#1F0A07]', isSafe: true, points: 5 },
   { id: 2, text: '5K مشاهدة', type: 'views', icon: 'fa-eye', bgColor: '#1A1A24', textColor: 'text-white', isSafe: false, points: 0 },
-  { id: 3, text: '250 نقطة', type: 'points', icon: 'fa-coins', bgColor: '#ec4899', textColor: 'text-white', isSafe: true, points: 250 },
+  { id: 3, text: '10 نقاط', type: 'points', icon: 'fa-coins', bgColor: '#ec4899', textColor: 'text-white', isSafe: true, points: 10 },
   { id: 4, text: '1K لايك', type: 'likes', icon: 'fa-heart', bgColor: '#0B0F19', textColor: 'text-white', isSafe: false, points: 0 },
-  { id: 5, text: '100 نقطة', type: 'points', icon: 'fa-coins', bgColor: '#FF8577', textColor: 'text-[#1F0A07]', isSafe: true, points: 100 },
+  { id: 5, text: '15 نقطة', type: 'points', icon: 'fa-coins', bgColor: '#FF8577', textColor: 'text-[#1F0A07]', isSafe: true, points: 15 },
   { id: 6, text: '25K مشاهدة', type: 'views', icon: 'fa-fire', bgColor: '#1A1A24', textColor: 'text-white', isSafe: false, points: 0 },
-  { id: 7, text: '500 نقطة', type: 'points', icon: 'fa-gift', bgColor: '#8b5cf6', textColor: 'text-white', isSafe: true, points: 500 },
+  { id: 7, text: '20 نقطة', type: 'points', icon: 'fa-gift', bgColor: '#8b5cf6', textColor: 'text-white', isSafe: true, points: 20 },
 ];
+
 
 export default function GiftsPage() {
   const [rotation, setRotation] = useState(0);
@@ -104,17 +105,17 @@ export default function GiftsPage() {
     // Filter only SAFE segments (Points)
     const safeSegments = segments.filter(s => s.isSafe);
     
-    // Rigging Logic: Heavily weigh towards 50/100 points, extremely rare for 250/500
+    // Rigging Logic: Always win points (5, 10, 15, or 20)
     const rand = Math.random();
     let targetSegment;
-    if (rand < 0.6) {
-      targetSegment = safeSegments.find(s => s.points === 50)!; // 60% chance
+    if (rand < 0.4) {
+      targetSegment = safeSegments.find(s => s.points === 5)!; // 40% chance
+    } else if (rand < 0.7) {
+      targetSegment = safeSegments.find(s => s.points === 10)!; // 30% chance
     } else if (rand < 0.9) {
-      targetSegment = safeSegments.find(s => s.points === 100)!; // 30% chance
-    } else if (rand < 0.98) {
-      targetSegment = safeSegments.find(s => s.points === 250)!; // 8% chance
+      targetSegment = safeSegments.find(s => s.points === 15)!; // 20% chance
     } else {
-      targetSegment = safeSegments.find(s => s.points === 500)!; // 2% chance
+      targetSegment = safeSegments.find(s => s.points === 20)!; // 10% chance
     }
 
     // Mathematical Spin Calculation
@@ -155,9 +156,8 @@ export default function GiftsPage() {
       } finally {
         setIsClaiming(false);
         // Update persistent 24hr timer
-        // [DEV MODE BYPASS]: Disabled lock for testing
-        // localStorage.setItem('last_spin_time', Date.now().toString());
-        // setTimeToNextSpin(24 * 60 * 60);
+        localStorage.setItem('last_spin_time', Date.now().toString());
+        setTimeToNextSpin(24 * 60 * 60);
       }
     }, 7000);
   };
