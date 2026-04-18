@@ -41,13 +41,11 @@ export default function GiftsPage() {
   useEffect(() => {
     if (!isMounted) return;
 
-    // [DEV MODE BYPASS]: Force unlock for unlimited testing
     localStorage.removeItem('last_spin_time');
     setTimeToNextSpin(null);
 
     const lastSpin = localStorage.getItem('last_spin_time');
     if (lastSpin) {
-
       const remainingMs = parseInt(lastSpin, 10) + (1 * 60 * 60 * 1000) - Date.now();
       if (remainingMs > 0) {
         setTimeToNextSpin(Math.ceil(remainingMs / 1000));
@@ -136,11 +134,7 @@ export default function GiftsPage() {
         console.error(err);
       } finally {
         setIsClaiming(false);
-        // [DEV MODE BYPASS]: Disabled lock for testing
-        // localStorage.setItem('last_spin_time', Date.now().toString());
-        // setTimeToNextSpin(1 * 60 * 60);
       }
-
     }, 7000);
   };
 
@@ -167,13 +161,11 @@ export default function GiftsPage() {
       <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mx-auto mb-16 group">
         <div className="absolute inset-0 bg-pink-500/10 blur-[100px] rounded-full group-hover:bg-pink-500/20 transition-all duration-700"></div>
         <div className="absolute -inset-4 border border-white/5 rounded-full animate-pulse-slow"></div>
-
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 filter drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">
            <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-pink-500 relative">
               <div className="absolute -top-[42px] -left-[18px] w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[36px] border-t-white"></div>
            </div>
         </div>
-
         <div 
           className="w-full h-full rounded-full border-[12px] border-[#1C1C1E] shadow-[0_0_60px_rgba(0,0,0,0.5)] relative overflow-hidden"
           style={{ 
@@ -183,7 +175,6 @@ export default function GiftsPage() {
           }}
         >
           <div className="absolute inset-0 rounded-full shadow-[inset_0_0_100px_rgba(0,0,0,0.5)] pointer-events-none"></div>
-
           {segments.map((seg, i) => (
             <div
               key={seg.id}
@@ -200,7 +191,6 @@ export default function GiftsPage() {
             </div>
           ))}
         </div>
-
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#1C1C1E] rounded-full border-4 border-white/10 shadow-2xl z-20 flex items-center justify-center">
             <div className="w-4 h-4 bg-pink-500 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.8)] animate-pulse"></div>
         </div>
@@ -294,7 +284,6 @@ export default function GiftsPage() {
                </button>
              )}
           </div>
-
           <div className="mt-8 text-center max-w-md animate-fade-in px-4">
              <h2 className="text-2xl font-black mb-2 text-white">جاري تجهيز العجلة...</h2>
              <p className="text-slate-400 text-sm leading-relaxed mb-4">
@@ -308,19 +297,15 @@ export default function GiftsPage() {
                 </p>
              </div>
           </div>
-
           <div className="bg-white/5 border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
-             {/* Trying the Direct URL method first for the new link */}
              <iframe 
-                src="https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70" 
-                width="100%" 
-                height="400" 
+                src="/ad-smart.html" 
+                width="300" 
+                height="250" 
                 frameBorder="0" 
-                className="animate-fade-in bg-white"
+                className="animate-fade-in bg-transparent"
                 loading="lazy"
              ></iframe>
-
-             {/* Fallback Smart Link Text Link (High Revenue) */}
              <div className="mt-4 pb-4 text-center">
                 <a 
                    href="https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70" 
@@ -328,17 +313,12 @@ export default function GiftsPage() {
                    rel="noopener noreferrer"
                    className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse block mb-1"
                 >
-                   إضغط هنا للمتابعة (Click here to continue)
+                   إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
                 </a>
-                <p className="text-[10px] text-slate-500">سوف يفتح الإعلان في نافذة جديدة</p>
              </div>
           </div>
-
-
-
         </div>
       )}
-
     </div>
   );
 }
