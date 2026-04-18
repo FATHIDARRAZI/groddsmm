@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 // Segment Array (Rigged Setup)
-// Safe: Points (Coins) -> Allowed to win
-// Unsafe: Followers/Views -> Impossible to win
 const segments = [
   { id: 0, text: '10K حسابات', type: 'followers', icon: 'fa-users', bgColor: '#0B0F19', textColor: 'text-white', isSafe: false, points: 0 },
   { id: 1, text: '5 نقاط', type: 'points', icon: 'fa-coins', bgColor: '#FF8577', textColor: 'text-[#1F0A07]', isSafe: true, points: 5 },
@@ -19,7 +17,6 @@ const segments = [
   { id: 7, text: '20 نقطة', type: 'points', icon: 'fa-gift', bgColor: '#8b5cf6', textColor: 'text-white', isSafe: true, points: 20 },
 ];
 
-
 export default function GiftsPage() {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -29,7 +26,6 @@ export default function GiftsPage() {
   const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   
-  // Anti-Cheat & Ad Wall States
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isWatchingAd, setIsWatchingAd] = useState<boolean>(false);
   const [adTimer, setAdTimer] = useState<number>(30);
@@ -40,10 +36,8 @@ export default function GiftsPage() {
     setIsMounted(true);
   }, []);
 
-  // Generate CSS conic-gradient string
   const conicCss = segments.map((s, i) => `${s.bgColor} ${i * 45}deg ${i * 45 + 45}deg`).join(', ');
 
-  // Check 24hr lockout on mount
   useEffect(() => {
     if (!isMounted) return;
 
@@ -58,8 +52,6 @@ export default function GiftsPage() {
     }
   }, [isMounted]);
 
-
-  // Countdown timer logic
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (timeToNextSpin !== null && timeToNextSpin > 0) {
@@ -73,7 +65,6 @@ export default function GiftsPage() {
     return () => clearInterval(timer);
   }, [timeToNextSpin]);
 
-  // Ad-wall Timer Logic
   useEffect(() => {
     let adInterval: NodeJS.Timeout;
     if (isWatchingAd && adTimer > 0) {
@@ -91,49 +82,35 @@ export default function GiftsPage() {
       return;
     }
     
-    // Lock the spin button and start the Ad Wall
     setIsSpinning(true);
     setAdTimer(30);
     setIsWatchingAd(true);
   };
 
   const executeRealSpin = () => {
-    // Dismiss Ad Wall
     setIsWatchingAd(false);
-    
     setWonPrize(null);
 
-    // Filter only SAFE segments (Points)
     const safeSegments = segments.filter(s => s.isSafe);
-    
-    // Rigging Logic: Always win points (5, 10, 15, or 20)
     const rand = Math.random();
     let targetSegment;
     if (rand < 0.4) {
-      targetSegment = safeSegments.find(s => s.points === 5)!; // 40% chance
+      targetSegment = safeSegments.find(s => s.points === 5)!;
     } else if (rand < 0.7) {
-      targetSegment = safeSegments.find(s => s.points === 10)!; // 30% chance
+      targetSegment = safeSegments.find(s => s.points === 10)!;
     } else if (rand < 0.9) {
-      targetSegment = safeSegments.find(s => s.points === 15)!; // 20% chance
+      targetSegment = safeSegments.find(s => s.points === 15)!;
     } else {
-      targetSegment = safeSegments.find(s => s.points === 20)!; // 10% chance
+      targetSegment = safeSegments.find(s => s.points === 20)!;
     }
 
-    // Mathematical Spin Calculation
-    const fullSpins = 6 * 360; // 6 full rotations for excitement
-    
-    // Calculate precise landing zone
-    // If slice 0 is top, target is (360 - (id * 45))
-    // We add a random +- 15 deg offset so it doesn't land perfectly dead-center every time like a robot
+    const fullSpins = 6 * 360;
     const randomOffset = Math.floor(Math.random() * 30) - 15; 
-    
     const sliceTargetAngle = (360 - (targetSegment.id * 45)) % 360;
     const finalRotationAmount = fullSpins + sliceTargetAngle + randomOffset;
 
-    // Apply the rotation
     setRotation(prev => prev + finalRotationAmount);
 
-    // CSS transition runs for 7 seconds. Wait exactly 7s before showing result.
     setTimeout(async () => {
       setWonPrize(targetSegment);
       setIsSpinning(false);
@@ -147,16 +124,13 @@ export default function GiftsPage() {
         });
         
         if (res.ok) {
-           router.refresh(); // Tells Next.js to re-fetch Server Layouts (Update Top Header 0 Points)
-           window.dispatchEvent(new Event('pointsUpdated')); // Force client-side layout listeners to re-fetch
-        } else {
-           console.error('Failed to securely deposit points');
+           router.refresh(); 
+           window.dispatchEvent(new Event('pointsUpdated')); 
         }
       } catch (err) {
         console.error(err);
       } finally {
         setIsClaiming(false);
-        // Update persistent 1hr timer
         localStorage.setItem('last_spin_time', Date.now().toString());
         setTimeToNextSpin(1 * 60 * 60);
       }
@@ -181,24 +155,18 @@ export default function GiftsPage() {
         <p className="text-slate-500 font-bold text-sm md:text-base max-w-lg mx-auto">
           جرب حظك الآن واربح رصيد نقاط مجاني لدعم حسابك! المحاولة تتجدد كل ساعة واحدة.
         </p>
-
       </div>
 
-      {/* The Wheel Container */}
       <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mx-auto mb-16 group">
-        
-        {/* Glow Effects */}
         <div className="absolute inset-0 bg-pink-500/10 blur-[100px] rounded-full group-hover:bg-pink-500/20 transition-all duration-700"></div>
         <div className="absolute -inset-4 border border-white/5 rounded-full animate-pulse-slow"></div>
 
-        {/* The Static Pointer (Top Arrow) */}
         <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 filter drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">
            <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-pink-500 relative">
               <div className="absolute -top-[42px] -left-[18px] w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[36px] border-t-white"></div>
            </div>
         </div>
 
-        {/* The Rotating Wheel */}
         <div 
           className="w-full h-full rounded-full border-[12px] border-[#1C1C1E] shadow-[0_0_60px_rgba(0,0,0,0.5)] relative overflow-hidden"
           style={{ 
@@ -207,37 +175,30 @@ export default function GiftsPage() {
             transition: 'transform 7s cubic-bezier(0.1, 0, 0.1, 1)'
           }}
         >
-          {/* Wheel Inner Shadow Overlay */}
           <div className="absolute inset-0 rounded-full shadow-[inset_0_0_100px_rgba(0,0,0,0.5)] pointer-events-none"></div>
 
-          {/* Slices Elements Wrapper */}
-          {segments.map((seg, i) => {
-            return (
-              <div
-                key={seg.id}
-                className="absolute top-0 left-0 w-full h-full flex justify-center pointer-events-none"
-                style={{ transform: `rotate(${i * 45}deg)` }}
-              >
-                <div className={`pt-8 md:pt-14 flex flex-col items-center gap-2 ${seg.textColor}`}>
-                  <i className={`fas ${seg.icon} text-xl md:text-4xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]`}></i>
-                  <span className="text-[12px] md:text-lg font-black tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] text-center leading-none">
-                    {seg.text.split(' ')[0]}<br/>
-                    <span className="text-[9px] md:text-[12px] opacity-90 uppercase tracking-widest">{seg.text.split(' ')[1]}</span>
-                  </span>
-                </div>
+          {segments.map((seg, i) => (
+            <div
+              key={seg.id}
+              className="absolute top-0 left-0 w-full h-full flex justify-center pointer-events-none"
+              style={{ transform: `rotate(${i * 45}deg)` }}
+            >
+              <div className={`pt-8 md:pt-14 flex flex-col items-center gap-2 ${seg.textColor}`}>
+                <i className={`fas ${seg.icon} text-xl md:text-4xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]`}></i>
+                <span className="text-[12px] md:text-lg font-black tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] text-center leading-none">
+                  {seg.text.split(' ')[0]}<br/>
+                  <span className="text-[9px] md:text-[12px] opacity-90 uppercase tracking-widest">{seg.text.split(' ')[1]}</span>
+                </span>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
 
-        {/* Center Pin */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#1C1C1E] rounded-full border-4 border-white/10 shadow-2xl z-20 flex items-center justify-center">
             <div className="w-4 h-4 bg-pink-500 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.8)] animate-pulse"></div>
         </div>
       </div>
 
-
-      {/* Button / Layout Logic */}
       {timeToNextSpin === null ? (
         <div className="flex flex-col items-center gap-6 mt-4 w-full">
           <div className="bg-[#121214] p-2 rounded-xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto overflow-hidden">
@@ -274,17 +235,13 @@ export default function GiftsPage() {
         </div>
       )}
 
-      {/* Win Modal Overlay */}
       {wonPrize && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-           {/* Confetti Backdrop */}
            <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-xl animate-fade-in" onClick={() => !isClaiming && setWonPrize(null)}></div>
-           
            <div className="bg-gradient-to-b from-[#1C1C1E] to-[#121214] border border-[#FF8577]/30 p-10 rounded-3xl shadow-[0_0_100px_rgba(255,133,119,0.2)] max-w-md w-full relative z-10 animate-slide-up transform transition-all text-center">
              <div className="mx-auto w-24 h-24 bg-gradient-to-tr from-[#FF8577] to-pink-500 rounded-full flex items-center justify-center mb-6 shadow-inner border-[6px] border-black/50">
                 <i className={`fas ${wonPrize.icon} text-4xl text-white`}></i>
              </div>
-             
              {isClaiming ? (
                <>
                  <h2 className="text-4xl font-black text-white mb-2 animate-pulse">جاري الإيداع...</h2>
@@ -310,16 +267,12 @@ export default function GiftsPage() {
         </div>
       )}
 
-      {/* Ad-Wall Interstitial Overlay (30s) */}
       {isWatchingAd && (
         <div className="fixed inset-0 z-[9999999] flex flex-col items-center justify-center bg-[#0B0F19] text-white p-4">
-          
           <div className="absolute top-8 w-full px-8 flex justify-between items-center max-w-4xl">
              <div className="bg-[#1C1C1E] px-4 py-2 rounded-full border border-white/10 text-[#FF8577] font-bold text-sm tracking-widest flex items-center gap-2 shadow-inner">
                <i className="fas fa-lock opacity-50"></i> إعلان ممول
              </div>
-
-             {/* Un-skippable Timer or Close Button */}
              {adTimer > 0 ? (
                <div className="w-12 h-12 rounded-full border-2 border-slate-700 flex items-center justify-center font-mono text-xl font-bold bg-[#121214] text-slate-400">
                  {adTimer}
@@ -335,24 +288,30 @@ export default function GiftsPage() {
              )}
           </div>
 
-          <div className="mt-8 text-center max-w-md animate-fade-in">
-             <h2 className="text-2xl font-black mb-2">جاري تجهيز العجلة...</h2>
+          <div className="mt-8 text-center max-w-md animate-fade-in px-4">
+             <h2 className="text-2xl font-black mb-2 text-white">جاري تجهيز العجلة...</h2>
              <p className="text-slate-400 text-sm leading-relaxed mb-4">
                {adTimer > 0 
-                 ? 'يرجى الانتظار حتى انتهاء الإعلان لضمان تسجيل حسابك بالخوادم قبل السحب لتجنب ضياع النقاط.' 
+                 ? 'يرجى الانتظار حتى انتهاء الوقت لضمان تسجيل حسابك بالخوادم قبل السحب لتجنب ضياع النقاط.' 
                  : 'تم تسجيل الاستجابة بنجاح! اضغط على علامة (X) بالأعلى لبدء السحب.'}
              </p>
+             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-6">
+                <p className="text-red-400 text-[10px] md:text-xs font-bold dir-rtl">
+                  <i className="fas fa-exclamation-triangle mr-1"></i> تنبيه: هذا مجرد إعلان خارجي، نحن لا نشجع على المراهنة أو القمار. يرجى الحذر.
+                </p>
+             </div>
           </div>
 
-          {/* Adsterra Iframe Rotating Frame */}
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-4 w-full max-w-[340px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[290px]">
-             {adTimer > 15 ? (
-               <iframe key="ad-1" src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="animate-fade-in bg-transparent rounded-lg"></iframe>
-             ) : (
-               <iframe key="ad-2" src="/ad-300.html?ref=v2" width="300" height="250" frameBorder="0" scrolling="no" className="animate-fade-in bg-transparent rounded-lg"></iframe>
-             )}
+          <div className="bg-white border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
+             <iframe 
+                src="https://www.highrevenuenetwork.com/smart-link-placeholder" 
+                width="100%" 
+                height="400" 
+                frameBorder="0" 
+                className="animate-fade-in bg-white"
+                loading="lazy"
+             ></iframe>
           </div>
-
         </div>
       )}
 
