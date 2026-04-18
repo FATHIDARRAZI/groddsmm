@@ -6,13 +6,14 @@ export async function POST(req: Request) {
     const { points } = await req.json();
 
     // 1. Anti-Tampering Mechanism (Block Hacker API Injections)
-    const validPointValues = [50, 100, 250, 500];
+    const validPointValues = [5, 10, 15, 20];
     if (!validPointValues.includes(points)) {
       return NextResponse.json(
         { error: 'Invalid point payout requested. Tampering detected.' },
         { status: 403 } // Forbidden
       );
     }
+
 
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
