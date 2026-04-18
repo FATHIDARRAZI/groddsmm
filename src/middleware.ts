@@ -103,22 +103,16 @@ export async function middleware(request: NextRequest) {
 
   // 7. Core Protection Logic
   const isAdminPath = path.startsWith('/admin') || path.startsWith('/api/admin');
-  const isProtectedPath = path.startsWith('/dashboard') || (path.startsWith('/api/') && !path.startsWith('/api/auth'));
 
-  // Ban Guard
-  if (user && profile?.is_banned) {
-    if (path !== '/banned') return redirectWithCookies('/banned');
-  }
-
-  // Unauthorised Access Guard
-  if ((isAdminPath || isProtectedPath) && !user) {
+  // Admin Verification Guard (Only for /admin)
+  if (isAdminPath && !user) {
     return redirectWithCookies('/auth/login');
   }
 
-  // Admin Verification Guard
   if (isAdminPath && user) {
     if (!profile?.is_admin) return redirectWithCookies('/dashboard');
   }
+
 
   return response;
 }

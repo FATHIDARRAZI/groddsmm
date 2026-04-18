@@ -61,6 +61,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/history', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-green-500', isSeparator: true },
   ];
 
+
   const mobileNavLinks = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
@@ -80,7 +81,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
              <img src="/user-avatar-male-5.svg" alt="User Avatar" className="w-full h-full object-cover" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1">مرحباً، {isClient ? userName : '...'}</h2>
-          <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
+          <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-pink-500 text-xs font-bold border border-pink-500/20 flex items-center gap-2 hover:bg-pink-500/10 transition-colors cursor-pointer">
             <i className="fas fa-coins"></i> الرصيد: {isClient ? points.toLocaleString() : '0'} نقطة
           </Link>
         </div>
@@ -116,11 +117,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {/* Sidebar Sticky Ad Block */}
         <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50">
           <div className="bg-black/50 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center p-0 h-[250px] relative">
-            <p className="absolute text-[10px] text-slate-600 font-bold top-1">ADVERTISEMENT</p>
-            <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="scale-[0.85] origin-center z-10"></iframe>
+            <p className="absolute text-[10px] text-slate-600 font-bold top-1 tracking-widest">ADVERTISEMENT</p>
+            <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="scale-[0.85] origin-center z-10 bg-transparent" loading="lazy"></iframe>
           </div>
         </div>
+
       </aside>
+
+
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative w-full overflow-hidden bg-gradient-to-tl from-[#0B0F19] to-[#141416]">

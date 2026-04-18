@@ -92,7 +92,7 @@ export default function Navbar() {
 
           {/* Small Mobile Ad Placeholder */}
           <div className="w-full flex justify-center mt-2 p-2 bg-[#121827] border border-white/5 rounded-xl shadow-inner">
-             <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" className="mx-auto" />
+             <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" className="mx-auto" loading="lazy" />
           </div>
         </div>
       )}

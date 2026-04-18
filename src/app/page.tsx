@@ -166,10 +166,10 @@ export default function Home() {
     <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
       {/* Top Banner Ad */}
       <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner hidden md:flex min-h-[106px]">
-        <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
+        <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" loading="lazy" />
       </div>
       <div className="w-full flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner flex md:hidden min-h-[266px]">
-        <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
+        <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" loading="lazy" />
       </div>
 
       <div className="text-center mb-10 w-full z-10 relative">
@@ -291,11 +291,11 @@ export default function Home() {
             {/* Adsterra Display Block */}
             <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(255,133,119,0.1)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] md:min-h-[90px] border border-white/5 relative">
               <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
-                <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" />
+                <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="mx-auto" loading="lazy" />
               </div>
               <div className="flex md:hidden w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
                 <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
-                  <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" />
+                  <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="mx-auto" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -348,7 +348,7 @@ export default function Home() {
       {/* Adsterra 728x90 Banner */}
       <div className="w-full max-w-4xl mt-8 flex flex-col items-center">
         <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm flex items-center justify-center min-h-[90px] w-full">
-          <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" />
+          <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" loading="lazy" />
         </div>
       </div>
 
@@ -497,10 +497,10 @@ export default function Home() {
         </button>
         <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
           <div className="hidden md:flex w-full items-center justify-center">
-            <iframe src="/ad-468.html" width="468" height="60" frameBorder="0" scrolling="no" />
+            <iframe src="/ad-468.html" width="468" height="60" frameBorder="0" scrolling="no" loading="lazy" />
           </div>
           <div className="flex md:hidden w-full items-center justify-center">
-            <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" />
+            <iframe src="/ad-320.html" width="320" height="50" frameBorder="0" scrolling="no" loading="lazy" />
           </div>
         </div>
       </div>
@@ -520,7 +520,7 @@ export default function Home() {
             <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
             
             <div className="w-full h-[250px] bg-white/5 rounded-xl overflow-hidden flex items-center justify-center relative shadow-inner">
-              <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" />
+              <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" loading="lazy" />
             </div>
           </div>
         </div>

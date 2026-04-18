@@ -22,16 +22,17 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className="dark">
       <head>
-        <link
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          rel="stylesheet"
-        />
-        <script
-          async
+        <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576343802973571"
+          strategy="afterInteractive"
           crossOrigin="anonymous"
-        ></script>
+        />
+        <Script
+          src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
+          strategy="afterInteractive"
+        />
       </head>
+
       <body className="text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo">
         {/* Cinematic Background Layer */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
@@ -44,12 +45,14 @@ export default function RootLayout({
         {/* Navigation */}
         <Navbar />
 
-        {/* Global AdBlock Guard */}
-        <AdBlockDetector />
+        <EnvGuard>
+          {/* Global AdBlock Guard */}
+          <AdBlockDetector />
 
-        <div className="flex-grow flex flex-col pt-4">
-          {children}
-        </div>
+          <div className="flex-grow flex flex-col pt-4">
+            {children}
+          </div>
+        </EnvGuard>
 
 
         <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
