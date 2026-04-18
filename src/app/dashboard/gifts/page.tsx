@@ -41,8 +41,13 @@ export default function GiftsPage() {
   useEffect(() => {
     if (!isMounted) return;
 
+    // [DEV MODE BYPASS]: Force unlock for unlimited testing
+    localStorage.removeItem('last_spin_time');
+    setTimeToNextSpin(null);
+
     const lastSpin = localStorage.getItem('last_spin_time');
     if (lastSpin) {
+
       const remainingMs = parseInt(lastSpin, 10) + (1 * 60 * 60 * 1000) - Date.now();
       if (remainingMs > 0) {
         setTimeToNextSpin(Math.ceil(remainingMs / 1000));
@@ -131,9 +136,11 @@ export default function GiftsPage() {
         console.error(err);
       } finally {
         setIsClaiming(false);
-        localStorage.setItem('last_spin_time', Date.now().toString());
-        setTimeToNextSpin(1 * 60 * 60);
+        // [DEV MODE BYPASS]: Disabled lock for testing
+        // localStorage.setItem('last_spin_time', Date.now().toString());
+        // setTimeToNextSpin(1 * 60 * 60);
       }
+
     }, 7000);
   };
 
