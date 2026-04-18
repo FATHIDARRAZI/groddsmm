@@ -38,7 +38,7 @@ export default function EnvGuard({ children }: { children: React.ReactNode }) {
                <h3 className="text-white font-black text-sm uppercase tracking-wider font-outfit">How to fix this:</h3>
                <ol className="text-xs space-y-3 list-decimal list-inside font-bold text-slate-400">
                   <li>Go to your <span className="text-white">Hosting Dashboard</span> (Vercel, GitHub, etc.)</li>
-                  <li>Go to <span className="text-white">Settings</span> -> <span className="text-white">Environment Variables</span></li>
+                  <li>Go to <span className="text-white">Settings</span> {"->"} <span className="text-white">Environment Variables</span></li>
                   <li>Apply the keys from your <span className="text-white">.env.local</span> file</li>
                   <li>Re-deploy your website</li>
                </ol>
