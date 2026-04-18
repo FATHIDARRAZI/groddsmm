@@ -49,7 +49,7 @@ export default function GiftsPage() {
 
     const lastSpin = localStorage.getItem('last_spin_time');
     if (lastSpin) {
-      const remainingMs = parseInt(lastSpin, 10) + (24 * 60 * 60 * 1000) - Date.now();
+      const remainingMs = parseInt(lastSpin, 10) + (1 * 60 * 60 * 1000) - Date.now();
       if (remainingMs > 0) {
         setTimeToNextSpin(Math.ceil(remainingMs / 1000));
       } else {
@@ -155,9 +155,9 @@ export default function GiftsPage() {
         console.error(err);
       } finally {
         setIsClaiming(false);
-        // Update persistent 24hr timer
+        // Update persistent 1hr timer
         localStorage.setItem('last_spin_time', Date.now().toString());
-        setTimeToNextSpin(24 * 60 * 60);
+        setTimeToNextSpin(1 * 60 * 60);
       }
     }, 7000);
   };
@@ -178,8 +178,9 @@ export default function GiftsPage() {
           عجلة الحظ <span className="text-pink-500">اليومية</span>
         </h1>
         <p className="text-slate-500 font-bold text-sm md:text-base max-w-lg mx-auto">
-          جرب حظك الآن واربح رصيد نقاط مجاني لدعم حسابك! المحاولة تتجدد كل 24 ساعة.
+          جرب حظك الآن واربح رصيد نقاط مجاني لدعم حسابك! المحاولة تتجدد كل ساعة واحدة.
         </p>
+
       </div>
 
       {/* The Wheel Container */}
