@@ -25,16 +25,18 @@ export default function GiftsPage() {
   const [wonPrize, setWonPrize] = useState<{text: string, points: number, icon: string} | null>(null);
   const [timeToNextSpin, setTimeToNextSpin] = useState<number | null>(null);
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
+  const [isMounted, setIsMounted] = useState(false);
   const router = useRouter();
   
   // Anti-Cheat & Ad Wall States
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isWatchingAd, setIsWatchingAd] = useState<boolean>(false);
   const [adTimer, setAdTimer] = useState<number>(30);
-  const [activeSiteKey, setActiveSiteKey] = useState<string>('');
+
+  const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
   useEffect(() => {
-    setActiveSiteKey(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY_V2 || '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI');
+    setIsMounted(true);
   }, []);
 
   // Generate CSS conic-gradient string
@@ -42,9 +44,7 @@ export default function GiftsPage() {
 
   // Check 24hr lockout on mount
   useEffect(() => {
-    // [DEV MODE BYPASS]: Force unlock for unlimited testing
-    localStorage.removeItem('last_spin_time');
-    setTimeToNextSpin(null);
+    if (!isMounted) return;
 
     const lastSpin = localStorage.getItem('last_spin_time');
     if (lastSpin) {
@@ -168,35 +168,47 @@ export default function GiftsPage() {
     return { h: h < 10 ? `0${h}` : h, m: m < 10 ? `0${m}` : m };
   };
 
+  if (!isMounted) return null;
+
   return (
-    <div className="w-full animate-fade-in max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center pt-8">
+    <div className="w-full animate-fade-in max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center pt-8 relative z-10">
       
-      <h1 className="text-3xl md:text-5xl font-black text-white mb-2">عجلة الحظ اليومية</h1>
-      <p className="text-slate-400 text-sm md:text-base max-w-lg leading-relaxed mb-12">
-        قم بتدوير العجلة لفرصة ربح الآلاف من المتابعين أو المشاهدات المجانية لدعم حسابك! المحاولة تتجدد كل 24 ساعة.
-      </p>
+      <div className="space-y-2 mb-12">
+        <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter drop-shadow-2xl">
+          عجلة الحظ <span className="text-pink-500">اليومية</span>
+        </h1>
+        <p className="text-slate-500 font-bold text-sm md:text-base max-w-lg mx-auto">
+          جرب حظك الآن واربح رصيد نقاط مجاني لدعم حسابك! المحاولة تتجدد كل 24 ساعة.
+        </p>
+      </div>
 
       {/* The Wheel Container */}
-      <div className="relative w-72 h-72 md:w-96 md:h-96 mx-auto mb-16">
+      <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] mx-auto mb-16 group">
         
-        {/* Shadow Drop Under Wheel */}
-        <div className="absolute inset-0 bg-[#FF8577]/10 blur-[80px] rounded-full"></div>
+        {/* Glow Effects */}
+        <div className="absolute inset-0 bg-pink-500/10 blur-[100px] rounded-full group-hover:bg-pink-500/20 transition-all duration-700"></div>
+        <div className="absolute -inset-4 border border-white/5 rounded-full animate-pulse-slow"></div>
 
         {/* The Static Pointer (Top Arrow) */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20 drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-           <div className="w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[30px] border-t-white"></div>
+        <div className="absolute -top-6 left-1/2 -translate-x-1/2 z-30 filter drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]">
+           <div className="w-0 h-0 border-l-[20px] border-l-transparent border-r-[20px] border-r-transparent border-t-[40px] border-t-pink-500 relative">
+              <div className="absolute -top-[42px] -left-[18px] w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[36px] border-t-white"></div>
+           </div>
         </div>
 
         {/* The Rotating Wheel */}
         <div 
-          className="w-full h-full rounded-full border-4 border-white/10 shadow-2xl relative overflow-hidden"
+          className="w-full h-full rounded-full border-[12px] border-[#1C1C1E] shadow-[0_0_60px_rgba(0,0,0,0.5)] relative overflow-hidden"
           style={{ 
             background: `conic-gradient(from -22.5deg, ${conicCss})`,
             transform: `rotate(${rotation}deg)`,
-            transition: 'transform 7s cubic-bezier(0.1, 0, 0.1, 1)' // Fast start, extremely slow realistic stop
+            transition: 'transform 7s cubic-bezier(0.1, 0, 0.1, 1)'
           }}
         >
-          {/* Slices Elements Wrapper (Static over the background, rotates with parent) */}
+          {/* Wheel Inner Shadow Overlay */}
+          <div className="absolute inset-0 rounded-full shadow-[inset_0_0_100px_rgba(0,0,0,0.5)] pointer-events-none"></div>
+
+          {/* Slices Elements Wrapper */}
           {segments.map((seg, i) => {
             return (
               <div
@@ -204,12 +216,11 @@ export default function GiftsPage() {
                 className="absolute top-0 left-0 w-full h-full flex justify-center pointer-events-none"
                 style={{ transform: `rotate(${i * 45}deg)` }}
               >
-                <div className={`pt-8 md:pt-12 flex flex-col items-center gap-1.5 ${seg.textColor}`}>
-                  <i className={`fas ${seg.icon} text-xl md:text-3xl drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]`}></i>
-                  {/* Rotate text horizontally relative to slice angle */}
-                  <span className="text-[11px] md:text-sm font-black tracking-widest px-2 drop-shadow-[0_4px_4px_rgba(0,0,0,0.3)]" style={{ transform: 'rotate(0)' }}>
+                <div className={`pt-8 md:pt-14 flex flex-col items-center gap-2 ${seg.textColor}`}>
+                  <i className={`fas ${seg.icon} text-xl md:text-4xl drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)]`}></i>
+                  <span className="text-[12px] md:text-lg font-black tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] text-center leading-none">
                     {seg.text.split(' ')[0]}<br/>
-                    <span className="text-[9px] md:text-[11px] opacity-80">{seg.text.split(' ')[1]}</span>
+                    <span className="text-[9px] md:text-[12px] opacity-90 uppercase tracking-widest">{seg.text.split(' ')[1]}</span>
                   </span>
                 </div>
               </div>
@@ -217,11 +228,12 @@ export default function GiftsPage() {
           })}
         </div>
 
-        {/* Center Golden Pin */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 bg-gradient-to-br from-[#1C1C1E] to-black rounded-full border-4 border-white/20 shadow-xl z-10 flex items-center justify-center">
-            <div className="w-3 h-3 bg-[#FF8577] rounded-full animate-pulse"></div>
+        {/* Center Pin */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#1C1C1E] rounded-full border-4 border-white/10 shadow-2xl z-20 flex items-center justify-center">
+            <div className="w-4 h-4 bg-pink-500 rounded-full shadow-[0_0_15px_rgba(236,72,153,0.8)] animate-pulse"></div>
         </div>
       </div>
+
 
       {/* Button / Layout Logic */}
       {timeToNextSpin === null ? (
