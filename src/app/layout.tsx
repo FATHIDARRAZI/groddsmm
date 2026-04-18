@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
+import EnvGuard from '@/components/EnvGuard';
 
 export const metadata: Metadata = {
   title: 'Grodd Media | تسويق رقمي احترافي، ترويج، ووصول عضوي',
@@ -43,10 +44,14 @@ export default function RootLayout({
         {/* Navigation */}
         <Navbar />
 
-        {/* Global AdBlock Guard */}
-        <AdBlockDetector />
+        <EnvGuard>
+          {/* Global AdBlock Guard */}
+          <AdBlockDetector />
 
-        {children}
+          <div className="flex-grow flex flex-col pt-4">
+            {children}
+          </div>
+        </EnvGuard>
 
         <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
           <div className="max-w-7xl mx-auto px-6">
