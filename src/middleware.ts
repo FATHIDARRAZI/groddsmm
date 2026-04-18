@@ -2,12 +2,11 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export async function middleware(request: NextRequest) {
-  // 1. Guard against missing environment variables in production
+  // 1. Guard against missing environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error('Middleware: Missing Supabase Environment Variables');
     return NextResponse.next();
   }
 
@@ -17,7 +16,7 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // 2. Initialize Supabase Client
+  // 2. Initialize Supabase Client (Handles Refreshing Sessions)
   const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
     cookies: {
       get(name: string) {
@@ -40,11 +39,12 @@ export async function middleware(request: NextRequest) {
     },
   });
 
-  // 3. Refresh Session (This updates the cookie in the response)
+  // 3. Authenticate User (This refreshes the session in the 'response' instance)
   const { data: { user } } = await supabase.auth.getUser();
+
   const path = request.nextUrl.pathname;
 
-  // 4. Handle Referral Tracking
+  // 4. Referral Cookie Logic
   const ref = request.nextUrl.searchParams.get('ref');
   if (ref) {
     response.cookies.set('smm_ref', ref, {
@@ -56,7 +56,7 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  // 5. Whitelist Logic
+  // 5. Define Whitelist
   const isPublicPath = 
     path === '/banned' ||
     path === '/' || 
@@ -70,6 +70,7 @@ export async function middleware(request: NextRequest) {
     path.includes('.') || 
     path.startsWith('/favicon.ico');
 
+  // Allow static files and public pages freely
   if (isPublicPath) {
     return response;
   }
@@ -85,31 +86,38 @@ export async function middleware(request: NextRequest) {
         .maybeSingle();
       profile = p;
     } catch (e) {
-      console.warn('Middleware: Profile fetch failed, bypassing security check');
+      // Fallback: If DB query fails, we allow proceed but restrict restricted areas
+      console.warn('Middleware DB Error:', e);
     }
   }
 
-  // 7. Guards
+  // Helper to create redirect and keep cookies (IMPORTANT FIX)
+  const redirectWithCookies = (dest: string) => {
+    const redirectResponse = NextResponse.redirect(new URL(dest, request.url));
+    // Carry over original cookies set during the session refresh back to the redirect
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value, { ...cookie });
+    });
+    return redirectResponse;
+  };
+
+  // 7. Core Protection Logic
   const isAdminPath = path.startsWith('/admin') || path.startsWith('/api/admin');
   const isProtectedPath = path.startsWith('/dashboard') || (path.startsWith('/api/') && !path.startsWith('/api/auth'));
 
   // Ban Guard
   if (user && profile?.is_banned) {
-    if (path !== '/banned') {
-      return NextResponse.redirect(new URL('/banned', request.url));
-    }
+    if (path !== '/banned') return redirectWithCookies('/banned');
   }
 
-  // Auth Guard
+  // Unauthorised Access Guard
   if ((isAdminPath || isProtectedPath) && !user) {
-    return NextResponse.redirect(new URL('/auth/login', request.url));
+    return redirectWithCookies('/auth/login');
   }
 
-  // Admin Guard
+  // Admin Verification Guard
   if (isAdminPath && user) {
-    if (!profile?.is_admin) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+    if (!profile?.is_admin) return redirectWithCookies('/dashboard');
   }
 
   return response;
