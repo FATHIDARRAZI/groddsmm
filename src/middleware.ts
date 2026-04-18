@@ -60,6 +60,7 @@ export async function middleware(request: NextRequest) {
   const isPublicPath = 
     path === '/banned' ||
     path === '/' || 
+    path === '/dashboard' || // Main dashboard home is free/public
     path.startsWith('/auth') || 
     path.startsWith('/api/auth') ||
     path.startsWith('/terms') ||
@@ -104,14 +105,16 @@ export async function middleware(request: NextRequest) {
   // 7. Core Protection Logic
   const isAdminPath = path.startsWith('/admin') || path.startsWith('/api/admin');
 
-  // Admin Verification Guard (Only for /admin)
-  if (isAdminPath && !user) {
+  // General Auth Guard (For any non-public path like /dashboard/store, /dashboard/earn etc.)
+  if (!user) {
     return redirectWithCookies('/auth/login');
   }
 
+  // Admin Verification Guard (Only for /admin)
   if (isAdminPath && user) {
     if (!profile?.is_admin) return redirectWithCookies('/dashboard');
   }
+
 
 
   return response;

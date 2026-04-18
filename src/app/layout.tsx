@@ -23,15 +23,11 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className="dark">
       <head>
         <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576343802973571"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
-        <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
           strategy="afterInteractive"
         />
       </head>
+
 
       <body className="text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo">
         {/* Cinematic Background Layer */}

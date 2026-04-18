@@ -13,8 +13,8 @@ export default function AdBlockDetector() {
 
     // 1. DOM Element Bait
     const fakeAd = document.createElement('div');
-    fakeAd.className = 'ad-placement adsense ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
-    fakeAd.id = 'adsbygoogle';
+    fakeAd.className = 'ad-placement ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+    fakeAd.id = 'adsterra-bait';
     fakeAd.innerHTML = '&nbsp;';
     fakeAd.style.width = '1px';
     fakeAd.style.height = '1px';
@@ -51,7 +51,8 @@ export default function AdBlockDetector() {
     // 2. Network Request Bait (Highly reliable against uBlock Origin, AdGuard, Brave Shields)
     const checkNetworkAdBlocker = async () => {
       try {
-        await fetch('https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js', {
+        // Use an Adsterra domain for detection
+        await fetch('https://evacuateenclose.com/3e8c62702cd2303189cddf06f9f175cd/invoke.js', {
           method: 'HEAD',
           mode: 'no-cors',
           cache: 'no-store'
@@ -63,6 +64,7 @@ export default function AdBlockDetector() {
       }
     };
     checkNetworkAdBlocker();
+
 
     return () => {
       if (document.body.contains(fakeAd)) {
