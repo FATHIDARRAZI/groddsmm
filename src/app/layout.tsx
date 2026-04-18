@@ -44,14 +44,13 @@ export default function RootLayout({
         {/* Navigation */}
         <Navbar />
 
-        <EnvGuard>
-          {/* Global AdBlock Guard */}
-          <AdBlockDetector />
+        {/* Global AdBlock Guard */}
+        <AdBlockDetector />
 
-          <div className="flex-grow flex flex-col pt-4">
-            {children}
-          </div>
-        </EnvGuard>
+        <div className="flex-grow flex flex-col pt-4">
+          {children}
+        </div>
+
 
         <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
           <div className="max-w-7xl mx-auto px-6">

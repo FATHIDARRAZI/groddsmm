@@ -8,7 +8,13 @@ export default function EnvGuard({ children }: { children: React.ReactNode }) {
     const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     
+    // Diagnostic logging
+    console.log('[EnvGuard] Checking configuration...');
+    console.log('[EnvGuard] URL present:', !!url, url ? `(${url.substring(0, 10)}...)` : '');
+    console.log('[EnvGuard] Anon Key present:', !!anonKey, anonKey ? `(Length: ${anonKey.length})` : '');
+
     if (!url || !anonKey || url === '' || anonKey === '') {
+      console.warn('[EnvGuard] Configuration missing! Shielding application.');
       setIsConfigured(false);
     }
   }, []);
