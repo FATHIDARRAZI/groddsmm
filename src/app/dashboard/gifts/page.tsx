@@ -304,7 +304,7 @@ export default function GiftsPage() {
 
           <div className="bg-white border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
              <iframe 
-                src="https://www.highrevenuenetwork.com/smart-link-placeholder" 
+                src="https://evacuateenclose.com/zp6sv5d21e?key=8550d4deddea59bbc5e5765e239b7830" 
                 width="100%" 
                 height="400" 
                 frameBorder="0" 
@@ -312,6 +312,7 @@ export default function GiftsPage() {
                 loading="lazy"
              ></iframe>
           </div>
+
         </div>
       )}
 
