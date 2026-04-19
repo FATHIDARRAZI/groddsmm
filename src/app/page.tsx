@@ -363,10 +363,13 @@ export default function Home() {
       </div>
 
       {/* Adsterra 728x90 Banner */}
-      <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner">
+      <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden">
         <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-4">إعلان سبونسر</p>
-        <div className="flex w-full justify-center">
+        <div className="hidden md:flex w-full justify-center">
           <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+        </div>
+        <div className="flex md:hidden w-full justify-center min-h-[250px] overflow-hidden">
+          <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
         </div>
       </div>
 
@@ -389,15 +392,18 @@ export default function Home() {
       {/* About Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 px-4 md:px-0 text-right dir-rtl">
         <h2 className="text-3xl md:text-3xl font-extrabold text-white mb-6">
-          عن خدماتنا في Grodd Media
+          ما هي وكالة Grodd Media للتسويق الرقمي؟
         </h2>
         <div className="text-slate-300 space-y-4 leading-relaxed mb-12">
-          <p>
-            تقدم وكالتنا، <strong>Grodd Media</strong>، حلولاً احترافية لتعزيز التفاعل والنمو العضوي لحسابات إنستجرام للشركات وصناع المحتوى. تتيح لك منصتنا تجربة حملات التسويق الرقمي الترويجية مجاناً لرفع كفاءة الخوارزميات وزيادة الموثوقية لحسابك من خلال تسريع الانتشار (Viral Reach) والوصول للجمهور الصحيح.
+          <p className="text-lg font-medium text-white border-r-4 border-pink-500 pr-4">
+            وكالة Grodd Media هي منصة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية على منصات مثل إنستجرام، باستخدام أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال.
           </p>
           <p>
-            في <strong>Grodd Media</strong>، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا. كوكالة تقنية محترفة، أدواتنا التسويقية تتوافق تماماً مع سياسات الاستخدام العادل وتعمل على تضخيم وتحليل المحتوى العام فقط للوصول إلى الجمهور المستهدف، لضمان أعلى درجات الأمان لحسابات عملائنا.
+            تتيح لك منصتنا تجربة حملات التسويق الرقمي الترويجية مجاناً لرفع كفاءة الخوارزميات وزيادة الموثوقية لحسابك من خلال تسريع الانتشار (Viral Reach) والوصول للجمهور الصحيح. في <strong>Grodd Media</strong>، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا وتتوافق تماماً مع سياسات الاستخدام العادل.
           </p>
+          <div className="text-xs text-slate-500 mt-4 font-bold tracking-wider">
+            <i className="fas fa-clock ml-2"></i>آخر تحديث: أبريل 2026 | <i className="fas fa-user-shield ml-2 mr-4"></i>بواسطة: فريق خبراء Grodd Labs
+          </div>
         </div>
         
         <div className="flex justify-center mt-12 w-full">
@@ -412,8 +418,10 @@ export default function Home() {
       {/* How It Works Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 relative">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold text-white mb-4">آلية إطلاق الحملة</h2>
-          <p className="text-slate-400">ثلاث خطوات استراتيجية لتوجيه الزوار نحو محتواك.</p>
+          <h2 className="text-3xl font-extrabold text-white mb-4">كيف تعمل حملات الترويج العضوي في Grodd Media؟</h2>
+          <p className="text-slate-300 max-w-2xl mx-auto text-lg font-medium border-t border-b border-white/10 py-4 mt-4 shadow-inner bg-[#121827]/50 rounded-xl">
+            تعمل حملاتنا عبر ثلاث خطوات أساسية: تحديد مسار المحتوى العام، إعداد الخطة الإعلانية لزيادة التفاعل، ثم توجيه الزوار الحقيقيين لتحسين نتائج الخوارزميات بشكل آمن.
+          </p>
         </div>
 
         <div className="relative w-full max-w-5xl mx-auto px-4 md:px-0">
@@ -543,6 +551,35 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* FAQ Schema Markup for GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "ما هي وكالة Grodd Media للتسويق الرقمي؟",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "وكالة Grodd Media هي منصة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية على منصات مثل إنستجرام، باستخدام أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "كيف تعمل حملات الترويج العضوي في Grodd Media؟",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "تعمل حملاتنا عبر ثلاث خطوات أساسية: تحديد مسار المحتوى العام، إعداد الخطة الإعلانية لزيادة التفاعل، ثم توجيه الزوار الحقيقيين لتحسين نتائج الخوارزميات بشكل آمن."
+                }
+              }
+            ]
+          })
+        }}
+      />
     </main>
   );
 }

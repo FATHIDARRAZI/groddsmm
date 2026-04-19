@@ -26,6 +26,24 @@ export default function RootLayout({
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
           strategy="afterInteractive"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Grodd Media",
+              "url": "https://grodd-smm.com",
+              "logo": "https://grodd-smm.com/GRODD_LOGO.png",
+              "description": "وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الوصول العضوي للعلامات التجارية.",
+              "sameAs": [
+                "https://x.com/groddsmm",
+                "https://instagram.com/grodd_smm",
+                "https://t.me/grodd_labsBot"
+              ]
+            })
+          }}
+        />
       </head>
 
 
