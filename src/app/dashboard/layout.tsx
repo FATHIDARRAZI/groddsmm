@@ -257,8 +257,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </nav>
             
             {/* Mobile Sidebar Ad */}
-            <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50 flex justify-center pb-safe">
-               <SafeAdSlot src="/ad-300.html" width="300" height="250" className="scale-[0.8] origin-center rounded-xl" />
+            <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50 flex justify-center pb-safe overflow-hidden">
+               <div className="w-full max-w-[250px] overflow-hidden flex justify-center items-center">
+                 <SafeAdSlot src="/ad-300.html" width="300" height="250" className="scale-[0.8] origin-center rounded-xl" />
+               </div>
             </div>
           </aside>
         </div>
