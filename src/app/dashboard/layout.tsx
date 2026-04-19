@@ -8,6 +8,15 @@ import DashboardAdModal from '@/components/DashboardAdModal';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { createSupabaseClient } from '@/lib/supabase';
 
+interface NavLink {
+  href: string;
+  label: string;
+  icon: string;
+  iconColor?: string;
+  exact?: boolean;
+  isSeparator?: boolean;
+}
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -54,7 +63,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     return () => window.removeEventListener('pointsUpdated', fetchUser);
   }, []);
 
-  const desktopNavLinks = [
+  const desktopNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/earn', icon: 'fa-link', label: 'تخطي الروابط', iconColor: 'text-yellow-500' },
@@ -63,8 +72,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
   ];
 
-
-  const mobileNavLinks = [
+  const mobileNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
     { href: '/dashboard/earn', icon: 'fa-link', label: 'الروابط' },
@@ -139,8 +147,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
       </aside>
-
-
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative w-full overflow-hidden bg-gradient-to-tl from-[#0B0F19] to-[#141416]">
