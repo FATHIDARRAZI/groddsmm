@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import SafeAdSlot from './SafeAdSlot';
 
 export default function DashboardAdModal() {
   const [showModal, setShowModal] = useState(false);
@@ -59,7 +60,7 @@ export default function DashboardAdModal() {
 
         {/* Ad Container */}
         <div className="w-[300px] h-[250px] bg-black rounded-lg overflow-hidden border border-white/5 flex items-center justify-center relative">
-           <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="border-0 relative z-10"></iframe>
+           <SafeAdSlot src="/ad-300.html" width="300" height="250" className="border-0 relative z-10" />
            {/* Fallback spinner while iframe loads internally */}
            <i className="fas fa-circle-notch fa-spin absolute text-white/20 text-3xl"></i>
         </div>

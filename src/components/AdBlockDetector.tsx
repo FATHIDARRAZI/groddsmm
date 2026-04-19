@@ -41,12 +41,12 @@ export default function AdBlockDetector() {
         document.body.style.overflow = 'hidden';
       }
       
-      if (document.body.contains(fakeAd)) {
+      if (fakeAd.parentNode === document.body) {
         document.body.removeChild(fakeAd);
       }
     };
 
-    setTimeout(checkDomAdBlocker, 300);
+    const timeoutId = setTimeout(checkDomAdBlocker, 300);
 
     // 2. Network Request Bait (Highly reliable against uBlock Origin, AdGuard, Brave Shields)
     const checkNetworkAdBlocker = async () => {
@@ -67,7 +67,8 @@ export default function AdBlockDetector() {
 
 
     return () => {
-      if (document.body.contains(fakeAd)) {
+      clearTimeout(timeoutId);
+      if (fakeAd.parentNode === document.body) {
         document.body.removeChild(fakeAd);
       }
     };

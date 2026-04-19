@@ -5,6 +5,7 @@ import Script from 'next/script';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import DashboardAdModal from '@/components/DashboardAdModal';
+import SafeAdSlot from '@/components/SafeAdSlot';
 import { createSupabaseClient } from '@/lib/supabase';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -14,6 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [points, setPoints] = useState<number>(0);
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -34,12 +36,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         // Fetch balance from profiles table
         const { data: profile } = await supabase
           .from('profiles')
-          .select('points_balance')
+          .select('points_balance, is_admin')
           .eq('id', user.id)
           .single();
           
         if (profile) {
           setPoints(profile.points_balance);
+          setIsAdmin(!!profile.is_admin);
         }
       }
     }
@@ -58,7 +61,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/gifts', icon: 'fa-gift', label: 'صندوق الهدايا', iconColor: 'text-purple-500' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات النقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
-    { href: '/dashboard/history', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-green-500', isSeparator: true },
   ];
 
 
@@ -68,7 +70,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/earn', icon: 'fa-link', label: 'الروابط' },
     { href: '/dashboard/gifts', icon: 'fa-gift', label: 'هدايا' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات' },
-    { href: '/dashboard/history', icon: 'fa-history', label: 'الطلبات' },
   ];
 
   return (
@@ -105,6 +106,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             );
           })}
           
+          {isAdmin && (
+            <Link 
+              href="/abdo/dashboard" 
+              className="flex items-center gap-4 px-4 py-3 rounded-xl font-black transition-all text-red-500 bg-red-500/5 border border-red-500/20 hover:bg-red-500/10 mb-2"
+            >
+              <i className="fas fa-user-shield w-5 text-center"></i>
+              لوحة الإدارة (ADMIN)
+            </Link>
+          )}
+
           <button 
             onClick={handleLogout}
             className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all text-red-400 hover:bg-red-500/10 hover:text-red-300 border border-transparent mt-2 border-t border-t-white/5 pt-4"
@@ -118,7 +129,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50">
           <div className="bg-black/50 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center p-0 h-[250px] relative">
             <p className="absolute text-[10px] text-slate-600 font-bold top-1 tracking-widest">ADVERTISEMENT</p>
-            <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="scale-[0.85] origin-center z-10 bg-transparent" loading="lazy"></iframe>
+            <SafeAdSlot 
+              src="/ad-300.html" 
+              width="300" 
+              height="250" 
+              className="scale-[0.85] origin-center z-10 bg-transparent"
+            />
           </div>
         </div>
 
@@ -147,19 +163,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
            {children}
 
            {/* Global Page-Bottom Advertisement (Forced React Reload on Route Change for Fresh Impressions) */}
-           {isClient && (
-             <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto min-h-[100px] md:min-h-[280px]">
-                <p className="absolute text-[10px] text-slate-600 font-bold top-2 tracking-widest z-0">إعلان</p>
-                {/* Desktop Ad */}
-                <div className="hidden md:block z-10 w-full flex justify-center py-4">
-                  <iframe src="/ad-728.html" width="728" height="90" frameBorder="0" scrolling="no" className="bg-transparent rounded-lg relative mt-6"></iframe>
-                </div>
-                {/* Mobile Ad */}
-                <div className="md:hidden z-10 w-full flex justify-center py-4 mt-6 h-[270px]">
-                  <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="bg-transparent rounded-lg"></iframe>
-                </div>
-             </div>
-           )}
+            {isClient && (
+              <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
+                 <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-4">إعلان سبونسر</p>
+                 {/* Desktop Ad */}
+                 <div className="hidden md:flex w-full justify-center">
+                   <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+                 </div>
+                 {/* Mobile Ad */}
+                 <div className="flex md:hidden w-full justify-center">
+                   <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
+                 </div>
+              </div>
+            )}
         </main>
       </div>
 
@@ -236,7 +252,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             
             {/* Mobile Sidebar Ad */}
             <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50 flex justify-center pb-safe">
-               <iframe src="/ad-300.html" width="300" height="250" frameBorder="0" scrolling="no" className="scale-[0.8] origin-center rounded-xl"></iframe>
+               <SafeAdSlot src="/ad-300.html" width="300" height="250" className="scale-[0.8] origin-center rounded-xl" />
             </div>
           </aside>
         </div>

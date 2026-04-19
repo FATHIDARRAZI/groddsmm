@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
 
       {/* Create User Form */}
       {showCreateForm && (
-        <div className="bg-[#121827] rounded-[2.5rem] border border-red-600/20 p-8 shadow-2xl animate-fade-in">
+        <div className="bg-[#121827] rounded-[2.5rem] border border-red-600/20 p-8 shadow-2xl">
            <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
               <i className="fas fa-user-plus text-red-600"></i>
               إنشاء حساب مستخدم جديد

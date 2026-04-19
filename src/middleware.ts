@@ -103,7 +103,7 @@ export async function middleware(request: NextRequest) {
   };
 
   // 7. Core Protection Logic
-  const isAdminPath = path.startsWith('/admin') || path.startsWith('/api/admin');
+  const isAdminPath = path.startsWith('/abdo') || path.startsWith('/api/admin');
 
   // General Auth Guard (For any non-public path like /dashboard/store, /dashboard/earn etc.)
   if (!user) {

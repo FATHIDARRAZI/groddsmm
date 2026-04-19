@@ -10,10 +10,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   const navLinks = [
-    { href: '/admin/dashboard', icon: 'fa-tachometer-alt', label: 'لوحة القيادة' },
-    { href: '/admin/users', icon: 'fa-users', label: 'إدارة المستخدمين' },
-    { href: '/admin/orders', icon: 'fa-shopping-basket', label: 'جميع الطلبات' },
-    { href: '/admin/coupons', icon: 'fa-ticket-alt', label: 'الكوبونات' },
+    { href: '/abdo/dashboard', icon: 'fa-tachometer-alt', label: 'لوحة القيادة' },
+    { href: '/abdo/users', icon: 'fa-users', label: 'إدارة المستخدمين' },
+    { href: '/abdo/orders', icon: 'fa-shopping-basket', label: 'جميع الطلبات' },
+    { href: '/abdo/coupons', icon: 'fa-ticket-alt', label: 'الكوبونات' },
   ];
 
   const handleLogout = async () => {
@@ -114,16 +114,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
          </div>
 
-         <div className="animate-fade-in relative z-10 w-full max-w-7xl">
-            {children}
-         </div>
-
-         {/* Backdrop Orbs */}
-         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none opacity-20">
-            <div className="glow-orb red" style={{ background: '#dc2626', top: '10%', right: '5%' }}></div>
-            <div className="glow-orb blue" style={{ background: '#2563eb', bottom: '10%', left: '5%' }}></div>
-         </div>
-      </main>
+          <div className="relative z-10 w-full max-w-7xl">
+             {children}
+          </div>
+       </main>
     </div>
   );
 }

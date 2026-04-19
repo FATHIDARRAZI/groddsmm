@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import ReCAPTCHA from 'react-google-recaptcha';
+import Script from 'next/script';
+import SafeAdSlot from '@/components/SafeAdSlot';
 
 // Segment Array (Rigged Setup)
 const segments = [
@@ -17,6 +19,8 @@ const segments = [
   { id: 7, text: '20 نقطة', type: 'points', icon: 'fa-gift', bgColor: '#8b5cf6', textColor: 'text-white', isSafe: true, points: 20 },
 ];
 
+const SMART_LINK_URL = "https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70";
+
 export default function GiftsPage() {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
@@ -28,6 +32,7 @@ export default function GiftsPage() {
   
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isWatchingAd, setIsWatchingAd] = useState<boolean>(false);
+  const [hasClickedAd, setHasClickedAd] = useState<boolean>(false);
   const [adTimer, setAdTimer] = useState<number>(30);
 
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
@@ -41,25 +46,34 @@ export default function GiftsPage() {
   useEffect(() => {
     if (!isMounted) return;
 
-    localStorage.removeItem('last_spin_time');
-    setTimeToNextSpin(null);
-
-    const lastSpin = localStorage.getItem('last_spin_time');
-    if (lastSpin) {
-      const remainingMs = parseInt(lastSpin, 10) + (1 * 60 * 60 * 1000) - Date.now();
-      if (remainingMs > 0) {
-        setTimeToNextSpin(Math.ceil(remainingMs / 1000));
-      } else {
-        localStorage.removeItem('last_spin_time');
+    // Load cooldown from localStorage
+    const checkCooldown = () => {
+      // Disable timer on localhost for testing
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        setTimeToNextSpin(null);
+        return;
       }
-    }
+
+      const lastSpin = localStorage.getItem('last_spin_time');
+      if (lastSpin) {
+        const remainingMs = parseInt(lastSpin, 10) + (1 * 60 * 60 * 1000) - Date.now();
+        if (remainingMs > 0) {
+          setTimeToNextSpin(Math.ceil(remainingMs / 1000));
+        } else {
+          localStorage.removeItem('last_spin_time');
+          setTimeToNextSpin(null);
+        }
+      }
+    };
+    
+    checkCooldown();
   }, [isMounted]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (timeToNextSpin !== null && timeToNextSpin > 0) {
       timer = setInterval(() => {
-        setTimeToNextSpin((prev) => prev! - 1);
+        setTimeToNextSpin((prev) => (prev && prev > 0 ? prev - 1 : null));
       }, 1000);
     } else if (timeToNextSpin !== null && timeToNextSpin <= 0) {
       setTimeToNextSpin(null);
@@ -70,13 +84,24 @@ export default function GiftsPage() {
 
   useEffect(() => {
     let adInterval: NodeJS.Timeout;
-    if (isWatchingAd && adTimer > 0) {
+    if (isWatchingAd && hasClickedAd && adTimer > 0) {
       adInterval = setInterval(() => {
         setAdTimer((prev) => prev - 1);
       }, 1000);
     }
     return () => clearInterval(adInterval);
-  }, [isWatchingAd, adTimer]);
+  }, [isWatchingAd, hasClickedAd, adTimer]);
+
+  const handleSmartLinkClick = () => {
+    const win = window.open(SMART_LINK_URL, '_blank');
+    if (win) {
+      setHasClickedAd(true);
+    } else {
+      alert("يرجى السماح بالنوافذ المنبثقة (Popups) لتتمكن من إكمال العملية.");
+      // Fallback: still set clicked if they clicked the manual link in the UI
+      setHasClickedAd(true);
+    }
+  };
 
   const initiateAdWall = () => {
     if (isSpinning || timeToNextSpin !== null) return;
@@ -87,7 +112,9 @@ export default function GiftsPage() {
     
     setIsSpinning(true);
     setAdTimer(30);
+    setHasClickedAd(false);
     setIsWatchingAd(true);
+    // REMOVED auto-open to ensure timer starts ONLY on click as requested
   };
 
   const executeRealSpin = () => {
@@ -119,6 +146,12 @@ export default function GiftsPage() {
       setIsSpinning(false);
       setIsClaiming(true);
       
+      // Save spin time for cooldown (Skip for localhost testing)
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        localStorage.setItem('last_spin_time', Date.now().toString());
+        setTimeToNextSpin(3600); // 1 hour cooldown
+      }
+
       try {
         const res = await fetch('/api/gifts/claim', {
           method: 'POST',
@@ -141,13 +174,23 @@ export default function GiftsPage() {
   const formatTimer = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
-    return { h: h < 10 ? `0${h}` : h, m: m < 10 ? `0${m}` : m };
+    const s = seconds % 60;
+    return { 
+      h: h < 10 ? `0${h}` : h, 
+      m: m < 10 ? `0${m}` : m,
+      s: s < 10 ? `0${s}` : s
+    };
   };
 
   if (!isMounted) return null;
 
   return (
     <div className="w-full animate-fade-in max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[60vh] text-center pt-8 relative z-10">
+      {/* Social Bar Ad Script (Increased Revenue) */}
+      <Script 
+        src="//evacuateenclose.com/3e8c62702cd2303189cddf06f9f175cd/invoke.js"
+        strategy="lazyOnload"
+      />
       
       <div className="space-y-2 mb-12">
         <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter drop-shadow-2xl">
@@ -208,7 +251,7 @@ export default function GiftsPage() {
           <button 
             onClick={initiateAdWall}
             disabled={isSpinning || !recaptchaToken}
-            className={`px-12 py-5 rounded-2xl w-full max-w-sm font-extrabold text-[#1F0A07] text-xl transition-all shadow-[0_4px_20px_rgba(255,133,119,0.4)] flex items-center justify-center gap-4 ${isSpinning || !recaptchaToken ? 'opacity-50 cursor-not-allowed bg-slate-500' : 'bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] hover:opacity-90 active:scale-[0.98]'}`}
+            className={`px-12 py-5 rounded-2xl w-full max-sm font-extrabold text-[#1F0A07] text-xl transition-all shadow-[0_4px_20px_rgba(255,133,119,0.4)] flex items-center justify-center gap-4 ${isSpinning || !recaptchaToken ? 'opacity-50 cursor-not-allowed bg-slate-500' : 'bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] hover:opacity-90 active:scale-[0.98]'}`}
           >
              <i className={`fas fa-sync-alt ${isSpinning ? 'animate-spin' : ''}`}></i> 
              {isSpinning ? 'جاري التجهيز...' : 'تدوير العجلة الآن'}
@@ -265,14 +308,14 @@ export default function GiftsPage() {
       )}
 
       {isWatchingAd && (
-        <div className="fixed inset-0 z-[9999999] flex flex-col items-center justify-center bg-[#0B0F19] text-white p-4">
-          <div className="absolute top-8 w-full px-8 flex justify-between items-center max-w-4xl">
+        <div className="fixed inset-0 z-[9999999] flex flex-col items-center justify-center bg-[#0B0F19] text-white p-4 overflow-y-auto">
+          <div className="absolute top-8 w-full px-8 flex justify-between items-center max-w-4xl z-[100]">
              <div className="bg-[#1C1C1E] px-4 py-2 rounded-full border border-white/10 text-[#FF8577] font-bold text-sm tracking-widest flex items-center gap-2 shadow-inner">
                <i className="fas fa-lock opacity-50"></i> إعلان ممول
              </div>
-             {adTimer > 0 ? (
+             {(adTimer > 0 || !hasClickedAd) ? (
                <div className="w-12 h-12 rounded-full border-2 border-slate-700 flex items-center justify-center font-mono text-xl font-bold bg-[#121214] text-slate-400">
-                 {adTimer}
+                 {hasClickedAd ? adTimer : '--'}
                </div>
              ) : (
                <button 
@@ -284,38 +327,96 @@ export default function GiftsPage() {
                </button>
              )}
           </div>
-          <div className="mt-8 text-center max-w-md animate-fade-in px-4">
-             <h2 className="text-2xl font-black mb-2 text-white">جاري تجهيز العجلة...</h2>
-             <p className="text-slate-400 text-sm leading-relaxed mb-4">
-               {adTimer > 0 
-                 ? 'يرجى الانتظار حتى انتهاء الوقت لضمان تسجيل حسابك بالخوادم قبل السحب لتجنب ضياع النقاط.' 
-                 : 'تم تسجيل الاستجابة بنجاح! اضغط على علامة (X) بالأعلى لبدء السحب.'}
-             </p>
-             <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-3 mb-6">
-                <p className="text-red-400 text-[10px] md:text-xs font-bold dir-rtl">
-                  <i className="fas fa-exclamation-triangle mr-1"></i> تنبيه: هذا مجرد إعلان خارجي، نحن لا نشجع على المراهنة أو القمار. يرجى الحذر.
-                </p>
-             </div>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-0 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[400px]">
-             <iframe 
-                src="/ad-smart.html" 
-                width="300" 
-                height="250" 
-                frameBorder="0" 
-                className="animate-fade-in bg-transparent"
-                loading="lazy"
-             ></iframe>
-             <div className="mt-4 pb-4 text-center">
-                <a 
-                   href="https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse block mb-1"
-                >
-                   إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
-                </a>
-             </div>
+
+          <div className="mt-20 md:mt-0 flex flex-col items-center w-full max-w-4xl">
+            {/* Top Banner Space (Mobile Ad) */}
+            <div className="mb-6 w-full flex justify-center">
+               <SafeAdSlot 
+                  src="/ad-320.html" 
+                  width="320" 
+                  height="50" 
+                  className="rounded-lg opacity-90 shadow-lg"
+               />
+            </div>
+
+            <div className="text-center max-w-md animate-fade-in px-4 mb-6">
+               <h2 className="text-2xl md:text-3xl font-black mb-2 text-white">تفعيل عجلة الحظ</h2>
+               {!hasClickedAd ? (
+                 <p className="text-[#FF8577] text-sm font-bold bg-[#FF8577]/10 py-2 px-4 rounded-full inline-block animate-bounce mb-4">
+                   ⚠️ يجب الضغط على الزر بالأسفل لتفعيل العداد
+                 </p>
+               ) : (
+                 <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                   {adTimer > 0 
+                     ? 'يرجى الانتظار حتى انتهاء الوقت لضمان تسجيل حسابك بالخوادم قبل السحب لتجنب ضياع النقاط.' 
+                     : 'تم تسجيل الاستجابة بنجاح! اضغط على علامة (X) بالأعلى لبدء السحب.'}
+                 </p>
+               )}
+               
+               {!hasClickedAd && (
+                 <button 
+                   onClick={handleSmartLinkClick}
+                   className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-8 py-4 rounded-2xl font-black text-lg shadow-[0_0_30px_rgba(236,72,153,0.4)] hover:scale-105 active:scale-95 transition-all w-full flex items-center justify-center gap-3"
+                 >
+                   <i className="fas fa-external-link-alt"></i> إضغط هنا لتفعيل السحب الآن
+                 </button>
+               )}
+            </div>
+
+            <div className="bg-gradient-to-br from-[#1C1C1E] to-[#121214] border border-white/10 rounded-2xl p-6 w-full max-w-[600px] shadow-2xl relative overflow-hidden flex flex-col items-center justify-center min-h-[300px] group">
+               <div className="absolute inset-0 bg-pink-500/5 group-hover:bg-pink-500/10 transition-all duration-500"></div>
+               
+               <div className="relative z-10 flex flex-col items-center text-center">
+                  <div className="w-20 h-20 bg-pink-500/20 rounded-full flex items-center justify-center mb-4 border border-pink-500/30">
+                    <i className="fas fa-gift text-4xl text-pink-500 animate-pulse"></i>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-2">عرض خاص للمستخدمين!</h3>
+                  <p className="text-slate-400 text-sm mb-6 max-w-xs">
+                    اضغط على الزر بالأسفل لزيارة الرابط الممول وتفعيل سحب النقاط فوراً.
+                  </p>
+                  
+                  <a 
+                     href={SMART_LINK_URL}
+                     onClick={() => setHasClickedAd(true)}
+                     target="_blank" 
+                     rel="noopener noreferrer"
+                     className="bg-white text-black px-10 py-4 rounded-xl font-black text-lg hover:bg-pink-500 hover:text-white transition-all shadow-xl active:scale-95"
+                  >
+                     زيارة الرابط الآن <i className="fas fa-external-link-alt ml-2"></i>
+                  </a>
+               </div>
+
+               <div className="mt-6 pt-6 border-t border-white/5 w-full text-center relative z-10">
+                  <p className="text-[11px] text-slate-500 uppercase tracking-widest font-bold">
+                    إعلان ذكي - Smart Link Placement
+                  </p>
+               </div>
+            </div>
+
+            <div className="mt-4 pb-4 text-center px-4">
+              <a 
+                href={SMART_LINK_URL}
+                onClick={() => setHasClickedAd(true)}
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-pink-500 hover:text-pink-400 font-bold text-sm underline animate-pulse block mb-1"
+              >
+                إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
+              </a>
+              <p className="text-[10px] text-slate-500 mt-2">
+                نحن نستخدم الإعلانات للحفاظ على استمرارية تقديم النقاط المجانية.
+              </p>
+            </div>
+
+            {/* Bottom Banner Space (Desktop Banner) */}
+            <div className="mt-8 w-full flex justify-center opacity-90 grayscale-0 transition-all">
+               <SafeAdSlot 
+                  src="/ad-468.html" 
+                  width="468" 
+                  height="60" 
+                  className="rounded-lg shadow-lg"
+               />
+            </div>
           </div>
         </div>
       )}
