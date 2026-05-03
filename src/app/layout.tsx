@@ -1,6 +1,22 @@
 import type { Metadata } from 'next';
+import { Cairo, Outfit } from 'next/font/google';
 import './globals.css';
+
+const cairo = Cairo({
+  subsets: ['arabic', 'latin'],
+  weight: ['400', '600', '700', '800', '900'],
+  variable: '--font-cairo',
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  weight: ['300', '400', '600', '800', '900'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
 import Script from 'next/script';
+import Image from 'next/image';
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
@@ -20,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl" className="dark">
+    <html lang="ar" dir="rtl" className={`dark ${cairo.variable} ${outfit.variable}`}>
       <head>
         <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
@@ -74,7 +90,7 @@ export default function RootLayout({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/5 pb-10">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-6">
-                  <img src="/GRODD_LOGO.png" alt="Grodd SMM Logo" className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
+                  <Image src="/GRODD_LOGO.png" alt="Grodd SMM Logo" width={200} height={48} className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
                 </div>
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
                   وكالة متخصصة في التسويق الرقمي، بناء الجماهير، وتحليل الخوارزميات. نساعد العلامات التجارية والمؤثرين على تحقيق نمو مستدام وموثوق لحضورهم الرقمي. مطور بواسطة Grodd Labs.

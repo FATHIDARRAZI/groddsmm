@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from './SafeAdSlot';
 
@@ -22,7 +23,7 @@ export default function Navbar() {
     <nav className="relative z-50 w-full border-b border-white/5 bg-[#121827]/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105">
-          <img src="/GRODD_LOGO.png" alt="Grodd SMM Logo" className="h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
+          <Image src="/GRODD_LOGO.png" alt="Grodd SMM Logo" width={200} height={40} priority className="h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
         </Link>
         
         {/* Desktop Links */}

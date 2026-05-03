@@ -4,8 +4,7 @@ import SafeAdSlot from './SafeAdSlot';
 
 export default function DashboardAdModal() {
   const [showModal, setShowModal] = useState(false);
-  const [adType, setAdType] = useState<'skippable' | 'forced'>('skippable');
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(10);
   const [hasClosed, setHasClosed] = useState(false);
 
   // Initial 15s delay before showing the ad
@@ -14,10 +13,7 @@ export default function DashboardAdModal() {
     
     // Set a timer to trigger the modal 15 seconds after page load/navigation
     const timer = setTimeout(() => {
-      // 50% chance of being forced or skippable
-      const type = Math.random() > 0.5 ? 'forced' : 'skippable';
-      setAdType(type);
-      setTimeLeft(15);
+      setTimeLeft(10);
       setShowModal(true);
     }, 15000);
     
@@ -26,13 +22,13 @@ export default function DashboardAdModal() {
 
   // Handle forced UI timer countdown
   useEffect(() => {
-    if (showModal && adType === 'forced' && timeLeft > 0) {
+    if (showModal && timeLeft > 0) {
       const waitTimer = setInterval(() => {
         setTimeLeft(prev => prev - 1);
       }, 1000);
       return () => clearInterval(waitTimer);
     }
-  }, [showModal, adType, timeLeft]);
+  }, [showModal, timeLeft]);
 
   if (!showModal) return null;
 
@@ -44,7 +40,7 @@ export default function DashboardAdModal() {
         <div className="w-full flex justify-between items-center mb-6">
           <span className="text-[10px] text-slate-500 font-bold tracking-widest bg-white/5 px-3 py-1 rounded-full">إعلان سبونسر</span>
           
-          {adType === 'skippable' || timeLeft <= 0 ? (
+          {timeLeft <= 0 ? (
             <button 
               onClick={() => { setShowModal(false); setHasClosed(true); }}
               className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
@@ -67,6 +63,9 @@ export default function DashboardAdModal() {
         
         <p className="text-xs text-slate-500 mt-6 text-center max-w-xs leading-relaxed">
           شكراً لدعمك المنصة! مشاهدة الإعلانات تساعدنا على إبقاء الخدمات مجانية ومنخفضة التكلفة للجميع.
+        </p>
+        <p className="text-[10px] text-red-400/90 mt-3 text-center max-w-xs leading-relaxed font-bold bg-red-500/10 py-1.5 px-3 rounded-lg border border-red-500/20">
+          إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
         </p>
 
       </div>

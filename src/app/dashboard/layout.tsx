@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import DashboardAdModal from '@/components/DashboardAdModal';
 import SafeAdSlot from '@/components/SafeAdSlot';
@@ -66,7 +67,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const desktopNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/earn', icon: 'fa-link', label: 'تخطي الروابط', iconColor: 'text-yellow-500' },
     { href: '/dashboard/gifts', icon: 'fa-gift', label: 'صندوق الهدايا', iconColor: 'text-purple-500' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات النقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
@@ -75,7 +75,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const mobileNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
-    { href: '/dashboard/earn', icon: 'fa-link', label: 'الروابط' },
     { href: '/dashboard/gifts', icon: 'fa-gift', label: 'هدايا' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات' },
   ];
@@ -87,7 +86,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <aside className="hidden md:flex flex-col w-72 bg-[#121214] border-l border-white/5 shrink-0 relative z-20 rounded-r-3xl overflow-hidden">
         <div className="p-8 border-b border-white/5 flex flex-col items-center justify-center">
           <div className="w-20 h-20 bg-gradient-to-tr from-[#1C1C1E] to-[#2A2A2D] rounded-full border border-white/10 mb-4 flex items-center justify-center shadow-inner overflow-hidden">
-             <img src="/user-avatar-male-5.svg" alt="User Avatar" className="w-full h-full object-cover" />
+             <Image src="/user-avatar-male-5.svg" alt="User Avatar" width={80} height={80} className="w-full h-full object-cover" />
           </div>
           <h2 className="text-lg font-bold text-white mb-1">مرحباً، {isClient ? userName : '...'}</h2>
           <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-pink-500 text-xs font-bold border border-pink-500/20 flex items-center gap-2 hover:bg-pink-500/10 transition-colors cursor-pointer">

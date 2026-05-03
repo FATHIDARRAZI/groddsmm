@@ -33,7 +33,7 @@ export default function GiftsPage() {
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isWatchingAd, setIsWatchingAd] = useState<boolean>(false);
   const [hasClickedAd, setHasClickedAd] = useState<boolean>(false);
-  const [adTimer, setAdTimer] = useState<number>(30);
+  const [adTimer, setAdTimer] = useState<number>(10);
 
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
@@ -48,11 +48,6 @@ export default function GiftsPage() {
 
     // Load cooldown from localStorage
     const checkCooldown = () => {
-      // Disable timer on localhost for testing
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        setTimeToNextSpin(null);
-        return;
-      }
 
       const lastSpin = localStorage.getItem('last_spin_time');
       if (lastSpin) {
@@ -111,7 +106,7 @@ export default function GiftsPage() {
     }
     
     setIsSpinning(true);
-    setAdTimer(30);
+    setAdTimer(10);
     setHasClickedAd(false);
     setIsWatchingAd(true);
     // REMOVED auto-open to ensure timer starts ONLY on click as requested
@@ -146,11 +141,9 @@ export default function GiftsPage() {
       setIsSpinning(false);
       setIsClaiming(true);
       
-      // Save spin time for cooldown (Skip for localhost testing)
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        localStorage.setItem('last_spin_time', Date.now().toString());
-        setTimeToNextSpin(3600); // 1 hour cooldown
-      }
+      // Save spin time for cooldown
+      localStorage.setItem('last_spin_time', Date.now().toString());
+      setTimeToNextSpin(3600); // 1 hour cooldown
 
       try {
         const res = await fetch('/api/gifts/claim', {
@@ -403,8 +396,11 @@ export default function GiftsPage() {
               >
                 إضغط هنا إذا لم يظهر الإعلان (Click here if ad is white)
               </a>
-              <p className="text-[10px] text-slate-500 mt-2">
+              <p className="text-[10px] text-slate-500 mt-2 mb-3">
                 نحن نستخدم الإعلانات للحفاظ على استمرارية تقديم النقاط المجانية.
+              </p>
+              <p className="text-[10px] text-red-400/90 max-w-xs mx-auto leading-relaxed font-bold bg-red-500/10 py-1.5 px-3 rounded-lg border border-red-500/20">
+                إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
               </p>
             </div>
 

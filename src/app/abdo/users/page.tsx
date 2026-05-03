@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TableRowSkeleton } from '@/components/admin/AdminSkeleton';
+import Image from 'next/image';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -260,7 +261,7 @@ export default function AdminUsersPage() {
                          <td className="px-6 py-5">
                             <div className="flex items-center gap-3">
                                <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 overflow-hidden">
-                                  <img src="/user-avatar-male-5.svg" alt="" className="w-full h-full object-cover" />
+                                  <Image src="/user-avatar-male-5.svg" alt="" width={40} height={40} className="w-full h-full object-cover" />
                                </div>
                                <div>
                                   <p className="text-white font-bold">{user.fullName || user.full_name || user.username || 'مجهول'}</p>
