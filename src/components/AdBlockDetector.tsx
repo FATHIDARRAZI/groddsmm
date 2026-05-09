@@ -6,10 +6,6 @@ export default function AdBlockDetector() {
   const [isAdBlocked, setIsAdBlocked] = useState(false);
 
   useEffect(() => {
-    // Bypass detection on localhost for testing
-    if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-      return;
-    }
 
     // 1. DOM Element Bait
     const fakeAd = document.createElement('div');

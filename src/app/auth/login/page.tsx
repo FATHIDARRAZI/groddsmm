@@ -63,7 +63,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#0B0F19] border border-white/5 rounded-2xl py-3.5 sm:py-4 pr-11 sm:pr-12 pl-4 text-white text-sm sm:text-base focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577]/50 transition-all dir-ltr text-left font-mono"
-              placeholder="admin@luminary.com"
+              placeholder="yourname@gamil.com"
             />
           </div>
         </div>
