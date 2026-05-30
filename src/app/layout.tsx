@@ -38,6 +38,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`dark ${cairo.variable} ${outfit.variable}`}>
       <head>
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <Script
           src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
           strategy="afterInteractive"
@@ -54,7 +58,7 @@ export default function RootLayout({
               "description": "وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الوصول العضوي للعلامات التجارية.",
               "sameAs": [
                 "https://x.com/groddsmm",
-                "https://instagram.com/grodd_smm",
+                "https://www.instagram.com/grodd_media/",
                 "https://t.me/grodd_labsBot"
               ]
             })
@@ -99,7 +103,7 @@ export default function RootLayout({
                   <a href="https://x.com/groddsmm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-twitter"></i>
                   </a>
-                  <a href="https://instagram.com/grodd_smm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://www.instagram.com/grodd_media/" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-instagram"></i>
                   </a>
                   <a href="https://t.me/grodd_labsBot" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">

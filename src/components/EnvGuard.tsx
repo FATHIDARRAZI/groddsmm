@@ -15,7 +15,7 @@ export default function EnvGuard({ children }: { children: React.ReactNode }) {
 
     if (!url || !anonKey || url === '' || anonKey === '') {
       console.warn('[EnvGuard] Configuration missing! Shielding application.');
-      setIsConfigured(false);
+      setTimeout(() => setIsConfigured(false), 0);
     }
   }, []);
 

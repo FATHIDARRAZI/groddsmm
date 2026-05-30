@@ -40,7 +40,7 @@ export default function BannedPage() {
 
            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
-                href="https://instagram.com/grodd_smm" 
+                href="https://www.instagram.com/grodd_media/" 
                 target="_blank" 
                 rel="noreferrer"
                 className="px-8 py-4 bg-white/5 border border-white/10 hover:border-red-600/50 hover:bg-white/10 rounded-2xl text-white font-black transition-all flex items-center justify-center gap-3 group"

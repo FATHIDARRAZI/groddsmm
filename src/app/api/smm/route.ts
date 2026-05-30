@@ -15,11 +15,21 @@ export async function POST(req: Request) {
     const ip = rawIp.split(',')[0].trim();
 
     const body = await req.json();
-    const { link, serviceType, recaptchaToken, quantity: requestedQuantity, totalCost } = body;
+    const { link, serviceType, category, recaptchaToken, quantity: requestedQuantity } = body;
 
     if (!link || !serviceType || !recaptchaToken) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
+
+    // Determine target quantity
+    const finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 10 ? requestedQuantity : 100;
+
+    // Securely calculate expected points to deduct
+    const pointsToDeduct = serviceType === 'followers'
+      ? finalQuantity * 2
+      : serviceType === 'views'
+        ? Math.ceil(finalQuantity / 50)
+        : finalQuantity;
 
     // 1. Session & Auth Check
     const supabase = await createSupabaseServerClient();
@@ -48,9 +58,6 @@ export async function POST(req: Request) {
       }
     } else {
       // AUTHENTICATED: Enforce Points Balance logic
-      // Note: `totalCost` comes from Dashboard, fallback to requestedQuantity
-      const pointsToDeduct = totalCost || requestedQuantity || 30;
-
       const { data: profile } = await supabase
         .from('profiles')
         .select('points_balance')
@@ -79,24 +86,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
     }
 
-    // Determine target quantity (use requested, or fallback to safe minimum 100)
-    let finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 100 ? requestedQuantity : 100;
-
     let serviceId = '';
 
-    if (serviceType === 'views') {
-      serviceId = '2020';
-      // If no valid dynamic quantity was passed, default to minimum 100 views
-      if (!requestedQuantity || requestedQuantity < 100) finalQuantity = 100;
-      
-    } else if (serviceType === 'likes') {
-      serviceId = '917';
-      // If no valid dynamic quantity was passed, default to minimum 100 likes
-      if (!requestedQuantity || requestedQuantity < 100) finalQuantity = 100;
-      
+    if (category === 'instagram' && serviceType === 'followers') {
+      serviceId = '758';
+    } else if (category === 'tiktok' && serviceType === 'likes') {
+      serviceId = '2651';
+    } else if (category === 'tiktok' && serviceType === 'followers') {
+      serviceId = '3764';
+    } else if (category === 'tiktok' && serviceType === 'views') {
+      serviceId = '3944';
+    } else if (category === 'facebook' && serviceType === 'followers') {
+      serviceId = '2112';
     } else {
-      return NextResponse.json({ error: 'Invalid service type' }, { status: 400 });
+      return NextResponse.json({ error: 'This specific service is not available for this platform.' }, { status: 400 });
     }
+
+
+
 
     const smmLink = link.includes('http') ? link : `https://${link}`;
 
@@ -128,8 +135,7 @@ export async function POST(req: Request) {
 
       // POST-ORDER PROCESSING LOGIC
       if (user) {
-        // Authenticated Flow: Deduct points and Cache target Provider Order into Data Ledger
-        const pointsToDeduct = totalCost || requestedQuantity || 30;
+
         
         // Decrement wallet balance safely
         await supabase.rpc('decrement_points', {

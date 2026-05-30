@@ -15,6 +15,22 @@ interface SafeAdSlotProps {
  * or external scripts remove an iframe from the DOM without React's knowledge.
  * It handles the lifecycle of the iframe manually through a ref.
  */
+
+if (typeof window !== 'undefined' && !(window as any).__patchedRemoveChild) {
+  (window as any).__patchedRemoveChild = true;
+  const originalRemoveChild = Node.prototype.removeChild;
+  Node.prototype.removeChild = function (child) {
+    try {
+      return originalRemoveChild.call(this, child);
+    } catch (e: any) {
+      if (e.name === 'NotFoundError') {
+        console.warn('React attempted to remove a node that is already gone (likely blocked by AdBlock). Preventing crash.');
+        return child;
+      }
+      throw e;
+    }
+  };
+}
 export default function SafeAdSlot({ src, width, height, className, style }: SafeAdSlotProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -23,7 +39,11 @@ export default function SafeAdSlot({ src, width, height, className, style }: Saf
     
     // Manually create and append iframe to isolate from React's internal DOM tracking
     const iframe = document.createElement('iframe');
-    iframe.src = src;
+    
+    // Append a cache-busting timestamp to maximize ad impressions and bypass browser cache
+    const separator = src.includes('?') ? '&' : '?';
+    iframe.src = `${src}${separator}v=${Date.now()}`;
+    
     iframe.width = width;
     iframe.height = height;
     iframe.setAttribute('frameBorder', '0');
@@ -35,6 +55,11 @@ export default function SafeAdSlot({ src, width, height, className, style }: Saf
     iframe.style.backgroundColor = 'transparent';
     iframe.style.display = 'block';
     iframe.style.margin = '0 auto';
+    
+    // Clear any existing children to prevent duplicate ads from re-renders or React Strict Mode
+    while (containerRef.current.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild);
+    }
     
     containerRef.current.appendChild(iframe);
 

@@ -34,7 +34,7 @@ export default function ContactUs() {
               </div>
             </a>
             
-            <a href="https://instagram.com/grodd_smm" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
+            <a href="https://www.instagram.com/grodd_media/" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
                <i className="fas fa-chevron-left text-slate-600 group-hover:text-white transition-colors"></i>
               <div className="flex items-center gap-4">
                 <span className="font-bold text-white">تواصل عبر إنستغرام</span>

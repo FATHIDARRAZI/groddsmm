@@ -84,7 +84,7 @@ export default function Navbar() {
              <a href="https://x.com/groddsmm" target="_blank" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-[#1DA1F2] hover:text-white transition-colors text-lg" rel="noreferrer">
               <i className="fab fa-twitter"></i>
             </a>
-            <a href="https://instagram.com/grodd_smm" target="_blank" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-[#E1306C] hover:text-white transition-colors text-lg" rel="noreferrer">
+            <a href="https://www.instagram.com/grodd_media/" target="_blank" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-[#E1306C] hover:text-white transition-colors text-lg" rel="noreferrer">
               <i className="fab fa-instagram"></i>
             </a>
             <a href="https://t.me/grodd_labsBot" target="_blank" className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:bg-[#0088cc] hover:text-white transition-colors text-lg" rel="noreferrer">

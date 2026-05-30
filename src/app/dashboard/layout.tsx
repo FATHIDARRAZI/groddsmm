@@ -26,9 +26,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
     setIsClient(true);
+    const initTimer = setTimeout(() => setIsMobile(window.innerWidth < 768), 0);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(initTimer);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -67,16 +75,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const desktopNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/gifts', icon: 'fa-gift', label: 'صندوق الهدايا', iconColor: 'text-purple-500' },
+    { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'المهام (Offerwall)', iconColor: 'text-green-500' },
+    { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'المكافآت اليومية', iconColor: 'text-purple-500' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات النقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
   ];
 
   const mobileNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
+    { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'مهام' },
+    { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'يومي' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
-    { href: '/dashboard/gifts', icon: 'fa-gift', label: 'هدايا' },
-    { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات' },
   ];
 
   return (
@@ -167,18 +176,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-10 relative z-10 w-full custom-scrollbar pb-24 md:pb-10">
            {children}
 
-           {/* Global Page-Bottom Advertisement (Forced React Reload on Route Change for Fresh Impressions) */}
             {isClient && (
               <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
                  <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-4">إعلان سبونسر</p>
-                 {/* Desktop Ad */}
-                 <div className="hidden md:flex w-full justify-center">
-                   <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
-                 </div>
-                 {/* Mobile Ad */}
-                 <div className="flex md:hidden w-full justify-center">
-                   <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
-                 </div>
+                 {/* Conditional Ad Rendering */}
+                 {isMobile !== null && (
+                   isMobile ? (
+                     <div className="flex w-full justify-center">
+                       <SafeAdSlot key={`${pathname}-mobile`} src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
+                     </div>
+                   ) : (
+                     <div className="flex w-full justify-center">
+                       <SafeAdSlot key={`${pathname}-desktop`} src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+                     </div>
+                   )
+                 )}
               </div>
             )}
         </main>
@@ -261,6 +273,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                  <SafeAdSlot src="/ad-300.html" width="300" height="250" className="scale-[0.8] origin-center rounded-xl" />
                </div>
             </div>
+
           </aside>
         </div>
       )}

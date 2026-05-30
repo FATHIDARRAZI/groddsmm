@@ -36,9 +36,12 @@ export default function AdBlockDetector() {
         setIsAdBlocked(true);
         document.body.style.overflow = 'hidden';
       }
-      
       if (fakeAd.parentNode === document.body) {
-        document.body.removeChild(fakeAd);
+        try {
+          document.body.removeChild(fakeAd);
+        } catch (e) {
+          console.warn('AdBlockDetector silent cleanup error', e);
+        }
       }
     };
 
@@ -61,11 +64,14 @@ export default function AdBlockDetector() {
     };
     checkNetworkAdBlocker();
 
-
     return () => {
       clearTimeout(timeoutId);
       if (fakeAd.parentNode === document.body) {
-        document.body.removeChild(fakeAd);
+        try {
+          document.body.removeChild(fakeAd);
+        } catch (e) {
+          console.warn('AdBlockDetector silent cleanup error', e);
+        }
       }
     };
   }, []);
