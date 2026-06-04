@@ -207,7 +207,7 @@ export default function StorePage() {
         <div className="w-full md:w-[400px] bg-[#0A0D14] flex flex-col items-center justify-center p-10 md:p-16 border-t md:border-t-0 md:border-r border-white/5 relative z-10">
           <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-[#f09433] via-[#e6683c] to-[#bc1888] p-0.5 flex items-center justify-center shadow-[0_0_30px_rgba(225,48,108,0.4)] mb-6 overflow-hidden">
             <div className="w-full h-full bg-[#0A0D14] rounded-full overflow-hidden flex items-center justify-center">
-              <img src="/grodd_media_ig.jpg" alt="Grodd Media IG Profile" className="w-full h-full object-cover rounded-full" />
+              <img src="/grodd_instagram_profile.jpg" alt="Grodd Media IG Profile" className="w-full h-full object-cover rounded-full" />
             </div>
           </div>
           <h3 className="text-xl font-black text-white mb-2">@grodd_media</h3>
