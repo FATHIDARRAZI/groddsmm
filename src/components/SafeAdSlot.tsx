@@ -19,9 +19,9 @@ interface SafeAdSlotProps {
 if (typeof window !== 'undefined' && !(window as any).__patchedRemoveChild) {
   (window as any).__patchedRemoveChild = true;
   const originalRemoveChild = Node.prototype.removeChild;
-  Node.prototype.removeChild = function (child) {
+  Node.prototype.removeChild = function <T extends Node>(this: Node, child: T): T {
     try {
-      return originalRemoveChild.call(this, child);
+      return originalRemoveChild.call(this, child) as T;
     } catch (e: any) {
       if (e.name === 'NotFoundError') {
         console.warn('React attempted to remove a node that is already gone (likely blocked by AdBlock). Preventing crash.');

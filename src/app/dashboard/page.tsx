@@ -100,7 +100,7 @@ export default function DashboardHome() {
           action: 'agent', 
           payload: { 
             userPoints, 
-            currentOrderData: { link: postLink, type: service, quantity: pointsToSpend } 
+            currentOrderData: { link: postLink, type: service, quantity } 
           },
           messages: [...messages, { role: 'user', content: userMsg }]
         })
