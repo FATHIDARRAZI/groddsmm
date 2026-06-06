@@ -22,6 +22,13 @@ import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
 import EnvGuard from '@/components/EnvGuard';
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata: Metadata = {
   title: 'Grodd Media | تسويق رقمي احترافي، ترويج، ووصول عضوي',
   description: 'وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل، إدارة الحملات الترويجية، وتسريع الوصول العضوي للعلامات التجارية وصناع المحتوى.',
@@ -38,6 +45,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`dark ${cairo.variable} ${outfit.variable}`}>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
