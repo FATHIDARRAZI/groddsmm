@@ -9,12 +9,23 @@ import SafeAdSlot from './SafeAdSlot';
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [removeAds, setRemoveAds] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createSupabaseClient();
       const { data: { session } } = await supabase.auth.getSession();
-      if (session) setIsLoggedIn(true);
+      if (session) {
+        setIsLoggedIn(true);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('remove_ads')
+          .eq('id', session.user.id)
+          .single();
+        if (profile?.remove_ads) {
+          setRemoveAds(true);
+        }
+      }
     };
     checkAuth();
   }, []);
@@ -28,24 +39,24 @@ export default function Navbar() {
         
         {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
-          <span className="flex items-center gap-2">
-            <i className="fas fa-bolt text-yellow-500"></i> تفاعل حقيقي
-          </span>
-          <span className="flex items-center gap-2">
-            <i className="fas fa-shield-alt text-green-500"></i> آمن 100%
-          </span>
-          
-          <div className="w-px h-6 bg-white/10 mx-2"></div>
-          
-          {isLoggedIn ? (
-            <Link href="/dashboard" className="bg-[#1C1C1E] hover:bg-white/10 text-white px-5 py-2 rounded-xl font-bold shadow-md transition-all border border-white/5 flex items-center gap-2 text-sm">
-              <i className="fas fa-layer-group text-[#FF8577]"></i> لوحة التحكم
-            </Link>
-          ) : (
+          {!isLoggedIn && (
             <>
+              <span className="flex items-center gap-2">
+                <i className="fas fa-bolt text-yellow-500"></i> تفاعل حقيقي
+              </span>
+              <span className="flex items-center gap-2">
+                <i className="fas fa-shield-alt text-green-500"></i> آمن 100%
+              </span>
+              <div className="w-px h-6 bg-white/10 mx-2"></div>
               <Link href="/auth/login" className="font-bold hover:text-white transition-colors">تسجيل الدخول</Link>
               <Link href="/auth/signup" className="bg-[#ec4899] hover:bg-[#db2777] text-white px-5 py-2 rounded-xl font-bold shadow-[0_0_15px_rgba(236,72,153,0.3)] transition-all">إنشاء حساب</Link>
             </>
+          )}
+
+          {isLoggedIn && (
+            <Link href="/dashboard" className="bg-[#1C1C1E] hover:bg-white/10 text-white px-5 py-2 rounded-xl font-bold shadow-md transition-all border border-white/5 flex items-center gap-2 text-sm">
+              <i className="fas fa-layer-group text-[#FF8577]"></i> لوحة التحكم
+            </Link>
           )}
         </div>
 
@@ -93,9 +104,14 @@ export default function Navbar() {
           </div>
 
           {/* Small Mobile Ad Placeholder */}
-          <div className="w-full flex justify-center mt-2 p-2 bg-[#121827] border border-white/5 rounded-xl shadow-inner">
-             <SafeAdSlot src="/ad-320.html" width="320" height="50" className="mx-auto" />
-          </div>
+          {!removeAds && (
+            <div className="w-full flex flex-col justify-center items-center mt-2 p-2 bg-[#121827] border border-white/5 rounded-xl shadow-inner relative">
+               <div className="w-full flex justify-end px-2 mb-1">
+                  <Link href="/dashboard/store" onClick={() => setIsOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+               </div>
+               <SafeAdSlot src="/ad-320.html" width="320" height="50" className="mx-auto" />
+            </div>
+          )}
         </div>
       )}
     </nav>
