@@ -30,6 +30,13 @@ body {
   color: var(--foreground);
   overflow-x: hidden;
   letter-spacing: -0.01em;
+  /* Prevent double-tap zoom on Android */
+  touch-action: manipulation;
+}
+
+html {
+  /* Prevent iOS Safari pinch zoom via CSS */
+  touch-action: manipulation;
 }
 
 h1, h2, h3, h4, .font-outfit {
