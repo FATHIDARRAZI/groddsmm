@@ -89,7 +89,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-[#0B0F19] rounded-3xl border border-white/5 shadow-2xl dir-rtl mb-12 relative z-50">
+    <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-[#0B0F19] rounded-3xl border border-white/5 shadow-2xl dir-rtl mb-12">
       
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-72 bg-[#121214] border-l border-white/5 shrink-0 relative z-20 rounded-r-3xl overflow-hidden">
@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col relative w-full overflow-hidden bg-gradient-to-tl from-[#0B0F19] to-[#141416]">
         {/* Mobile Header */}
-        <header className="md:hidden bg-[#121214] border-b border-white/5 p-4 flex items-center justify-between z-30 sticky top-0 shadow-lg">
+        <header className="md:hidden bg-[#121214] border-b border-white/5 p-4 flex items-center justify-between sticky top-0 shadow-lg" style={{zIndex: 40}}>
           <div className="flex items-center gap-4">
              <button type="button" onClick={() => setIsMobileMenuOpen(true)} className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-pointer touch-manipulation relative z-50">
                <i className="fas fa-bars text-lg pointer-events-none"></i>
@@ -173,7 +173,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
         </header>
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-10 relative z-10 w-full custom-scrollbar pb-24 md:pb-10">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-10 w-full custom-scrollbar pb-24 md:pb-10">
            {children}
 
             {isClient && (
@@ -223,7 +223,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Mobile Sidebar Overlay (Hamburger Drawer) */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-[100000] md:hidden">
+        <div className="fixed inset-0 md:hidden" style={{zIndex: 999999}}>
           <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}></div>
           <aside className="absolute right-0 top-0 h-full w-72 bg-[#121214] border-l border-white/5 flex flex-col shadow-2xl animate-fade-in dir-rtl z-10">
             <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#0B0F19]/50">
