@@ -1,11 +1,14 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import SafeAdSlot from './SafeAdSlot';
+import RemoveAdsChatModal from './RemoveAdsChatModal';
 
 export default function DashboardAdModal({ removeAds = false }: { removeAds?: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
   const [hasClosed, setHasClosed] = useState(false);
+  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   // Initial 15s delay before showing the ad
   useEffect(() => {
@@ -71,6 +74,13 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
           إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
         </p>
 
+        <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-center gap-2">
+          <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+          <span className="text-slate-600 text-[10px]">|</span>
+          <button onClick={() => { setShowModal(false); setIsAiChatOpen(true); }} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
+        </div>
+
+        <RemoveAdsChatModal isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} />
       </div>
     </div>
   );

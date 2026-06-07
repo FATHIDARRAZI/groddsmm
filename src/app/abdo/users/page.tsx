@@ -118,6 +118,34 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleToggleRemoveAds = async (targetUserId: string, currentRemoveAds: boolean) => {
+    setUpdating(targetUserId);
+
+    // Optimistic Update
+    const originalUsers = [...users];
+    setUsers(users.map((u: any) => 
+      u.id === targetUserId ? { ...u, remove_ads: !currentRemoveAds } : u
+    ));
+
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle_remove_ads', targetUserId, removeAds: !currentRemoveAds })
+      });
+      if (res.ok) {
+        await fetchUsers();
+      } else {
+        setUsers(originalUsers);
+        alert('تعذر تغيير حالة الإعلانات للمستخدم');
+      }
+    } catch (e) {
+      setUsers(originalUsers);
+    } finally {
+      setUpdating(null);
+    }
+  };
+
   const handleDeleteUser = async (targetUserId: string, targetName: string) => {
     const confirmed = window.confirm(`هل أنت متأكد من حذف حساب "${targetName}" نهائياً؟ لا يمكن التراجع عن هذا الإجراء.`);
     if (!confirmed) return;
@@ -243,6 +271,7 @@ export default function AdminUsersPage() {
                      <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest">المعرف (UID)</th>
                      <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">الرصيد الحقيقي</th>
                      <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">الحالة</th>
+                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">إزالة الإعلانات</th>
                      <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">تعديل الرصيد</th>
                   </tr>
                </thead>
@@ -278,35 +307,52 @@ export default function AdminUsersPage() {
                               <span className="text-slate-600 text-[10px] uppercase font-bold">Points</span>
                             </div>
                          </td>
-                          <td className="px-6 py-5 text-center">
-                            {user.is_admin ? (
-                              <span className="px-4 py-1 rounded-full text-[10px] font-black border bg-blue-500/10 text-blue-500 border-blue-500/20">
-                                مسؤول (ADMIN)
-                              </span>
-                            ) : (
-                              <div className="flex items-center justify-center gap-2">
-                                <button 
-                                  onClick={() => handleToggleBan(user.id, user.is_banned)}
-                                  disabled={!!updating}
-                                  className={`px-4 py-1 rounded-full text-[10px] font-black border transition-all ${
-                                    user.is_banned 
-                                      ? 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white' 
-                                      : 'bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500 hover:text-white'
-                                  }`}
-                                >
-                                  {user.is_banned ? 'محظور' : 'نشط'}
-                                </button>
-                                <button 
-                                  onClick={() => handleDeleteUser(user.id, user.full_name || user.fullName || user.username)}
-                                  disabled={!!updating}
-                                  className="w-8 h-8 rounded-full bg-red-600/10 text-red-500 border border-red-600/20 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-lg shadow-red-600/5 group"
-                                  title="حذف الحساب نهائياً"
-                                >
-                                   <i className="fas fa-trash-alt text-[10px]"></i>
-                                </button>
-                              </div>
-                            )}
-                          </td>
+                           <td className="px-6 py-5 text-center">
+                             {user.is_admin ? (
+                               <span className="px-4 py-1 rounded-full text-[10px] font-black border bg-blue-500/10 text-blue-500 border-blue-500/20">
+                                 مسؤول (ADMIN)
+                               </span>
+                             ) : (
+                               <div className="flex items-center justify-center gap-2">
+                                 <button 
+                                   onClick={() => handleToggleBan(user.id, user.is_banned)}
+                                   disabled={!!updating}
+                                   className={`px-4 py-1 rounded-full text-[10px] font-black border transition-all ${
+                                     user.is_banned 
+                                       ? 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white' 
+                                       : 'bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500 hover:text-white'
+                                   }`}
+                                 >
+                                   {user.is_banned ? 'محظور' : 'نشط'}
+                                 </button>
+                                 <button 
+                                   onClick={() => handleDeleteUser(user.id, user.full_name || user.fullName || user.username)}
+                                   disabled={!!updating}
+                                   className="w-8 h-8 rounded-full bg-red-600/10 text-red-500 border border-red-600/20 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-lg shadow-red-600/5 group"
+                                   title="حذف الحساب نهائياً"
+                                 >
+                                    <i className="fas fa-trash-alt text-[10px]"></i>
+                                 </button>
+                               </div>
+                             )}
+                           </td>
+                           <td className="px-6 py-5 text-center">
+                             {!user.is_admin ? (
+                               <button 
+                                 onClick={() => handleToggleRemoveAds(user.id, !!user.remove_ads)}
+                                 disabled={!!updating}
+                                 className={`px-4 py-1 rounded-full text-[10px] font-black border transition-all ${
+                                   user.remove_ads 
+                                     ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500 hover:text-white' 
+                                     : 'bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500 hover:text-white'
+                                 }`}
+                               >
+                                 {user.remove_ads ? 'بدون إعلانات' : 'مع إعلانات'}
+                               </button>
+                             ) : (
+                               <span className="text-slate-600 text-xs">-</span>
+                             )}
+                           </td>
                          <td className="px-6 py-5">
                             <div className="flex items-center justify-center gap-2 max-w-[200px] mx-auto">
                                <input 
