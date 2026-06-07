@@ -1,65 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-}
+import React, { useState } from 'react';
+import RemoveAdsChatModal from '@/components/RemoveAdsChatModal';
 
 export default function RemoveAdsPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: 'مرحباً بك! أنا المساعد الذكي لوكالة Grodd Media. كيف يمكنني مساعدتك اليوم بخصوص ميزة "إزالة الإعلانات"؟ يمكنك سؤالي عن المميزات، السعر، أو كيفية الدفع والتفعيل! 🚀',
-    },
-  ]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
-
-  const quickQuestions = [
-    'ما هي مميزات إزالة الإعلانات؟',
-    'كم سعر الخدمة؟',
-    'كيف أقوم بالدفع والتفعيل؟',
-  ];
-
-  const handleSendMessage = async (text: string) => {
-    if (!text.trim() || isTyping) return;
-
-    const userMessage: Message = { role: 'user', content: text };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    setIsTyping(true);
-
-    try {
-      const response = await fetch('/api/ai/remove-ads', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages.slice(1), userMessage],
-        }),
-      });
-
-      const data = await response.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: data.reply || 'عذراً، لم أستطع معالجة طلبك حالياً.' },
-      ]);
-    } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: 'عذراً، حدث خطأ في الاتصال بالخادم.' },
-      ]);
-    } finally {
-      setIsTyping(false);
-    }
-  };
+  const [isChatOpen, setIsChatOpen] = useState(true);
 
   const premiumFeatures = [
     {
@@ -89,7 +34,7 @@ export default function RemoveAdsPage() {
   ];
 
   return (
-    <div className="w-full max-w-6xl mx-auto pb-12 animate-fade-in relative z-10 font-cairo">
+    <div className="w-full max-w-4xl mx-auto pb-24 md:pb-12 animate-fade-in relative z-10 font-cairo">
       
       {/* Cinematic Header */}
       <div className="relative w-full rounded-[3rem] overflow-hidden bg-[#0A0D14] border border-white/5 shadow-2xl mb-12 flex flex-col items-center justify-center py-12 px-6 text-center">
@@ -108,159 +53,78 @@ export default function RemoveAdsPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Features Column (Right side in RTL) */}
-        <div className="lg:col-span-7 space-y-6 order-1 lg:order-2">
-          <div className="bg-[#121214]/80 border border-white/5 rounded-[2.5rem] p-8 space-y-6">
-            <h3 className="text-xl font-black text-white flex items-center gap-3">
-              <i className="fas fa-list-check text-pink-500"></i>
-              مميزات الترقية الفائقة
-            </h3>
-            
-            <div className="grid grid-cols-1 gap-4">
-              {premiumFeatures.map((feat, idx) => (
-                <div key={idx} className="bg-white/[0.02] border border-white/5 rounded-2xl p-5 flex items-start gap-4 hover:border-white/10 transition-all">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-tr ${feat.color} border flex items-center justify-center shrink-0`}>
-                    <i className={`fas ${feat.icon} text-lg`}></i>
-                  </div>
-                  <div className="space-y-1 text-right">
-                    <h4 className="text-white font-bold text-sm">{feat.title}</h4>
-                    <p className="text-slate-400 text-xs leading-relaxed">{feat.description}</p>
-                  </div>
+      <div className="space-y-8">
+        {/* Features Card */}
+        <div className="bg-[#121214]/80 border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
+          <h3 className="text-xl font-black text-white flex items-center gap-3 justify-end">
+            مميزات الترقية الفائقة
+            <i className="fas fa-list-check text-pink-500"></i>
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {premiumFeatures.map((feat, idx) => (
+              <div key={idx} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 flex flex-col items-end text-right hover:border-white/10 hover:bg-white/[0.04] transition-all group">
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feat.color} border flex items-center justify-center mb-4 transition-transform group-hover:scale-105 duration-300`}>
+                  <i className={`fas ${feat.icon} text-lg`}></i>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Payment & Action Card */}
-          <div className="bg-gradient-to-tr from-[#121214] to-[#1C1C1E] border border-white/10 rounded-[2.5rem] p-8 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-pink-400 text-xs font-bold w-fit mx-auto">
-              <i className="fas fa-coins"></i> القيمة والتفعيل
-            </div>
-            <div className="space-y-2">
-              <p className="text-slate-400 text-sm font-bold">تفعيل دائم لمرة واحدة</p>
-              <h3 className="text-4xl font-black text-white">50 درهم فقط</h3>
-            </div>
-            
-            <p className="text-slate-300 text-xs leading-relaxed max-w-md mx-auto">
-              الدفع يتم بشكل آمن وسهل. تواصل معنا على حسابنا الرسمي والوحيد على الإنستغرام وأرسل التحويل وسيقوم فريقنا بتفعيل الميزة لحسابك في دقائق!
-            </p>
-            
-            <a 
-              href="https://www.instagram.com/grodd_media/" 
-              target="_blank" 
-              rel="noreferrer"
-              className="w-full py-4 bg-gradient-to-r from-pink-500 to-[#FF8577] text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)] hover:opacity-95 active:scale-98 transition-all relative overflow-hidden group/btn"
-            >
-              <div className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
-              <i className="fab fa-instagram text-xl"></i> تفعيل عبر إنستغرام الآن
-            </a>
+                <h4 className="text-white font-bold text-sm mb-2">{feat.title}</h4>
+                <p className="text-slate-400 text-xs leading-relaxed">{feat.description}</p>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* AI Column (Left side in RTL) */}
-        <div className="lg:col-span-5 order-2 lg:order-1">
-          <div className="bg-[#121214]/80 border border-white/5 rounded-[2.5rem] flex flex-col overflow-hidden h-[600px] relative shadow-2xl">
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink-500/50 to-transparent"></div>
-            
-            {/* AI Header */}
-            <div className="p-6 bg-white/[0.02] border-b border-white/5 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-500 to-[#FF8577] flex items-center justify-center shadow-[0_0_15px_rgba(236,72,153,0.3)]">
-                <i className="fas fa-robot text-white text-lg"></i>
-              </div>
-              <div className="text-right">
-                <h3 className="text-white font-black text-sm">مستشار الترقية الذكي</h3>
-                <p className="text-[10px] text-green-400 font-bold flex items-center gap-1.5 mt-0.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-                  نشط بالذكاء الاصطناعي
-                </p>
-              </div>
-            </div>
-
-            {/* AI Chat Messages */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4 custom-scrollbar text-right dir-rtl">
-              {messages.map((msg, idx) => (
-                <div 
-                  key={idx} 
-                  className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-start flex-row-reverse' : ''}`}
-                >
-                  {msg.role === 'assistant' ? (
-                    <div className="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
-                      <i className="fas fa-robot text-xs"></i>
-                    </div>
-                  ) : (
-                    <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 text-white flex items-center justify-center shrink-0">
-                      <i className="fas fa-user text-xs"></i>
-                    </div>
-                  )}
-                  
-                  <div 
-                    className={`max-w-[80%] p-4 rounded-2xl text-xs leading-relaxed font-medium ${
-                      msg.role === 'user' 
-                        ? 'bg-gradient-to-tr from-pink-500 to-[#FF8577] text-white rounded-tr-none' 
-                        : 'bg-white/5 border border-white/5 text-slate-200 rounded-tl-none'
-                    }`}
-                  >
-                    {msg.content}
-                  </div>
-                </div>
-              ))}
-              
-              {isTyping && (
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 rounded-lg bg-pink-500/10 border border-pink-500/20 text-pink-400 flex items-center justify-center shrink-0">
-                    <i className="fas fa-robot text-xs"></i>
-                  </div>
-                  <div className="bg-white/5 border border-white/5 p-4 rounded-2xl rounded-tl-none flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                    <span className="w-1.5 h-1.5 bg-pink-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
-
-            {/* AI Footer input */}
-            <div className="p-6 bg-white/[0.01] border-t border-white/5 space-y-4">
-              <div className="flex flex-wrap gap-1.5 justify-end">
-                {quickQuestions.map((q, idx) => (
-                  <button 
-                    key={idx}
-                    onClick={() => handleSendMessage(q)}
-                    disabled={isTyping}
-                    className="text-[9px] text-pink-400 bg-pink-500/5 hover:bg-pink-500/10 border border-pink-500/10 rounded-full px-2.5 py-1.5 font-bold transition-all disabled:opacity-50 cursor-pointer"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-
-              <form 
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  handleSendMessage(input);
-                }}
-                className="flex gap-2"
-              >
-                <input 
-                  type="text" 
-                  placeholder="اسأل المساعد الذكي عن الخدمة..."
-                  className="flex-1 bg-[#18181A] border border-white/5 rounded-xl px-4 py-3 text-xs text-white focus:outline-none focus:border-pink-500/50 text-right"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  disabled={isTyping}
-                />
-                <button 
-                  type="submit"
-                  disabled={isTyping || !input.trim()}
-                  className="bg-gradient-to-r from-pink-500 to-[#FF8577] text-white px-5 rounded-xl text-xs font-black hover:opacity-95 transition-all flex items-center justify-center disabled:opacity-50"
-                >
-                  إرسال
-                </button>
-              </form>
-            </div>
+        {/* Payment & Action Card */}
+        <div className="bg-gradient-to-tr from-[#121214] to-[#1C1C1E] border border-white/10 rounded-[2.5rem] p-8 md:p-10 text-center space-y-6 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-pink-400 text-xs font-bold w-fit mx-auto">
+            <i className="fas fa-coins"></i> القيمة والتفعيل
           </div>
+          <div className="space-y-2">
+            <p className="text-slate-400 text-sm font-bold">تفعيل دائم لمرة واحدة</p>
+            <h3 className="text-4xl font-black text-white">50 درهم فقط</h3>
+          </div>
+          
+          <p className="text-slate-300 text-xs leading-relaxed max-w-md mx-auto">
+            الدفع يتم بشكل آمن وسهل. تواصل معنا على حسابنا الرسمي والوحيد على الإنستغرام وأرسل التحويل وسيقوم فريقنا بتفعيل الميزة لحسابك في دقائق!
+          </p>
+          
+          <a 
+            href="https://www.instagram.com/grodd_media/" 
+            target="_blank" 
+            rel="noreferrer"
+            className="w-full py-4 bg-gradient-to-r from-pink-500 to-[#FF8577] text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)] hover:opacity-95 active:scale-98 transition-all relative overflow-hidden group/btn"
+          >
+            <div className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
+            <i className="fab fa-instagram text-xl"></i> تفعيل عبر إنستغرام الآن
+          </a>
+        </div>
+      </div>
+
+      {/* Floating AI Chat Assistant Widget */}
+      <div className="fixed bottom-24 left-4 md:bottom-8 md:left-8 z-[999999] flex flex-col items-start pointer-events-none dir-ltr">
+        <RemoveAdsChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
+        
+        {/* Floating Bubble Trigger */}
+        <div className="flex items-center gap-3 pointer-events-auto group">
+          <button 
+            onClick={() => setIsChatOpen(!isChatOpen)}
+            className={`relative w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(236,72,153,0.3)] transition-all transform hover:scale-110 active:scale-95 border-2 border-white/10 ${
+              isChatOpen 
+                ? 'bg-[#1C1C1E] text-white rotate-90 shadow-none' 
+                : 'bg-gradient-to-tr from-pink-500 to-[#FF8577] text-white'
+            }`}
+          >
+            <i className={`fas ${isChatOpen ? 'fa-times' : 'fa-comment-dots'} text-xl md:text-2xl`}></i>
+            {!isChatOpen && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-pink-500 rounded-full border-2 border-[#0B0F19] animate-pulse shadow-lg"></span>
+            )}
+          </button>
+          
+          {!isChatOpen && (
+            <div className="bg-white text-black font-black text-[10px] md:text-xs px-4 py-2 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap border border-slate-200 transform translate-x-2 group-hover:translate-x-0">
+              اسأل المساعد الذكي عن إزالة الإعلانات
+            </div>
+          )}
         </div>
       </div>
 
