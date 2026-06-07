@@ -1,11 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import RemoveAdsChatModal from '@/components/RemoveAdsChatModal';
+import React from 'react';
 
 export default function RemoveAdsPage() {
-  const [isChatOpen, setIsChatOpen] = useState(true);
-
   const premiumFeatures = [
     {
       title: 'تجربة خالية تماماً من الإعلانات (100% Ad-Free)',
@@ -34,7 +31,7 @@ export default function RemoveAdsPage() {
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto pb-24 md:pb-12 animate-fade-in relative z-10 font-cairo">
+    <div className="w-full max-w-4xl mx-auto pb-12 animate-fade-in relative z-10 font-cairo">
       
       {/* Cinematic Header */}
       <div className="relative w-full rounded-[3rem] overflow-hidden bg-[#0A0D14] border border-white/5 shadow-2xl mb-12 flex flex-col items-center justify-center py-12 px-6 text-center">
@@ -97,34 +94,6 @@ export default function RemoveAdsPage() {
             <div className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
             <i className="fab fa-instagram text-xl"></i> تفعيل عبر إنستغرام الآن
           </a>
-        </div>
-      </div>
-
-      {/* Floating AI Chat Assistant Widget */}
-      <div className="fixed bottom-24 left-4 md:bottom-8 md:left-8 z-[999999] flex flex-col items-start pointer-events-none dir-ltr">
-        <RemoveAdsChatModal isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-        
-        {/* Floating Bubble Trigger */}
-        <div className="flex items-center gap-3 pointer-events-auto group">
-          <button 
-            onClick={() => setIsChatOpen(!isChatOpen)}
-            className={`relative w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center shadow-[0_10px_40px_rgba(236,72,153,0.3)] transition-all transform hover:scale-110 active:scale-95 border-2 border-white/10 ${
-              isChatOpen 
-                ? 'bg-[#1C1C1E] text-white rotate-90 shadow-none' 
-                : 'bg-gradient-to-tr from-pink-500 to-[#FF8577] text-white'
-            }`}
-          >
-            <i className={`fas ${isChatOpen ? 'fa-times' : 'fa-comment-dots'} text-xl md:text-2xl`}></i>
-            {!isChatOpen && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-pink-500 rounded-full border-2 border-[#0B0F19] animate-pulse shadow-lg"></span>
-            )}
-          </button>
-          
-          {!isChatOpen && (
-            <div className="bg-white text-black font-black text-[10px] md:text-xs px-4 py-2 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none whitespace-nowrap border border-slate-200 transform translate-x-2 group-hover:translate-x-0">
-              اسأل المساعد الذكي عن إزالة الإعلانات
-            </div>
-          )}
         </div>
       </div>
 
