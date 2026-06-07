@@ -7,7 +7,7 @@ export default function StorePage() {
   const packages = [
     { 
       points: 30000, 
-      price: '$5', 
+      price: '50', 
       name: 'الباقة المبتدئة', 
       highlight: false, 
       icon: 'fa-rocket', 
@@ -18,7 +18,7 @@ export default function StorePage() {
     },
     { 
       points: 150000, 
-      price: '$20', 
+      price: '200', 
       name: 'باقة المحترفين', 
       highlight: true, 
       icon: 'fa-fire', 
@@ -29,7 +29,7 @@ export default function StorePage() {
     },
     { 
       points: 450000, 
-      price: '$50', 
+      price: '500', 
       name: 'باقة الوكالات', 
       highlight: false, 
       icon: 'fa-crown', 
@@ -99,7 +99,7 @@ export default function StorePage() {
              <div className="mb-8 relative z-10">
                <div className="flex items-baseline gap-2 mb-2">
                  <span className="text-5xl font-black text-white">{pkg.price}</span>
-                 <span className="text-slate-400 font-bold">USD</span>
+                 <span className="text-slate-400 font-bold">درهم</span>
                </div>
                <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-xl mb-4">
                  <i className="fas fa-coins text-yellow-500"></i>

@@ -107,7 +107,7 @@ export default function Navbar() {
           {!removeAds && (
             <div className="w-full flex flex-col justify-center items-center mt-2 p-2 bg-[#121827] border border-white/5 rounded-xl shadow-inner relative">
                <div className="w-full flex justify-end px-2 mb-1">
-                  <Link href="/dashboard/store" onClick={() => setIsOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+                  <Link href="/dashboard/store" onClick={() => setIsOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
                </div>
                <SafeAdSlot src="/ad-320.html" width="320" height="50" className="mx-auto" />
             </div>
