@@ -21,7 +21,6 @@ export default function Home() {
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [removeAds, setRemoveAds] = useState(false);
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
@@ -41,16 +40,7 @@ export default function Home() {
     checkRemoveAds();
   }, []);
 
-  // Screen size detection for responsive ads
-  useEffect(() => {
-    const initTimer = setTimeout(() => setIsMobile(window.innerWidth < 768), 0);
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => {
-      clearTimeout(initTimer);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+
 
   // Idle Timer (15s inactivity)
   useEffect(() => {
@@ -193,17 +183,12 @@ export default function Home() {
           <div className="w-full flex justify-end px-2 mb-1">
             <Link href="/dashboard/store" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
           </div>
-          {isMobile !== null && (
-            isMobile ? (
-              <div className="flex w-full justify-center min-h-[250px]">
-                <SafeAdSlot src="/ad-300.html" width="300" height="250" loading="eager" className="bg-transparent rounded-lg" />
-              </div>
-            ) : (
-              <div className="flex w-full justify-center">
-                <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="eager" className="bg-transparent rounded-lg" />
-              </div>
-            )
-          )}
+          <div className="hidden md:flex w-full justify-center">
+            <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="eager" className="bg-transparent rounded-lg" />
+          </div>
+          <div className="flex md:hidden w-full justify-center min-h-[250px]">
+            <SafeAdSlot src="/ad-300.html" width="300" height="250" loading="eager" className="bg-transparent rounded-lg" />
+          </div>
         </div>
       )}
 
@@ -325,19 +310,14 @@ export default function Home() {
             
             {/* Adsterra Display Block */}
             <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(255,133,119,0.1)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] md:min-h-[90px] border border-white/5 relative">
-              {isMobile !== null && (
-                isMobile ? (
-                  <div className="flex w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
-                    <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
-                      <SafeAdSlot src="/ad-300.html" width="300" height="250" className="mx-auto" />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex w-full items-center justify-center min-h-[90px]">
-                      <SafeAdSlot src="/ad-728.html" width="728" height="90" className="mx-auto" />
-                  </div>
-                )
-              )}
+              <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
+                <SafeAdSlot src="/ad-728.html" width="728" height="90" className="mx-auto" />
+              </div>
+              <div className="flex md:hidden w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
+                <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
+                  <SafeAdSlot src="/ad-300.html" width="300" height="250" className="mx-auto" />
+                </div>
+              </div>
             </div>
             
             {/* Countdown Bar */}
@@ -399,17 +379,12 @@ export default function Home() {
             <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
             <Link href="/dashboard/store" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
           </div>
-          {isMobile !== null && (
-            isMobile ? (
-              <div className="flex w-full justify-center min-h-[250px] overflow-hidden">
-                <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
-              </div>
-            ) : (
-              <div className="flex w-full justify-center">
-                <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
-              </div>
-            )
-          )}
+          <div className="hidden md:flex w-full justify-center">
+            <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+          </div>
+          <div className="flex md:hidden w-full justify-center min-h-[250px] overflow-hidden">
+            <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
+          </div>
         </div>
       )}
 
@@ -568,17 +543,12 @@ export default function Home() {
             <Link href="/dashboard/store" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟ ($5)</Link>
           </div>
           <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
-            {isMobile !== null && (
-              isMobile ? (
-                <div className="flex w-full items-center justify-center">
-                  <SafeAdSlot src="/ad-320.html" width="320" height="50" />
-                </div>
-              ) : (
-                <div className="flex w-full items-center justify-center">
-                  <SafeAdSlot src="/ad-468.html" width="468" height="60" />
-                </div>
-              )
-            )}
+            <div className="hidden md:flex w-full items-center justify-center">
+              <SafeAdSlot src="/ad-468.html" width="468" height="60" />
+            </div>
+            <div className="flex md:hidden w-full items-center justify-center">
+              <SafeAdSlot src="/ad-320.html" width="320" height="50" />
+            </div>
           </div>
         </div>
       )}

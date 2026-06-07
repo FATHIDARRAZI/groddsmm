@@ -26,17 +26,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isClient, setIsClient] = useState<boolean>(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean | null>(null);
 
   useEffect(() => {
     setIsClient(true);
-    const initTimer = setTimeout(() => setIsMobile(window.innerWidth < 768), 0);
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => {
-      clearTimeout(initTimer);
-      window.removeEventListener('resize', handleResize);
-    };
   }, []);
 
   const handleLogout = async () => {
@@ -179,18 +171,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {isClient && (
               <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
                  <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-4">إعلان سبونسر</p>
-                 {/* Conditional Ad Rendering */}
-                 {isMobile !== null && (
-                   isMobile ? (
-                     <div className="flex w-full justify-center">
-                       <SafeAdSlot key={`${pathname}-mobile`} src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
-                     </div>
-                   ) : (
-                     <div className="flex w-full justify-center">
-                       <SafeAdSlot key={`${pathname}-desktop`} src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
-                     </div>
-                   )
-                 )}
+                 {/* Desktop Ad */}
+                 <div className="hidden md:flex w-full justify-center">
+                   <SafeAdSlot key={`${pathname}-desktop`} src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+                 </div>
+
+                 {/* Mobile Ad */}
+                 <div className="flex md:hidden w-full justify-center">
+                   <SafeAdSlot key={`${pathname}-mobile`} src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
+                 </div>
               </div>
             )}
         </main>
