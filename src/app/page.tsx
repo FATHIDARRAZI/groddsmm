@@ -6,35 +6,7 @@ import Image from 'next/image';
 import ReCAPTCHA from 'react-google-recaptcha';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import Navbar from '@/components/Navbar';
-
-const AdsterraNative = ({ idStr, src }: { idStr: string, src: string }) => {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (!ref.current || ref.current.firstChild) return;
-    const s = document.createElement('script');
-    s.async = true;
-    s.dataset.cfasync = 'false';
-    s.src = src;
-    const d = document.createElement('div');
-    d.id = idStr;
-    ref.current.appendChild(s);
-    ref.current.appendChild(d);
-
-    const container = ref.current;
-    return () => {
-      if (container) {
-        try {
-          while (container.firstChild) {
-            container.removeChild(container.firstChild);
-          }
-        } catch (e) {
-          console.warn('Silent cleanup error:', e);
-        }
-      }
-    };
-  }, [idStr, src]);
-  return <div ref={ref} className="w-full flex justify-center" />;
-};
+import { createSupabaseClient } from '@/lib/supabase';
 
 type ServiceType = 'likes' | 'views';
 
@@ -50,7 +22,24 @@ export default function Home() {
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
+  const [removeAds, setRemoveAds] = useState(false);
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
+
+  // Check if user has remove_ads enabled
+  useEffect(() => {
+    async function checkRemoveAds() {
+      const supabase = createSupabaseClient();
+      if (!supabase) return;
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
+        if (profile?.remove_ads) {
+          setRemoveAds(true);
+        }
+      }
+    }
+    checkRemoveAds();
+  }, []);
 
   // Screen size detection for responsive ads
   useEffect(() => {
@@ -79,7 +68,7 @@ export default function Home() {
 
     resetTimer();
 
-    const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    const events = ['mousedown', 'keydown', 'touchstart'];
     events.forEach(event => document.addEventListener(event, resetTimer, true));
 
     return () => {
@@ -169,8 +158,12 @@ export default function Home() {
     
 
     setErrorMsg('');
-    setStep(1.5);
-    setSponsorTimeLeft(30);
+    if (removeAds) {
+      submitSmmRequest();
+    } else {
+      setStep(1.5);
+      setSponsorTimeLeft(30);
+    }
   };
 
   // Manage sponsor screen timer
@@ -195,19 +188,24 @@ export default function Home() {
   return (
     <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
       {/* Top Banner Ad */}
-      <div className="w-full flex flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner min-h-[106px] max-w-4xl mx-auto">
-        {isMobile !== null && (
-          isMobile ? (
-            <div className="flex w-full justify-center min-h-[250px]">
-              <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
-            </div>
-          ) : (
-            <div className="flex w-full justify-center">
-              <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
-            </div>
-          )
-        )}
-      </div>
+      {!removeAds && (
+        <div className="w-full flex flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner min-h-[106px] max-w-4xl mx-auto relative">
+          <div className="w-full flex justify-end px-2 mb-1">
+            <Link href="/dashboard/store" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+          </div>
+          {isMobile !== null && (
+            isMobile ? (
+              <div className="flex w-full justify-center min-h-[250px]">
+                <SafeAdSlot src="/ad-300.html" width="300" height="250" loading="eager" className="bg-transparent rounded-lg" />
+              </div>
+            ) : (
+              <div className="flex w-full justify-center">
+                <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="eager" className="bg-transparent rounded-lg" />
+              </div>
+            )
+          )}
+        </div>
+      )}
 
       <div className="text-center mb-10 w-full z-10 relative">
         <h1 className="text-4xl md:text-6xl font-black text-white mb-2 leading-relaxed">ابدأ إطلاق</h1>
@@ -379,29 +377,41 @@ export default function Home() {
 
 
       {/* Adsterra Native Banner */}
-      <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden">
-        <h3 className="text-slate-400 font-bold mb-4 text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
-        <AdsterraNative 
-           idStr="container-2700670eebf5646c9f8d65d6e35dec31" 
-           src="https://evacuateenclose.com/2700670eebf5646c9f8d65d6e35dec31/invoke.js" 
-        />
-      </div>
+      {!removeAds && (
+        <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden relative">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-slate-400 font-bold text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
+            <Link href="/dashboard/store" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+          </div>
+          <SafeAdSlot 
+             src="/ad-native.html" 
+             width="100%" 
+             height="220" 
+             className="bg-transparent rounded-lg" 
+          />
+        </div>
+      )}
 
       {/* Adsterra 728x90 Banner */}
-      <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden">
-        <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest mb-4">إعلان سبونسر</p>
-        {isMobile !== null && (
-          isMobile ? (
-            <div className="flex w-full justify-center min-h-[250px] overflow-hidden">
-              <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
-            </div>
-          ) : (
-            <div className="flex w-full justify-center">
-              <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
-            </div>
-          )
-        )}
-      </div>
+      {!removeAds && (
+        <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden relative">
+          <div className="w-full flex justify-between items-center mb-4">
+            <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
+            <Link href="/dashboard/store" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+          </div>
+          {isMobile !== null && (
+            isMobile ? (
+              <div className="flex w-full justify-center min-h-[250px] overflow-hidden">
+                <SafeAdSlot src="/ad-300.html" width="300" height="250" className="bg-transparent rounded-lg" />
+              </div>
+            ) : (
+              <div className="flex w-full justify-center">
+                <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
+              </div>
+            )
+          )}
+        </div>
+      )}
 
       {/* Sleek Horizontal Features Row */}
       <div className="flex flex-wrap w-full justify-center mt-8 gap-4 sm:gap-6 md:gap-12 mb-16 relative z-10 px-4">
@@ -542,34 +552,39 @@ export default function Home() {
         </div>
       </div>
       {/* Sticky Banner Ad */}
-      <div 
-        className={`fixed left-0 right-0 z-50 flex flex-col items-center transition-all duration-300 ease-in-out ${
-          isStickyVisible ? 'bottom-0' : '-bottom-[80px]'
-        }`}
-      >
-        <button 
-          onClick={() => setIsStickyVisible(!isStickyVisible)}
-          className="w-12 h-6 bg-white rounded-t-lg flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.15)] hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 border-b-0"
+      {!removeAds && (
+        <div 
+          className={`fixed left-0 right-0 z-50 flex flex-col items-center transition-all duration-300 ease-in-out ${
+            isStickyVisible ? 'bottom-0' : '-bottom-[80px]'
+          }`}
         >
-          <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
-        </button>
-        <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
-          {isMobile !== null && (
-            isMobile ? (
-              <div className="flex w-full items-center justify-center">
-                <SafeAdSlot src="/ad-320.html" width="320" height="50" />
-              </div>
-            ) : (
-              <div className="flex w-full items-center justify-center">
-                <SafeAdSlot src="/ad-468.html" width="468" height="60" />
-              </div>
-            )
-          )}
+          <div className="flex items-center">
+            <button 
+              onClick={() => setIsStickyVisible(!isStickyVisible)}
+              className="w-12 h-6 bg-white rounded-t-lg flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.15)] hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 border-b-0"
+            >
+              <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
+            </button>
+            <Link href="/dashboard/store" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟ ($5)</Link>
+          </div>
+          <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
+            {isMobile !== null && (
+              isMobile ? (
+                <div className="flex w-full items-center justify-center">
+                  <SafeAdSlot src="/ad-320.html" width="320" height="50" />
+                </div>
+              ) : (
+                <div className="flex w-full items-center justify-center">
+                  <SafeAdSlot src="/ad-468.html" width="468" height="60" />
+                </div>
+              )
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Idle Ad Modal */}
-      {showIdleAd && (
+      {showIdleAd && !removeAds && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-xl transition-all block"></div>
           <div className="relative z-10 w-full max-w-[400px] flex flex-col items-center animate-fade-in bg-[#121827] border border-white/10 rounded-2xl shadow-2xl p-6">
@@ -579,7 +594,10 @@ export default function Home() {
             >
               <i className="fas fa-times"></i>
             </button>
-            <h3 className="text-xl font-bold text-white mb-4 text-center mt-2">إعلان مدعوم</h3>
+            <div className="w-full flex justify-between items-center mb-4 mt-2">
+              <h3 className="text-xl font-bold text-white">إعلان مدعوم</h3>
+              <Link href="/dashboard/store" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ ($5)</Link>
+            </div>
             <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
             
             <div className="w-full h-[250px] bg-white/5 rounded-xl overflow-hidden flex items-center justify-center relative shadow-inner">

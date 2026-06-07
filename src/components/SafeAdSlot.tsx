@@ -8,6 +8,7 @@ interface SafeAdSlotProps {
   height: string;
   className?: string;
   style?: React.CSSProperties;
+  loading?: 'lazy' | 'eager';
 }
 
 /**
@@ -31,7 +32,7 @@ if (typeof window !== 'undefined' && !(window as any).__patchedRemoveChild) {
     }
   };
 }
-export default function SafeAdSlot({ src, width, height, className, style }: SafeAdSlotProps) {
+export default function SafeAdSlot({ src, width, height, className, style, loading }: SafeAdSlotProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -49,7 +50,7 @@ export default function SafeAdSlot({ src, width, height, className, style }: Saf
     iframe.setAttribute('frameBorder', '0');
     iframe.setAttribute('scrolling', 'no');
     if (className) iframe.className = className;
-    iframe.loading = "lazy";
+    iframe.loading = loading || "lazy";
     
     // Add some default styles for ad iframes
     iframe.style.backgroundColor = 'transparent';
@@ -74,7 +75,7 @@ export default function SafeAdSlot({ src, width, height, className, style }: Saf
         console.warn('SafeAdSlot: Cleanup ignored error', e);
       }
     };
-  }, [src, width, height, className]);
+  }, [src, width, height, className, loading]);
 
   // Use the provided width/height for the container to maintain layout stability
   return (

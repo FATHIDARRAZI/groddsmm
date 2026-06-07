@@ -50,9 +50,13 @@ export default function RootLayout({
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
-        <Script
-          src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"
-          strategy="afterInteractive"
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10TBd5qkMXK+0Pb/FcjYwbeR3nXnmjhk968tOPhyZ91tS0dOm3s9shux5+t9OQ5OP3uqyi5S4M5lg=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+          precedence="default"
         />
         <script
           type="application/ld+json"
@@ -72,27 +76,6 @@ export default function RootLayout({
             })
           }}
         />
-        {/* Prevent pinch-zoom & double-tap zoom on iOS Safari and Android */}
-        <script dangerouslySetInnerHTML={{ __html: `
-          (function() {
-            // Block pinch-to-zoom (multi-touch)
-            document.addEventListener('touchmove', function(e) {
-              if (e.touches && e.touches.length > 1) {
-                e.preventDefault();
-              }
-            }, { passive: false });
-
-            // Block double-tap zoom
-            var lastTouchEnd = 0;
-            document.addEventListener('touchend', function(e) {
-              var now = Date.now();
-              if (now - lastTouchEnd <= 300) {
-                e.preventDefault();
-              }
-              lastTouchEnd = now;
-            }, false);
-          })();
-        `}} />
       </head>
 
 
@@ -163,7 +146,7 @@ export default function RootLayout({
             </div>
             
             <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-              <div>&copy; {new Date().getFullYear()} Grodd SMM by Grodd Labs. جميع الحقوق محفوظة.</div>
+              <div>&copy; 2026 Grodd SMM by Grodd Labs. جميع الحقوق محفوظة.</div>
               <div className="flex items-center gap-2">
                 <span>صنع بكل <i className="fas fa-heart text-pink-500 mx-1"></i> في</span>
                 <span className="text-white font-bold">Grodd Labs</span>

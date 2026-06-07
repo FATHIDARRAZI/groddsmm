@@ -60,6 +60,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true });
     }
 
+    if (action === 'toggle_remove_ads') {
+      const { removeAds } = body;
+      await adminSupabase.from('profiles').update({ remove_ads: removeAds }).eq('id', targetUserId);
+      return NextResponse.json({ success: true });
+    }
+
     if (action === 'create_user') {
       const { email, password, fullName } = body;
       if (!email || !password || !fullName) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });

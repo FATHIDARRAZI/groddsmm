@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import SafeAdSlot from './SafeAdSlot';
 
-export default function DashboardAdModal() {
+export default function DashboardAdModal({ removeAds = false }: { removeAds?: boolean }) {
   const [showModal, setShowModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
   const [hasClosed, setHasClosed] = useState(false);
 
   // Initial 15s delay before showing the ad
   useEffect(() => {
+    if (removeAds) return;
     if (hasClosed) return;
     
     // Set a timer to trigger the modal 15 seconds after page load/navigation
@@ -18,18 +19,20 @@ export default function DashboardAdModal() {
     }, 15000);
     
     return () => clearTimeout(timer);
-  }, [hasClosed]);
+  }, [hasClosed, removeAds]);
 
   // Handle forced UI timer countdown
   useEffect(() => {
+    if (removeAds) return;
     if (showModal && timeLeft > 0) {
       const waitTimer = setInterval(() => {
         setTimeLeft(prev => prev - 1);
       }, 1000);
       return () => clearInterval(waitTimer);
     }
-  }, [showModal, timeLeft]);
+  }, [showModal, timeLeft, removeAds]);
 
+  if (removeAds) return null;
   if (!showModal) return null;
 
   return (

@@ -41,7 +41,7 @@ export default function PrivacyPolicy() {
             </p>
 
             <div className="mt-12 p-4 bg-white/5 border border-white/10 rounded-xl text-center text-sm">
-              آخر تحديث: {new Date().toLocaleDateString('ar-EG')} - إذا كانت لديك استفسارات، يرجى التواصل معنا عبر صفحة (اتصل بنا).
+              آخر تحديث: ٧ يونيو ٢٠٢٦ - إذا كانت لديك استفسارات، يرجى التواصل معنا عبر صفحة (اتصل بنا).
             </div>
           </div>
         </div>
