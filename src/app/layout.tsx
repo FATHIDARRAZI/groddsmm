@@ -53,10 +53,6 @@ export default function RootLayout({
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          integrity="sha512-9usAa10TBd5qkMXK+0Pb/FcjYwbeR3nXnmjhk968tOPhyZ91tS0dOm3s9shux5+t9OQ5OP3uqyi5S4M5lg=="
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-          precedence="default"
         />
         <script
           type="application/ld+json"
