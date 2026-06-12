@@ -5,13 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from './SafeAdSlot';
-import RemoveAdsChatModal from './RemoveAdsChatModal';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [removeAds, setRemoveAds] = useState(false);
-  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -108,17 +106,14 @@ export default function Navbar() {
           {/* Small Mobile Ad Placeholder */}
           {!removeAds && (
             <div className="w-full flex flex-col justify-center items-center mt-2 p-2 bg-[#121827] border border-white/5 rounded-xl shadow-inner relative">
-                <div className="w-full flex justify-end px-2 mb-1 gap-2 items-center">
+                <div className="w-full flex justify-end px-2 mb-1">
                    <Link href="/dashboard/remove-ads" onClick={() => setIsOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-                   <span className="text-slate-600 text-[9px]">|</span>
-                   <button onClick={() => { setIsOpen(false); setIsAiChatOpen(true); }} className="text-[9px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
                 </div>
                <SafeAdSlot src="/ad-320.html" width="320" height="50" className="mx-auto" />
             </div>
           )}
         </div>
       )}
-      <RemoveAdsChatModal isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} />
     </nav>
   );
 }

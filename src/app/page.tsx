@@ -7,7 +7,6 @@ import ReCAPTCHA from 'react-google-recaptcha';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import Navbar from '@/components/Navbar';
 import { createSupabaseClient } from '@/lib/supabase';
-import RemoveAdsChatModal from '@/components/RemoveAdsChatModal';
 
 type ServiceType = 'likes' | 'views';
 
@@ -23,7 +22,6 @@ export default function Home() {
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
   const [removeAds, setRemoveAds] = useState(false);
-  const [isAiChatOpen, setIsAiChatOpen] = useState(false);
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
   // Check if user has remove_ads enabled
@@ -182,10 +180,8 @@ export default function Home() {
       {/* Top Banner Ad */}
       {!removeAds && (
         <div className="w-full flex flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner min-h-[106px] max-w-4xl mx-auto relative">
-          <div className="w-full flex justify-end px-2 mb-1 gap-2 items-center">
+          <div className="w-full flex justify-end px-2 mb-1">
             <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-            <span className="text-slate-600 text-[10px]">|</span>
-            <button onClick={() => setIsAiChatOpen(true)} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
           </div>
           <div className="hidden md:flex w-full justify-center">
             <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="eager" className="bg-transparent rounded-lg" />
@@ -306,10 +302,8 @@ export default function Home() {
           <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
             {/* Modal Header */}
             <div className="w-full flex justify-between items-end mb-2">
-              <div className="flex items-center gap-2 bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
+              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
                 <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-                <span className="text-slate-600 text-[10px]">|</span>
-                <button onClick={() => setIsAiChatOpen(true)} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
               </div>
               <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
                 <span>يرجى الانتظار {sponsorTimeLeft} ثانية</span>
@@ -370,11 +364,7 @@ export default function Home() {
         <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden relative">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-slate-400 font-bold text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
-            <div className="flex items-center gap-2">
-              <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-              <span className="text-slate-600 text-[10px]">|</span>
-              <button onClick={() => setIsAiChatOpen(true)} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
-            </div>
+            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
           </div>
           <SafeAdSlot 
              src="/ad-native.html" 
@@ -390,11 +380,7 @@ export default function Home() {
         <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden relative">
           <div className="w-full flex justify-between items-center mb-4">
             <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
-            <div className="flex items-center gap-2">
-              <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-              <span className="text-slate-600 text-[10px]">|</span>
-              <button onClick={() => setIsAiChatOpen(true)} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
-            </div>
+            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
           </div>
           <div className="hidden md:flex w-full justify-center">
             <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
@@ -550,7 +536,7 @@ export default function Home() {
             isStickyVisible ? 'bottom-0' : '-bottom-[80px]'
           }`}
         >
-          <div className="flex items-center gap-1">
+          <div className="flex items-center">
             <button 
               onClick={() => setIsStickyVisible(!isStickyVisible)}
               className="w-12 h-6 bg-white rounded-t-lg flex items-center justify-center shadow-[0_-4px_10px_rgba(0,0,0,0.15)] hover:bg-gray-100 transition-colors cursor-pointer border border-gray-200 border-b-0"
@@ -558,7 +544,6 @@ export default function Home() {
               <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
             </button>
             <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟ (50 درهم)</Link>
-            <button onClick={() => setIsAiChatOpen(true)} className="bg-pink-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-pink-500 transition-colors">اسأل المساعد الذكي 🤖</button>
           </div>
           <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
             <div className="hidden md:flex w-full items-center justify-center">
@@ -584,11 +569,7 @@ export default function Home() {
             </button>
             <div className="w-full flex justify-between items-center mb-4 mt-2">
               <h3 className="text-xl font-bold text-white">إعلان مدعوم</h3>
-              <div className="flex items-center gap-2">
-                <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-                <span className="text-slate-600 text-xs">|</span>
-                <button onClick={() => { setShowIdleAd(false); setIsAiChatOpen(true); }} className="text-xs text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
-              </div>
+              <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
             </div>
             <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
             
@@ -627,7 +608,6 @@ export default function Home() {
           })
         }}
       />
-      <RemoveAdsChatModal isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} />
     </main>
   );
 }

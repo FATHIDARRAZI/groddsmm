@@ -8,7 +8,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import DashboardAdModal from '@/components/DashboardAdModal';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { createSupabaseClient } from '@/lib/supabase';
-import RemoveAdsChatModal from '@/components/RemoveAdsChatModal';
 
 interface NavLink {
   href: string;
@@ -28,7 +27,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [removeAds, setRemoveAds] = useState<boolean>(false);
-  const [isAiChatOpen, setIsAiChatOpen] = useState<boolean>(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -142,9 +140,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50">
             <div className="bg-black/50 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center p-0 h-[250px] relative">
               <p className="absolute text-[10px] text-slate-600 font-bold top-1 tracking-widest">ADVERTISEMENT</p>
-              <div className="absolute top-1 inset-x-0 flex items-center justify-between px-3 z-20">
+              <div className="absolute top-1 right-3 z-20">
                 <Link href="/dashboard/remove-ads" className="text-[8px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات</Link>
-                <button onClick={() => setIsAiChatOpen(true)} className="text-[8px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد 🤖</button>
               </div>
               <SafeAdSlot 
                 src="/ad-300.html" 
@@ -182,11 +179,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
                   <div className="w-full flex justify-between items-center mb-4">
                     <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
-                    <div className="flex items-center gap-2">
-                      <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
-                      <span className="text-slate-600 text-[10px]">|</span>
-                      <button onClick={() => setIsAiChatOpen(true)} className="text-[10px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد الذكي 🤖</button>
-                    </div>
+                    <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
                   </div>
                   {/* Desktop Ad */}
                   <div className="hidden md:flex w-full justify-center">
@@ -278,7 +271,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50 flex flex-col items-center justify-center pb-safe overflow-hidden w-full">
                   <div className="w-full flex justify-between items-center mb-2 px-4">
                     <Link href="/dashboard/remove-ads" onClick={() => setIsMobileMenuOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
-                    <button onClick={() => { setIsMobileMenuOpen(false); setIsAiChatOpen(true); }} className="text-[9px] text-pink-400 hover:text-pink-300 font-bold hover:underline">اسأل المساعد 🤖</button>
                   </div>
                   <div className="w-full max-w-[250px] overflow-hidden flex justify-center items-center">
                     <SafeAdSlot src="/ad-300.html" width="300" height="250" className="scale-[0.8] origin-center rounded-xl" />
@@ -291,7 +283,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       )}
 
       <DashboardAdModal removeAds={removeAds} />
-      <RemoveAdsChatModal isOpen={isAiChatOpen} onClose={() => setIsAiChatOpen(false)} />
     </div>
   );
 }
