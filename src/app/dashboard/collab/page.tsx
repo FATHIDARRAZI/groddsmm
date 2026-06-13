@@ -30,17 +30,23 @@ export default function CollabPage() {
       setUser(authUser);
 
       // Check collab request status
-      const { data: requestData } = await supabase
+      const { data: requestData, error: reqError } = await supabase
         .from('collab_requests')
         .select('*')
         .eq('user_id', authUser.id)
-        .single();
+        .maybeSingle();
+        
+      if (reqError) {
+        console.error('Error fetching collab request:', reqError);
+      }
         
       if (requestData) {
         setRequestStatus(requestData.status);
         if (requestData.status === 'declined') {
           setAdminNote(requestData.admin_note);
         }
+      } else {
+        setRequestStatus(null);
       }
 
       // Fetch referral count (only needed if accepted, but fine to fetch)
