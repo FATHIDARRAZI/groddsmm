@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createSupabaseClient } from '@/lib/supabase';
+import { toast } from 'react-hot-toast';
 
 export default function CollabPage() {
   const [user, setUser] = useState<any>(null);
@@ -9,9 +10,14 @@ export default function CollabPage() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [baseUrl, setBaseUrl] = useState('');
+  
+  // Collab request states
+  const [requestStatus, setRequestStatus] = useState<string | null>(null);
+  const [adminNote, setAdminNote] = useState<string | null>(null);
+  const [usernameInput, setUsernameInput] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    // Get base URL for link generation
     if (typeof window !== 'undefined') {
       setBaseUrl(window.location.origin);
     }
@@ -19,12 +25,25 @@ export default function CollabPage() {
     const fetchData = async () => {
       const supabase = createSupabaseClient();
       
-      // 1. Get current user
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) return;
       setUser(authUser);
 
-      // 2. Fetch referral count
+      // Check collab request status
+      const { data: requestData } = await supabase
+        .from('collab_requests')
+        .select('*')
+        .eq('user_id', authUser.id)
+        .single();
+        
+      if (requestData) {
+        setRequestStatus(requestData.status);
+        if (requestData.status === 'declined') {
+          setAdminNote(requestData.admin_note);
+        }
+      }
+
+      // Fetch referral count (only needed if accepted, but fine to fetch)
       const { count, error } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
@@ -40,6 +59,33 @@ export default function CollabPage() {
     fetchData();
   }, []);
 
+  const submitRequest = async () => {
+    if (!usernameInput.trim()) {
+      toast.error('الرجاء إدخال اسم المستخدم');
+      return;
+    }
+    
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/collab/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: usernameInput })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('تم تقديم الطلب بنجاح');
+        setRequestStatus('pending');
+      } else {
+        toast.error(data.error || 'فشل تقديم الطلب');
+      }
+    } catch (e) {
+      toast.error('حدث خطأ أثناء تقديم الطلب');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const referralLink = user ? `${baseUrl}/?ref=${user.id.substring(0, 8)}` : '...';
 
   const copyToClipboard = () => {
@@ -48,9 +94,132 @@ export default function CollabPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  if (loading) {
+    return (
+      <div className="w-full flex items-center justify-center min-h-[50vh]">
+         <div className="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  // --- RENDERING BASED ON STATUS ---
+
+  // State 1: No request yet (Show Application Form)
+  if (!requestStatus) {
+    return (
+      <div className="w-full max-w-2xl mx-auto py-12 animate-fade-in text-center">
+        <div className="bg-[#121214] border border-white/5 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] rounded-full pointer-events-none"></div>
+          
+          <div className="w-20 h-20 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-blue-500 text-3xl">
+            <i className="fas fa-handshake"></i>
+          </div>
+          
+          <h1 className="text-3xl font-black text-white mb-4">الانضمام لبرنامج الشراكات</h1>
+          <p className="text-slate-400 mb-8 leading-relaxed text-sm">
+            نحن نبحث عن صناع محتوى متميزين للانضمام إلى برنامج الشراكات الخاص بنا. للتقديم، يجب أن يستوفي حسابك الشروط التالية:
+          </p>
+
+          <div className="text-right space-y-4 mb-8 bg-[#1C1C1E] p-6 rounded-2xl border border-white/5">
+            <div className="flex items-center gap-3">
+              <i className="fas fa-check-circle text-green-500"></i>
+              <span className="text-slate-300 font-bold">1,000 متابع كحد أدنى</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <i className="fas fa-check-circle text-green-500"></i>
+              <span className="text-slate-300 font-bold">4 منشورات على الأقل في الحساب</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <i className="fas fa-check-circle text-green-500"></i>
+              <span className="text-slate-300 font-bold">أن يكون الحساب عام (Public)</span>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+             <div className="text-right">
+               <label className="text-sm font-bold text-slate-300 mb-2 block">اسم المستخدم (انستقرام)</label>
+               <input 
+                 type="text" 
+                 value={usernameInput}
+                 onChange={(e) => setUsernameInput(e.target.value)}
+                 placeholder="مثال: username"
+                 className="w-full bg-[#1C1C1E] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors"
+                 dir="ltr"
+               />
+             </div>
+             <button 
+               onClick={submitRequest}
+               disabled={submitting}
+               className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-4 rounded-xl transition-all shadow-[0_10px_30px_rgba(37,99,235,0.3)] flex items-center justify-center gap-2"
+             >
+               {submitting ? <i className="fas fa-spinner fa-spin"></i> : 'إرسال طلب الانضمام'}
+             </button>
+             <p className="text-xs text-slate-500 mt-4">يمكنك إرسال الطلب مرة واحدة فقط، سيتم مراجعته يدوياً من قبل الإدارة.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // State 2: Pending
+  if (requestStatus === 'pending') {
+    return (
+      <div className="w-full max-w-xl mx-auto py-20 animate-fade-in text-center">
+        <div className="bg-[#121214] border border-white/5 rounded-3xl p-10 shadow-2xl">
+          <div className="w-24 h-24 bg-yellow-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-yellow-500 text-4xl animate-pulse">
+            <i className="fas fa-hourglass-half"></i>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-4">طلبك قيد المراجعة</h2>
+          <p className="text-slate-400 leading-relaxed">
+            لقد قمنا باستلام طلب الانضمام لبرنامج الشراكات الخاص بك بنجاح. فريقنا يقوم حالياً بمراجعة حسابك للتأكد من مطابقته للشروط.
+          </p>
+          <div className="mt-8 py-3 px-4 bg-white/5 rounded-xl border border-white/5 inline-block text-sm text-slate-300">
+            يرجى العودة والتحقق من هذه الصفحة لاحقاً.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // State 3: Declined
+  if (requestStatus === 'declined') {
+    return (
+      <div className="w-full max-w-2xl mx-auto py-12 animate-fade-in text-center">
+        <div className="bg-[#121214] border border-red-500/20 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+          <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-red-500 text-4xl">
+            <i className="fas fa-times-circle"></i>
+          </div>
+          <h2 className="text-2xl font-black text-white mb-4">تم رفض الطلب</h2>
+          <p className="text-slate-400 mb-6">
+            للأسف، لم يتم قبول طلب انضمامك لبرنامج الشراكات في الوقت الحالي.
+          </p>
+          
+          {adminNote && (
+            <div className="text-right bg-red-500/10 border border-red-500/20 rounded-2xl p-6 mb-8">
+               <h4 className="text-red-400 font-bold text-sm mb-2">رسالة من الإدارة:</h4>
+               <p className="text-white text-sm leading-relaxed">{adminNote}</p>
+            </div>
+          )}
+
+          <div className="pt-6 border-t border-white/5">
+             <p className="text-sm text-slate-400 mb-4">إذا كنت تعتقد أن هناك خطأ أو ترغب في الاستفسار، يمكنك التواصل معنا.</p>
+             <a 
+               href="https://t.me/grodd_labsBot" 
+               target="_blank" 
+               rel="noreferrer"
+               className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-bold transition-all"
+             >
+               <i className="fab fa-telegram text-blue-400"></i> الدعم الفني
+             </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // State 4: Accepted (Original Collab Page Content)
   return (
     <div className="w-full animate-fade-in max-w-5xl mx-auto pb-12">
-      {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -73,8 +242,6 @@ export default function CollabPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Referral Link Card - Main Action */}
         <div className="lg:col-span-2 space-y-8">
           <div className="bg-gradient-to-br from-[#1A1F2C] to-[#121214] border border-white/5 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[100px] rounded-full"></div>
@@ -122,12 +289,11 @@ export default function CollabPage() {
             </div>
           </div>
 
-          {/* Stats Section */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-[#1C1C1E] p-8 rounded-[2rem] border border-white/5 group hover:border-blue-500/20 transition-all">
                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mb-4">إجمالي المسجلين</p>
                <div className="flex items-end gap-3">
-                  <h4 className="text-5xl font-black text-white">{loading ? '...' : refCount}</h4>
+                  <h4 className="text-5xl font-black text-white">{refCount}</h4>
                   <span className="text-green-500 text-sm font-bold mb-2 flex items-center gap-1">
                     <i className="fas fa-caret-up"></i> +100%
                   </span>
@@ -157,7 +323,6 @@ export default function CollabPage() {
           </div>
         </div>
 
-        {/* Sidebar / Requirements */}
         <div className="space-y-6">
            <div className="bg-blue-600 p-8 rounded-[2.5rem] shadow-xl text-white relative overflow-hidden">
               <div className="absolute bottom-[-20px] left-[-20px] w-32 h-32 bg-white/10 blur-[40px] rounded-full"></div>
@@ -193,7 +358,6 @@ export default function CollabPage() {
               </ul>
            </div>
         </div>
-
       </div>
     </div>
   );

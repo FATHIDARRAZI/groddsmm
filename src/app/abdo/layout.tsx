@@ -15,6 +15,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/abdo/users', icon: 'fa-users', label: 'إدارة المستخدمين' },
     { href: '/abdo/orders', icon: 'fa-shopping-basket', label: 'جميع الطلبات' },
     { href: '/abdo/coupons', icon: 'fa-ticket-alt', label: 'الكوبونات' },
+    { href: '/abdo/collab', icon: 'fa-handshake', label: 'طلبات الشراكة' },
   ];
 
   useEffect(() => {
