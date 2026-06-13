@@ -28,6 +28,10 @@ export default function Navbar() {
       }
     };
     checkAuth();
+
+    // Re-check on tab focus to keep state fresh
+    window.addEventListener('focus', checkAuth);
+    return () => window.removeEventListener('focus', checkAuth);
   }, []);
 
   return (

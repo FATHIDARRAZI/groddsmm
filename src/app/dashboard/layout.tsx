@@ -63,10 +63,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     fetchUser();
 
-    // Listen for manual balance updates from other components
+    // Listen for manual balance updates from other components and tab focus
     window.addEventListener('pointsUpdated', fetchUser);
-    return () => window.removeEventListener('pointsUpdated', fetchUser);
-  }, []);
+    window.addEventListener('focus', fetchUser);
+    return () => {
+      window.removeEventListener('pointsUpdated', fetchUser);
+      window.removeEventListener('focus', fetchUser);
+    };
+  }, [router]);
 
   const desktopNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },

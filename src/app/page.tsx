@@ -40,6 +40,10 @@ export default function Home() {
       }
     }
     checkRemoveAds();
+
+    // Re-check on tab focus to keep state fresh
+    window.addEventListener('focus', checkRemoveAds);
+    return () => window.removeEventListener('focus', checkRemoveAds);
   }, []);
 
 
