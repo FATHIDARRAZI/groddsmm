@@ -58,21 +58,31 @@ export async function GET(request: Request) {
 
     const adminClient = await getAdminClient();
 
-    // Fetch collab requests and join with profiles to get full_name / email if needed
-    const { data, error } = await adminClient
+    // Fetch collab requests
+    const { data: collabRequests, error } = await adminClient
       .from('collab_requests')
-      .select(`
-        *,
-        profiles (
-          full_name,
-          email
-        )
-      `)
+      .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
 
-    return NextResponse.json({ requests: data });
+    // Fetch associated profiles
+    const userIds = collabRequests.map((req: any) => req.user_id);
+    const { data: profiles } = await adminClient
+      .from('profiles')
+      .select('id, full_name, email')
+      .in('id', userIds);
+
+    // Merge the data
+    const requestsWithProfiles = collabRequests.map((req: any) => {
+      const profile = profiles?.find((p: any) => p.id === req.user_id);
+      return {
+        ...req,
+        profiles: profile || null
+      };
+    });
+
+    return NextResponse.json({ requests: requestsWithProfiles });
   } catch (err: any) {
     console.error('API Error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
