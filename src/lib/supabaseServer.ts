@@ -39,10 +39,11 @@ export async function createSupabaseAdminClient() {
     throw new Error('Supabase Admin Client Configuration Missing');
   }
 
-  return createServerClient(url, serviceRole, {
-    cookies: {
-      getAll() { return []; },
-      setAll() { },
-    },
+  const { createClient } = require('@supabase/supabase-js');
+  return createClient(url, serviceRole, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
   });
 }

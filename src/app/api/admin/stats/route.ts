@@ -48,7 +48,7 @@ export async function GET() {
     
     // Calculate total points in circulation
     const { data: pointsData } = await adminSupabase.from('profiles').select('points_balance');
-    const totalCirculatingPoints = pointsData?.reduce((acc, curr) => acc + (curr.points_balance || 0), 0) || 0;
+    const totalCirculatingPoints = pointsData?.reduce((acc: number, curr: any) => acc + (curr.points_balance || 0), 0) || 0;
 
     // Fetch total orders
     const { count: totalOrders } = await adminSupabase.from('orders').select('*', { count: 'exact', head: true });
