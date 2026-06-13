@@ -56,6 +56,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           setIsAdmin(!!profile.is_admin);
           setRemoveAds(!!profile.remove_ads);
         }
+      } else {
+        router.push('/auth/login');
       }
     }
 
@@ -179,7 +181,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
                   <div className="w-full flex justify-between items-center mb-4">
                     <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
-                    <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+                    <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
                   </div>
                   {/* Desktop Ad */}
                   <div className="hidden md:flex w-full justify-center">

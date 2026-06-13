@@ -73,7 +73,7 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
         </p>
 
         <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-center">
-          <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+          <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
         </div>
       </div>
     </div>

@@ -4,99 +4,82 @@ import React from 'react';
 
 export default function RemoveAdsPage() {
   const premiumFeatures = [
-    {
-      title: 'تجربة خالية تماماً من الإعلانات (100% Ad-Free)',
-      description: 'تصفح سريع وسلس لجميع صفحات المنصة بدون أي بنرات إعلانية أو نوافذ منبثقة مزعجة.',
-      icon: 'fa-shield-halved',
-      color: 'from-pink-500/20 to-[#FF8577]/20 border-pink-500/30 text-pink-400',
-    },
-    {
-      title: 'تخطي وإلغاء فترة الانتظار (No Cooldown)',
-      description: 'ودع فترة الانتظار البالغة دقيقتين بين كل طلب مجاني والآخر. أطلق حملاتك متتالية وفوراً!',
-      icon: 'fa-bolt',
-      color: 'from-amber-500/20 to-orange-500/20 border-amber-500/30 text-amber-400',
-    },
-    {
-      title: 'بدون شاشات رعاية (No Sponsor Screens)',
-      description: 'تخطي شاشة الانتظار الإلزامية البالغة 30 ثانية قبل إطلاق حملتك. تفعيل الطلب يتم في أجزاء من الثانية.',
-      icon: 'fa-forward',
-      color: 'from-blue-500/20 to-cyan-500/20 border-blue-500/30 text-blue-400',
-    },
-    {
-      title: 'دعم فني VIP فوري وأولوية قصوى',
-      description: 'أولوية معالجة قصوى لحملاتك ودعم فني مخصص لحل أي استفسار أو مشكلة تواجهك بسرعة مضاعفة.',
-      icon: 'fa-crown',
-      color: 'from-purple-500/20 to-indigo-500/20 border-purple-500/30 text-purple-400',
-    },
+    'تجربة خالية تماماً من الإعلانات (100% Ad-Free)',
+    'تخطي وإلغاء فترة الانتظار (No Cooldown)',
+    'بدون شاشات رعاية (No Sponsor Screens)',
+    'دعم فني VIP فوري وأولوية قصوى',
   ];
 
   return (
-    <div className="w-full max-w-4xl mx-auto pb-12 animate-fade-in relative z-10 font-cairo">
+    <div className="w-full max-w-3xl mx-auto pb-12 animate-fade-in relative z-10 font-cairo">
       
-      {/* Cinematic Header */}
-      <div className="relative w-full rounded-[3rem] overflow-hidden bg-[#0A0D14] border border-white/5 shadow-2xl mb-12 flex flex-col items-center justify-center py-12 px-6 text-center">
-        <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-pink-500/50 to-transparent"></div>
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
-        
-        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-500/20 to-[#FF8577]/20 border border-pink-500/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(236,72,153,0.2)]">
-          <i className="fas fa-eye-slash text-2xl text-pink-400"></i>
+      {/* Header */}
+      <div className="text-center mb-12 mt-4">
+        <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 px-4 py-2 rounded-full text-purple-400 text-xs font-bold mb-6 shadow-[0_0_15px_rgba(168,85,247,0.15)] transition-all hover:bg-purple-500/20">
+          <i className="fas fa-gem"></i> ترقية الحساب
         </div>
-        
-        <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-pink-100 to-white mb-4 leading-tight">
-          ترقية الحساب وإزالة الإعلانات
+        <h1 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight leading-tight">
+          ارتقِ بتجربتك إلى <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">VIP</span>
         </h1>
-        <p className="text-slate-400 text-sm md:text-base max-w-xl font-medium leading-relaxed">
-          استمتع بتجربة فائقة السرعة بدون أي إعلانات أو فترات انتظار مع ميزات VIP الحصرية.
+        <p className="text-slate-400 text-sm md:text-base max-w-lg mx-auto font-medium leading-relaxed">
+          تخلص من الإعلانات المزعجة وفترات الانتظار، واستمتع بتجربة سلسة وفائقة السرعة.
         </p>
       </div>
 
-      <div className="space-y-8">
-        {/* Features Card */}
-        <div className="bg-[#121214]/80 border border-white/5 rounded-[2.5rem] p-8 md:p-10 space-y-8">
-          <h3 className="text-xl font-black text-white flex items-center gap-3 justify-end">
-            مميزات الترقية الفائقة
-            <i className="fas fa-list-check text-pink-500"></i>
-          </h3>
+      {/* Modern Pricing Card */}
+      <div className="bg-[#121214]/60 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] p-8 md:p-12 shadow-[0_30px_60px_rgba(0,0,0,0.6)] relative overflow-hidden group">
+        
+        {/* Glow Effects */}
+        <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-purple-500/50 to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-700"></div>
+        <div className="absolute -top-32 -right-32 w-64 h-64 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none group-hover:bg-purple-500/20 transition-colors duration-700"></div>
+        <div className="absolute -bottom-32 -left-32 w-64 h-64 bg-pink-500/5 blur-[100px] rounded-full pointer-events-none group-hover:bg-pink-500/10 transition-colors duration-700"></div>
+        
+        <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {premiumFeatures.map((feat, idx) => (
-              <div key={idx} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 flex flex-col items-end text-right hover:border-white/10 hover:bg-white/[0.04] transition-all group">
-                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${feat.color} border flex items-center justify-center mb-4 transition-transform group-hover:scale-105 duration-300`}>
-                  <i className={`fas ${feat.icon} text-lg`}></i>
-                </div>
-                <h4 className="text-white font-bold text-sm mb-2">{feat.title}</h4>
-                <p className="text-slate-400 text-xs leading-relaxed">{feat.description}</p>
-              </div>
-            ))}
+          {/* Features List */}
+          <div className="w-full md:w-1/2 space-y-6 text-right order-2 md:order-1 border-t md:border-t-0 md:border-r border-white/5 pt-8 md:pt-0 md:pr-10">
+            <h3 className="text-lg font-bold text-white mb-6">المميزات الحصرية:</h3>
+            <ul className="space-y-5">
+              {premiumFeatures.map((feat, idx) => (
+                <li key={idx} className="flex items-center gap-4 text-slate-300 text-sm font-medium group/item hover:text-white transition-colors">
+                  <span className="w-7 h-7 rounded-full bg-purple-500/10 flex items-center justify-center shrink-0 border border-purple-500/20 text-purple-400 group-hover/item:scale-110 group-hover/item:bg-purple-500/20 transition-all shadow-inner">
+                    <i className="fas fa-check text-[10px]"></i>
+                  </span>
+                  {feat}
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
 
-        {/* Payment & Action Card */}
-        <div className="bg-gradient-to-tr from-[#121214] to-[#1C1C1E] border border-white/10 rounded-[2.5rem] p-8 md:p-10 text-center space-y-6 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-pink-500/10 border border-pink-500/20 px-4 py-2 rounded-full text-pink-400 text-xs font-bold w-fit mx-auto">
-            <i className="fas fa-coins"></i> القيمة والتفعيل
+          {/* Pricing Action */}
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-6 order-1 md:order-2">
+            <div className="bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-slate-400 text-xs font-bold uppercase tracking-widest mb-6">
+              تفعيل دائم لمرة واحدة
+            </div>
+            
+            <div className="flex items-end gap-2 mb-8 relative">
+              <span className="text-6xl font-black text-white tracking-tighter drop-shadow-md">50</span>
+              <span className="text-2xl text-slate-400 font-bold mb-2">درهم</span>
+            </div>
+            
+            <a 
+              href="https://www.instagram.com/grodd_media/" 
+              target="_blank" 
+              rel="noreferrer"
+              className="w-full py-4 bg-gradient-to-r from-white to-slate-200 text-black rounded-2xl font-black flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_10px_30px_rgba(255,255,255,0.15)] group/btn relative overflow-hidden"
+            >
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover/btn:animate-pulse"></div>
+              <i className="fab fa-instagram text-xl"></i> تفعيل عبر إنستغرام
+            </a>
+            
+            <div className="flex items-center gap-2 mt-6 text-slate-500 text-xs font-medium">
+               <i className="fas fa-shield-alt text-green-500/70"></i>
+               <span>دفع آمن. يتم التفعيل في دقائق معدودة.</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            <p className="text-slate-400 text-sm font-bold">تفعيل دائم لمرة واحدة</p>
-            <h3 className="text-4xl font-black text-white">50 درهم فقط</h3>
-          </div>
-          
-          <p className="text-slate-300 text-xs leading-relaxed max-w-md mx-auto">
-            الدفع يتم بشكل آمن وسهل. تواصل معنا على حسابنا الرسمي والوحيد على الإنستغرام وأرسل التحويل وسيقوم فريقنا بتفعيل الميزة لحسابك في دقائق!
-          </p>
-          
-          <a 
-            href="https://www.instagram.com/grodd_media/" 
-            target="_blank" 
-            rel="noreferrer"
-            className="w-full py-4 bg-gradient-to-r from-pink-500 to-[#FF8577] text-white rounded-2xl font-black flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(236,72,153,0.3)] hover:opacity-95 active:scale-98 transition-all relative overflow-hidden group/btn"
-          >
-            <div className="absolute inset-0 w-full h-full bg-white/20 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700 ease-in-out"></div>
-            <i className="fab fa-instagram text-xl"></i> تفعيل عبر إنستغرام الآن
-          </a>
+
         </div>
       </div>
-
     </div>
   );
 }

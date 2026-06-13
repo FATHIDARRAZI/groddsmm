@@ -22,6 +22,7 @@ export default function Home() {
   const [showIdleAd, setShowIdleAd] = useState(false);
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
   const [removeAds, setRemoveAds] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
   // Check if user has remove_ads enabled
@@ -31,6 +32,7 @@ export default function Home() {
       if (!supabase) return;
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
+        setIsLoggedIn(true);
         const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
         if (profile?.remove_ads) {
           setRemoveAds(true);
@@ -181,7 +183,7 @@ export default function Home() {
       {!removeAds && (
         <div className="w-full flex flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner min-h-[106px] max-w-4xl mx-auto relative">
           <div className="w-full flex justify-end px-2 mb-1">
-            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
           </div>
           <div className="hidden md:flex w-full justify-center">
             <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="eager" className="bg-transparent rounded-lg" />
@@ -274,14 +276,22 @@ export default function Home() {
                 <div className="h-px bg-white/5 flex-1"></div>
               </div>
 
-              <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
-                <Link href="/auth/login" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-slate-300 hover:text-white border border-white/5 hover:bg-white/5 transition-all text-center flex justify-center items-center gap-2">
-                  <i className="fas fa-sign-in-alt text-slate-500"></i> تسجيل الدخول
-                </Link>
-                <Link href="/auth/signup" className="flex-1 py-3 rounded-xl font-bold bg-[#ec4899]/10 text-[#ec4899] hover:bg-[#ec4899]/20 border border-[#ec4899]/20 transition-all text-center flex justify-center items-center gap-2 shadow-[0_0_10px_rgba(236,72,153,0.1)]">
-                  <i className="fas fa-user-plus"></i> إنشاء حساب
-                </Link>
-              </div>
+              {!isLoggedIn ? (
+                <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
+                  <Link href="/auth/login" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-slate-300 hover:text-white border border-white/5 hover:bg-white/5 transition-all text-center flex justify-center items-center gap-2">
+                    <i className="fas fa-sign-in-alt text-slate-500"></i> تسجيل الدخول
+                  </Link>
+                  <Link href="/auth/signup" className="flex-1 py-3 rounded-xl font-bold bg-[#ec4899]/10 text-[#ec4899] hover:bg-[#ec4899]/20 border border-[#ec4899]/20 transition-all text-center flex justify-center items-center gap-2 shadow-[0_0_10px_rgba(236,72,153,0.1)]">
+                    <i className="fas fa-user-plus"></i> إنشاء حساب
+                  </Link>
+                </div>
+              ) : (
+                <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
+                  <Link href="/dashboard" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-white hover:bg-white/5 border border-white/5 transition-all text-center flex justify-center items-center gap-2 shadow-md">
+                    <i className="fas fa-layer-group text-[#FF8577]"></i> الانتقال إلى لوحة التحكم
+                  </Link>
+                </div>
+              )}
 
               {/* Disclaimer */}
               <div className="w-full mt-4 p-4 bg-pink-500/5 border border-pink-500/10 rounded-xl flex items-start gap-3 text-right">
@@ -303,7 +313,7 @@ export default function Home() {
             {/* Modal Header */}
             <div className="w-full flex justify-between items-end mb-2">
               <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
-                <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+                <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
               </div>
               <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
                 <span>يرجى الانتظار {sponsorTimeLeft} ثانية</span>
@@ -364,7 +374,7 @@ export default function Home() {
         <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden relative">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-slate-400 font-bold text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
-            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
           </div>
           <SafeAdSlot 
              src="/ad-native.html" 
@@ -380,7 +390,7 @@ export default function Home() {
         <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden relative">
           <div className="w-full flex justify-between items-center mb-4">
             <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
-            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+            <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
           </div>
           <div className="hidden md:flex w-full justify-center">
             <SafeAdSlot src="/ad-728.html" width="728" height="90" className="bg-transparent rounded-lg" />
@@ -543,7 +553,7 @@ export default function Home() {
             >
               <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
             </button>
-            <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟ (50 درهم)</Link>
+            <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟</Link>
           </div>
           <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
             <div className="hidden md:flex w-full items-center justify-center">
@@ -569,7 +579,7 @@ export default function Home() {
             </button>
             <div className="w-full flex justify-between items-center mb-4 mt-2">
               <h3 className="text-xl font-bold text-white">إعلان مدعوم</h3>
-              <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟ (50 درهم)</Link>
+              <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
             </div>
             <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
             

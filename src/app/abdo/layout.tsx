@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase';
@@ -15,6 +15,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/abdo/orders', icon: 'fa-shopping-basket', label: 'جميع الطلبات' },
     { href: '/abdo/coupons', icon: 'fa-ticket-alt', label: 'الكوبونات' },
   ];
+
+  useEffect(() => {
+    const supabase = createSupabaseClient();
+    async function checkAuth() {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) {
+        router.push('/auth/login');
+      }
+    }
+    checkAuth();
+  }, [router]);
 
   const handleLogout = async () => {
     const supabase = createSupabaseClient();
