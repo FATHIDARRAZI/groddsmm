@@ -16,11 +16,14 @@ export default function AdminCollabPage() {
     try {
       const res = await fetch('/api/admin/collab');
       const data = await res.json();
-      if (data.requests) {
+      if (data.error) {
+        toast.error('API Error: ' + data.error);
+        console.error(data.error);
+      } else if (data.requests) {
         setRequests(data.requests);
       }
-    } catch (e) {
-      toast.error('Failed to fetch requests');
+    } catch (e: any) {
+      toast.error('Failed to fetch requests: ' + e.message);
     } finally {
       setLoading(false);
     }

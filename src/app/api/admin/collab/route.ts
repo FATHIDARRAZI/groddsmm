@@ -27,11 +27,11 @@ async function checkAdminAuth() {
   const adminClient = await createSupabaseAdminClient();
   const { data: profile } = await adminClient
     .from('profiles')
-    .select('role')
+    .select('is_admin')
     .eq('id', user.id)
     .single();
 
-  return profile?.role === 'admin';
+  return !!profile?.is_admin;
 }
 
 export async function GET(request: Request) {
