@@ -2,24 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
-// Helper to init service role client
-async function getAdminClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-  const cookieStore = await cookies();
-  
-  return createServerClient(url, serviceKey, {
-    cookies: {
-      get(name: string) { return cookieStore.get(name)?.value; },
-      set(name: string, value: string, options: CookieOptions) {
-        try { cookieStore.set({ name, value, ...options }); } catch (error) {}
-      },
-      remove(name: string, options: CookieOptions) {
-        try { cookieStore.delete({ name, ...options }); } catch (error) {}
-      },
-    },
-  });
-}
+import { createSupabaseAdminClient } from '@/lib/supabaseServer';
 
 // Check admin auth
 async function checkAdminAuth() {
@@ -41,7 +24,7 @@ async function checkAdminAuth() {
   const { data: { user } } = await authClient.auth.getUser();
   if (!user) return false;
 
-  const adminClient = await getAdminClient();
+  const adminClient = await createSupabaseAdminClient();
   const { data: profile } = await adminClient
     .from('profiles')
     .select('role')
@@ -56,7 +39,7 @@ export async function GET(request: Request) {
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const adminClient = await getAdminClient();
+    const adminClient = await createSupabaseAdminClient();
 
     // Fetch collab requests
     const { data: collabRequests, error } = await adminClient
@@ -94,7 +77,7 @@ export async function POST(request: Request) {
     const isAdmin = await checkAdminAuth();
     if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const adminClient = await getAdminClient();
+    const adminClient = await createSupabaseAdminClient();
     const { id, status, admin_note } = await request.json();
 
     if (!id || !status) {
