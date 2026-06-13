@@ -102,6 +102,10 @@ export async function POST(req: Request) {
 
     if (category === 'instagram' && serviceType === 'followers') {
       serviceId = '758';
+    } else if (category === 'instagram' && serviceType === 'likes') {
+      serviceId = '917';
+    } else if (category === 'instagram' && serviceType === 'views') {
+      serviceId = '2020';
     } else if (category === 'tiktok' && serviceType === 'likes') {
       serviceId = '2651';
     } else if (category === 'tiktok' && serviceType === 'followers') {

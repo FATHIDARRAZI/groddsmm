@@ -11,7 +11,13 @@ import { createSupabaseClient } from '@/lib/supabase';
 
 type ServiceType = 'likes' | 'views';
 
+const SOCIAL_CATEGORIES = [
+  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام' },
+  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك' },
+];
+
 export default function Home() {
+  const [category, setCategory] = useState<string>('instagram');
   const [postLink, setPostLink] = useState('');
   const [service, setService] = useState<ServiceType>('likes');
   const [step, setStep] = useState<number>(1);
@@ -109,7 +115,7 @@ export default function Home() {
       const res = await fetch('/api/smm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: postLink.trim(), serviceType: service, recaptchaToken })
+        body: JSON.stringify({ link: postLink.trim(), serviceType: service, category, recaptchaToken })
       });
       const data = await res.json();
       
@@ -213,6 +219,28 @@ export default function Home() {
 
           {(step === 1 || step === 1.5) && (
             <div className={`space-y-6 transition-all duration-500 relative ${step === 1.5 ? 'blur-sm pointer-events-none opacity-50' : 'animate-fade-in'}`}>
+              
+              {/* Category Selector */}
+              <div className="flex flex-col gap-3 items-center w-full mb-6 mt-2">
+                <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest text-center w-full block">اختر المنصة (Platform)</label>
+                <div className="flex justify-center gap-3 md:gap-5">
+                  {SOCIAL_CATEGORIES.map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setCategory(cat.id)}
+                      className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${
+                        category === cat.id 
+                          ? 'bg-gradient-to-tr from-white/10 to-white/5 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/20 scale-110' 
+                          : 'bg-black/40 border border-white/5 opacity-50 hover:opacity-100 hover:scale-105'
+                      }`}
+                      title={cat.name}
+                    >
+                      <i className={`fab ${cat.icon} ${cat.color} text-2xl md:text-3xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex flex-col gap-2 relative group/input">
                 <label className="text-xs font-bold text-slate-500 tracking-widest block text-right w-full mb-1">رابط المحتوى (Post Link)</label>
                 <div className="relative">
