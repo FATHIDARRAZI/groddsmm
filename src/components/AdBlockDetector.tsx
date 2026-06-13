@@ -6,67 +6,88 @@ export default function AdBlockDetector() {
   const [isAdBlocked, setIsAdBlocked] = useState(false);
 
   useEffect(() => {
-
-    // 1. DOM Element Bait
-    const fakeAd = document.createElement('div');
-    fakeAd.className = 'ad-placement ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
-    fakeAd.id = 'adsterra-bait';
-    fakeAd.innerHTML = '&nbsp;';
-    fakeAd.style.width = '1px';
-    fakeAd.style.height = '1px';
-    fakeAd.style.position = 'absolute';
-    fakeAd.style.top = '-999px';
-    fakeAd.style.left = '-999px';
-    document.body.appendChild(fakeAd);
-
-    const checkDomAdBlocker = () => {
-      if (!document.body.contains(fakeAd)) {
-        setIsAdBlocked(true);
-        document.body.style.overflow = 'hidden';
-        return;
-      }
-      
-      const styles = window.getComputedStyle(fakeAd);
-      if (
-        fakeAd.offsetHeight === 0 || 
-        fakeAd.clientHeight === 0 || 
-        styles.display === 'none' ||
-        styles.visibility === 'hidden'
-      ) {
-        setIsAdBlocked(true);
-        document.body.style.overflow = 'hidden';
-      }
-      if (fakeAd.parentNode === document.body) {
-        try {
-          document.body.removeChild(fakeAd);
-        } catch (e) {
-          console.warn('AdBlockDetector silent cleanup error', e);
-        }
-      }
-    };
-
-    const timeoutId = setTimeout(checkDomAdBlocker, 300);
-
-    // 2. Network Request Bait (Highly reliable against uBlock Origin, AdGuard, Brave Shields)
-    const checkNetworkAdBlocker = async () => {
+    let timeoutId: NodeJS.Timeout;
+    
+    const initDetection = async () => {
+      // First, check if the user has remove_ads flag enabled
       try {
-        // Use an Adsterra domain for detection
-        await fetch('https://evacuateenclose.com/3e8c62702cd2303189cddf06f9f175cd/invoke.js', {
-          method: 'HEAD',
-          mode: 'no-cors',
-          cache: 'no-store'
-        });
-      } catch (err) {
-        // If the request fails entirely, it's almost certainly blocked by an adblocker
-        setIsAdBlocked(true);
-        document.body.style.overflow = 'hidden';
+        const { createSupabaseClient } = await import('@/lib/supabase');
+        const supabase = createSupabaseClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
+          if (profile?.remove_ads) {
+            // User paid to remove ads, so don't show ad block detector
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to verify remove_ads status', e);
       }
+
+      // If we reach here, the user should see ads, so run the detector
+      // 1. DOM Element Bait
+      const fakeAd = document.createElement('div');
+      fakeAd.className = 'ad-placement ad-banner pub_300x250 pub_300x250m pub_728x90 text-ad textAd text_ad text_ads text-ads text-ad-links';
+      fakeAd.id = 'adsterra-bait';
+      fakeAd.innerHTML = '&nbsp;';
+      fakeAd.style.width = '1px';
+      fakeAd.style.height = '1px';
+      fakeAd.style.position = 'absolute';
+      fakeAd.style.top = '-999px';
+      fakeAd.style.left = '-999px';
+      document.body.appendChild(fakeAd);
+
+      const checkDomAdBlocker = () => {
+        if (!document.body.contains(fakeAd)) {
+          setIsAdBlocked(true);
+          document.body.style.overflow = 'hidden';
+          return;
+        }
+        
+        const styles = window.getComputedStyle(fakeAd);
+        if (
+          fakeAd.offsetHeight === 0 || 
+          fakeAd.clientHeight === 0 || 
+          styles.display === 'none' ||
+          styles.visibility === 'hidden'
+        ) {
+          setIsAdBlocked(true);
+          document.body.style.overflow = 'hidden';
+        }
+        if (fakeAd.parentNode === document.body) {
+          try {
+            document.body.removeChild(fakeAd);
+          } catch (e) {
+            console.warn('AdBlockDetector silent cleanup error', e);
+          }
+        }
+      };
+
+      timeoutId = setTimeout(checkDomAdBlocker, 300);
+
+      // 2. Network Request Bait
+      const checkNetworkAdBlocker = async () => {
+        try {
+          await fetch('https://evacuateenclose.com/3e8c62702cd2303189cddf06f9f175cd/invoke.js', {
+            method: 'HEAD',
+            mode: 'no-cors',
+            cache: 'no-store'
+          });
+        } catch (err) {
+          setIsAdBlocked(true);
+          document.body.style.overflow = 'hidden';
+        }
+      };
+      checkNetworkAdBlocker();
     };
-    checkNetworkAdBlocker();
+
+    initDetection();
 
     return () => {
       clearTimeout(timeoutId);
-      if (fakeAd.parentNode === document.body) {
+      const fakeAd = document.getElementById('adsterra-bait');
+      if (fakeAd && fakeAd.parentNode === document.body) {
         try {
           document.body.removeChild(fakeAd);
         } catch (e) {
