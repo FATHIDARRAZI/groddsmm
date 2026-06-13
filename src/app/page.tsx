@@ -3,7 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { Turnstile } from '@marsidev/react-turnstile';
+// import ReCAPTCHA from 'react-google-recaptcha';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import Navbar from '@/components/Navbar';
 import { createSupabaseClient } from '@/lib/supabase';
@@ -258,11 +259,17 @@ export default function Home() {
 
               <div className="flex justify-center w-full my-6 max-w-full overflow-hidden">
                 <div className="bg-[#121214] p-2 rounded-xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
-                  <ReCAPTCHA
+                  {/* <ReCAPTCHA
                     sitekey={activeSiteKey}
                     onChange={(token: string | null) => setRecaptchaToken(token || '')}
                     onErrored={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
                     theme="dark"
+                  /> */}
+                  <Turnstile
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
+                    onSuccess={(token: string) => setRecaptchaToken(token)}
+                    onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                    options={{ theme: 'dark' }}
                   />
                 </div>
               </div>

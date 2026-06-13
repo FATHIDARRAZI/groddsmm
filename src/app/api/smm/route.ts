@@ -70,13 +70,25 @@ export async function POST(req: Request) {
     }
 
 
-    // Verify Google reCAPTCHA Token
+    // Verify Cloudflare Turnstile Token (reCAPTCHA kept as fallback in comments)
+    /* 
     const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY || '';
     const formData = new URLSearchParams();
     formData.append('secret', recaptchaSecret);
     formData.append('response', recaptchaToken);
 
     const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      body: formData,
+    });
+    */
+
+    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '';
+    const formData = new URLSearchParams();
+    formData.append('secret', turnstileSecret);
+    formData.append('response', recaptchaToken); // The variable is still called recaptchaToken for backward compatibility
+
+    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
       method: 'POST',
       body: formData,
     });

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { Turnstile } from '@marsidev/react-turnstile';
+// import ReCAPTCHA from 'react-google-recaptcha';
 import { createSupabaseClient } from '@/lib/supabase';
 
 interface Message {
@@ -334,7 +335,12 @@ export default function DashboardHome() {
               <>
                 <div className="flex flex-col items-center gap-4 mt-6">
                    <div className="p-4 rounded-[2.5rem] bg-black/60 border border-white/5 scale-90">
-                     <ReCAPTCHA sitekey={activeSiteKey} onChange={(t) => setRecaptchaToken(t || '')} theme="dark" />
+                     {/* <ReCAPTCHA sitekey={activeSiteKey} onChange={(t) => setRecaptchaToken(t || '')} theme="dark" /> */}
+                     <Turnstile
+                        siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
+                        onSuccess={(token: string) => setRecaptchaToken(token)}
+                        options={{ theme: 'dark' }}
+                     />
                    </div>
                    {errorMsg && <p className="text-pink-500 text-xs font-black animate-pulse">{errorMsg}</p>}
                 </div>
