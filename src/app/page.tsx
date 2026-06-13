@@ -251,7 +251,7 @@ export default function Home() {
                     type="text"
                     value={postLink}
                     onChange={(e) => setPostLink(e.target.value)}
-                    placeholder="https://social.media/your-awesome-post"
+                    placeholder="ضع الرابط هنا..."
                     className="w-full bg-[#18181A] border border-white/5 rounded-xl py-4 pr-12 pl-4 text-left dir-ltr text-white placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
                   />
                 </div>
