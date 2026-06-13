@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function AdminCouponsPage() {
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -44,11 +45,14 @@ export default function AdminCouponsPage() {
       
       if (data.success) {
         setCode('');
+        toast.success('تم إنشاء الكوبون بنجاح');
         await fetchCoupons();
       } else {
+        toast.error(data.error || 'فشل إنشاء الكوبون');
         setError(data.error);
       }
     } catch (e) {
+      toast.error('تعذر إنشاء الكوبون');
       setError('تعذر إنشاء الكوبون');
     } finally {
       setLoading(false);
@@ -60,9 +64,15 @@ export default function AdminCouponsPage() {
     
     try {
       const res = await fetch(`/api/admin/coupons?id=${id}`, { method: 'DELETE' });
-      if (res.ok) await fetchCoupons();
+      if (res.ok) {
+        toast.success('تم حذف الكوبون بنجاح');
+        await fetchCoupons();
+      } else {
+        toast.error('فشل حذف الكوبون');
+      }
     } catch (e) {
       console.error('Delete failed');
+      toast.error('حدث خطأ أثناء الاتصال بالخادم');
     }
   };
 

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { CardSkeleton } from '@/components/admin/AdminSkeleton';
+import { toast } from 'react-hot-toast';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -58,9 +59,9 @@ export default function AdminDashboardPage() {
         body: JSON.stringify({ key, value })
       });
       if (res.ok) {
-        alert('تم تحديث الإعدادات بنجاح');
+        toast.success('تم تحديث الإعدادات بنجاح');
       } else {
-        alert('فشل تحديث الإعدادات');
+        toast.error('فشل تحديث الإعدادات');
       }
     } finally {
       setSettingsLoading(false);
@@ -96,12 +97,12 @@ export default function AdminDashboardPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        alert(data.message || 'تم تحديث الأسعار بنجاح');
+        toast.success(data.message || 'تم تحديث الأسعار بنجاح');
       } else {
-        alert(data.error || 'فشل تحديث الأسعار');
+        toast.error(data.error || 'فشل تحديث الأسعار');
       }
     } catch (e) {
-      alert('حدث خطأ أثناء الاتصال بالمزود');
+      toast.error('حدث خطأ أثناء الاتصال بالمزود');
     } finally {
       setActionLoading(null);
     }

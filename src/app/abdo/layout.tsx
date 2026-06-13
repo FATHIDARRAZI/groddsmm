@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase';
+import { Toaster } from 'react-hot-toast';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -35,6 +36,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen bg-[#07090F] flex flex-col md:flex-row text-slate-200 font-cairo overflow-x-hidden">
+      <Toaster 
+        position="bottom-left" 
+        toastOptions={{ 
+          style: { background: '#121827', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' },
+          success: { iconTheme: { primary: '#10B981', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#EF4444', secondary: '#fff' } }
+        }} 
+      />
       {/* Admin Sidebar (Desktop Only) */}
       <aside className="hidden md:flex w-72 bg-[#0B0F19] border-r border-white/5 flex-col shrink-0 shadow-2xl relative z-50">
         <div className="p-8 border-b border-white/5 flex items-center gap-4">

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { TableRowSkeleton } from '@/components/admin/AdminSkeleton';
 import Image from 'next/image';
+import { toast } from 'react-hot-toast';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -47,9 +48,10 @@ export default function AdminUsersPage() {
       if (res.ok) {
         setShowCreateForm(false);
         setNewUser({ fullName: '', email: '', password: '' });
+        toast.success('تم إنشاء المستخدم بنجاح');
         await fetchUsers();
       } else {
-        alert(data.error || 'فشل إنشاء المستخدم');
+        toast.error(data.error || 'فشل إنشاء المستخدم');
       }
     } finally {
       setCreating(false);
@@ -77,11 +79,12 @@ export default function AdminUsersPage() {
       
       if (res.ok) {
         setAmounts(prev => ({ ...prev, [targetUserId]: 0 }));
+        toast.success('تم تعديل الرصيد بنجاح');
         // Fresh fetch for full sync
         await fetchUsers();
       } else {
         setUsers(originalUsers);
-        alert('حدث خطأ أثناء تعديل الرصيد');
+        toast.error('حدث خطأ أثناء تعديل الرصيد');
       }
     } catch (e) {
       setUsers(originalUsers);
@@ -106,10 +109,11 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ action: 'set_ban_status', targetUserId, isBanned: !currentBanStatus })
       });
       if (res.ok) {
+        toast.success(currentBanStatus ? 'تم فك حظر المستخدم بنجاح' : 'تم حظر المستخدم بنجاح');
         await fetchUsers();
       } else {
         setUsers(originalUsers);
-        alert('تعذر تغيير حالة الحظر');
+        toast.error('تعذر تغيير حالة الحظر');
       }
     } catch (e) {
       setUsers(originalUsers);
@@ -134,10 +138,11 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ action: 'toggle_remove_ads', targetUserId, removeAds: !currentRemoveAds })
       });
       if (res.ok) {
+        toast.success(currentRemoveAds ? 'تم تفعيل الإعلانات للمستخدم' : 'تم إزالة الإعلانات للمستخدم بنجاح');
         await fetchUsers();
       } else {
         setUsers(originalUsers);
-        alert('تعذر تغيير حالة الإعلانات للمستخدم');
+        toast.error('تعذر تغيير حالة الإعلانات للمستخدم');
       }
     } catch (e) {
       setUsers(originalUsers);
@@ -163,10 +168,11 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ action: 'delete_user', targetUserId })
       });
       if (res.ok) {
+        toast.success('تم حذف المستخدم بنجاح');
         await fetchUsers();
       } else {
         setUsers(originalUsers);
-        alert('فشل حذف المستخدم');
+        toast.error('فشل حذف المستخدم');
       }
     } catch (e) {
       setUsers(originalUsers);
