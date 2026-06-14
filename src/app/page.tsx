@@ -30,6 +30,7 @@ export default function Home() {
   const [hasSeenIdleAd, setHasSeenIdleAd] = useState(false);
   const [removeAds, setRemoveAds] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showUnlockModal, setShowUnlockModal] = useState(false);
   const activeSiteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '';
 
   // Check if user has remove_ads enabled
@@ -139,6 +140,7 @@ export default function Home() {
       localStorage.setItem('smm_cooldown', targetTime.toString());
       setTimeLeft(2 * 60);
       setStep(3);
+      setShowUnlockModal(true);
       setPostLink('');
       setRecaptchaToken('');
     } catch (err) {
@@ -405,7 +407,48 @@ export default function Home() {
         </div>
       )}
 
+      {/* Share to Unlock Modal */}
+      {showUnlockModal && (
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-md transition-all"></div>
+          <div className="relative z-10 w-full max-w-[450px] bg-gradient-to-br from-[#1C1C1E] to-[#121827] border border-[#FF8577]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(255,133,119,0.2)] animate-fade-in flex flex-col items-center text-center">
+             
+             <button 
+               onClick={() => setShowUnlockModal(false)}
+               className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5"
+             >
+               <i className="fas fa-times text-xl"></i>
+             </button>
 
+             <div className="w-20 h-20 bg-[#FF8577]/10 rounded-full flex items-center justify-center text-[#FF8577] text-3xl mb-6 shadow-inner border border-[#FF8577]/20">
+                <i className="fas fa-gift"></i>
+             </div>
+
+             <h2 className="text-2xl font-black text-white mb-2">تهانينا! تمت إضافة طلبك 🚀</h2>
+             <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+               تمت الجدولة بنجاح. هل تريد الحصول على <strong>1,000 مشاهدة إضافية</strong> فوراً وبشكل مجاني تماماً؟
+             </p>
+
+             <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
+                <p className="text-xs text-slate-400 font-bold mb-3">أنشئ حساب مجاني في المنصة لفتح برنامج شركاء النجاح وتحصل على:</p>
+                <ul className="text-right text-xs text-slate-300 space-y-2 dir-rtl">
+                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> رصيد مجاني ترحيبي.</li>
+                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مكافآت يومية متجددة.</li>
+                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مهام سهلة بآلاف النقاط.</li>
+                </ul>
+             </div>
+
+             <div className="w-full flex flex-col gap-3">
+               <Link href="/auth/signup" onClick={() => setShowUnlockModal(false)} className="w-full py-4 bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] text-[#1F0A07] rounded-xl font-black text-sm hover:opacity-90 transition-all shadow-[0_0_20px_rgba(255,133,119,0.3)] flex items-center justify-center gap-2 hover:scale-[1.02]">
+                 <i className="fas fa-user-plus"></i> إنشاء حساب مجاني الآن
+               </Link>
+               <button onClick={() => setShowUnlockModal(false)} className="w-full py-3 text-slate-500 hover:text-slate-300 text-xs font-bold transition-all underline decoration-slate-600 hover:decoration-slate-400">
+                 لا شكراً، سأكتفي بالطلب الحالي
+               </button>
+             </div>
+          </div>
+        </div>
+      )}
 
 
       {/* Adsterra Native Banner */}
