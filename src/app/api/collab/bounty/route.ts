@@ -27,17 +27,34 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Only accepted partners can submit bounties' }, { status: 403 });
     }
 
-    // Check if user already has a pending or approved submission for this bounty
-    const { data: existing } = await supabase
+    // Check if user already has a pending submission
+    const { data: pendingSubmission } = await supabase
       .from('bounty_submissions')
       .select('status')
       .eq('user_id', user.id)
       .eq('bounty_id', bountyId)
-      .in('status', ['pending', 'approved'])
+      .eq('status', 'pending')
       .maybeSingle();
 
-    if (existing) {
-      return NextResponse.json({ error: `You already have a ${existing.status} submission for this bounty.` }, { status: 400 });
+    if (pendingSubmission) {
+      return NextResponse.json({ error: 'لديك طلب قيد المراجعة لهذه المهمة. يرجى الانتظار حتى يتم مراجعته.' }, { status: 400 });
+    }
+
+    // Check if user has an approved submission in the last 7 days
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const { data: recentApproved } = await supabase
+      .from('bounty_submissions')
+      .select('created_at')
+      .eq('user_id', user.id)
+      .eq('bounty_id', bountyId)
+      .eq('status', 'approved')
+      .gte('created_at', sevenDaysAgo.toISOString())
+      .limit(1);
+
+    if (recentApproved && recentApproved.length > 0) {
+      return NextResponse.json({ error: 'يمكنك تقديم إثبات لهذه المهمة مرة واحدة فقط كل 7 أيام.' }, { status: 400 });
     }
 
     const { error: insertError } = await supabase
@@ -74,7 +91,8 @@ export async function GET(req: Request) {
     const { data, error } = await supabase
       .from('bounty_submissions')
       .select('*')
-      .eq('user_id', user.id);
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
 
     if (error) {
       return NextResponse.json({ error: 'Failed to fetch bounties' }, { status: 500 });

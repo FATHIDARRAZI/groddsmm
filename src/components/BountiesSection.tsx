@@ -70,6 +70,13 @@ export default function BountiesSection() {
       return <span className="bg-orange-500/10 text-orange-400 text-[10px] px-3 py-1 rounded-full font-bold border border-orange-500/20">قيد المراجعة</span>;
     }
     if (submission.status === 'approved') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const submissionDate = new Date(submission.created_at);
+      
+      if (submissionDate < sevenDaysAgo) {
+        return <span className="bg-blue-500/10 text-blue-400 text-[10px] px-3 py-1 rounded-full font-bold border border-blue-500/20">متاح للمشاركة مجدداً</span>;
+      }
       return <span className="bg-green-500/10 text-green-400 text-[10px] px-3 py-1 rounded-full font-bold border border-green-500/20">مقبول ومكتمل</span>;
     }
     if (submission.status === 'rejected') {
@@ -101,7 +108,20 @@ export default function BountiesSection() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {BOUNTIES.map(bounty => {
           const submission = submissions.find(s => s.bounty_id === bounty.id);
-          const isPendingOrApproved = submission?.status === 'pending' || submission?.status === 'approved';
+          let isPendingOrRecentlyApproved = false;
+
+          if (submission) {
+            if (submission.status === 'pending') {
+              isPendingOrRecentlyApproved = true;
+            } else if (submission.status === 'approved') {
+              const sevenDaysAgo = new Date();
+              sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+              const submissionDate = new Date(submission.created_at);
+              if (submissionDate >= sevenDaysAgo) {
+                isPendingOrRecentlyApproved = true;
+              }
+            }
+          }
 
           return (
             <div key={bounty.id} className="bg-[#1C1C1E] p-6 rounded-3xl border border-white/5 flex flex-col justify-between group hover:border-white/10 transition-colors">
@@ -121,10 +141,10 @@ export default function BountiesSection() {
               </div>
 
               <div>
-                {isPendingOrApproved ? (
+                {isPendingOrRecentlyApproved ? (
                   <div className="w-full bg-black/40 border border-white/5 p-3 rounded-xl text-center">
                     <p className="text-[11px] text-slate-500 font-bold">
-                      {submission.status === 'pending' ? 'سنقوم بمراجعة طلبك وإضافة النقاط قريباً' : 'تم إضافة النقاط إلى محفظتك!'}
+                      {submission?.status === 'pending' ? 'سنقوم بمراجعة طلبك وإضافة النقاط قريباً' : 'تم إضافة النقاط إلى محفظتك! يمكنك التقديم مجدداً بعد 7 أيام.'}
                     </p>
                   </div>
                 ) : (
