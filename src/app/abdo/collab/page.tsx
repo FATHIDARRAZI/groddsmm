@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 
 export default function AdminCollabPage() {
   const [requests, setRequests] = useState<any[]>([]);
+  const [bounties, setBounties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   // Note modal state
@@ -12,16 +13,26 @@ export default function AdminCollabPage() {
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState('');
 
+  // Bounty note modal state
+  const [showBountyModal, setShowBountyModal] = useState(false);
+  const [selectedBountyId, setSelectedBountyId] = useState<string | null>(null);
+  const [bountyUserId, setBountyUserId] = useState<string | null>(null);
+  const [bountyNote, setBountyNote] = useState('');
+  const [bountyAction, setBountyAction] = useState<'approved' | 'rejected' | null>(null);
+  const [bountyReward, setBountyReward] = useState<number>(0);
+
   const fetchRequests = async () => {
     try {
-      const res = await fetch('/api/admin/collab');
-      const data = await res.json();
-      if (data.error) {
-        toast.error('API Error: ' + data.error);
-        console.error(data.error);
-      } else if (data.requests) {
-        setRequests(data.requests);
-      }
+      const [resCollab, resBounties] = await Promise.all([
+        fetch('/api/admin/collab'),
+        fetch('/api/admin/bounties')
+      ]);
+      const dataCollab = await resCollab.json();
+      const dataBounties = await resBounties.json();
+      
+      if (dataCollab.requests) setRequests(dataCollab.requests);
+      if (dataBounties.success && dataBounties.data) setBounties(dataBounties.data);
+      
     } catch (e: any) {
       toast.error('Failed to fetch requests: ' + e.message);
     } finally {
@@ -71,6 +82,45 @@ export default function AdminCollabPage() {
     } else {
       toast.error('يرجى كتابة سبب الرفض');
     }
+  };
+
+  const handleBountyUpdate = async () => {
+    if (bountyAction === 'rejected' && bountyNote.trim() === '') {
+      toast.error('يرجى كتابة سبب الرفض');
+      return;
+    }
+    try {
+      const res = await fetch('/api/admin/bounties', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          submissionId: selectedBountyId, 
+          status: bountyAction, 
+          note: bountyNote,
+          userId: bountyUserId,
+          rewardPoints: bountyAction === 'approved' ? bountyReward : 0
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`تم ${bountyAction === 'approved' ? 'قبول' : 'رفض'} المكافأة بنجاح`);
+        fetchRequests();
+        setShowBountyModal(false);
+      } else {
+        toast.error(data.error || 'فشل التحديث');
+      }
+    } catch (e) {
+      toast.error('حدث خطأ');
+    }
+  };
+
+  const openBountyModal = (id: string, userId: string, action: 'approved' | 'rejected', defaultReward: number = 0) => {
+    setSelectedBountyId(id);
+    setBountyUserId(userId);
+    setBountyAction(action);
+    setBountyReward(defaultReward);
+    setBountyNote('');
+    setShowBountyModal(true);
   };
 
   if (loading) {
@@ -144,6 +194,71 @@ export default function AdminCollabPage() {
         </table>
       </div>
 
+      {/* BOUNTY SUBMISSIONS TABLE */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 mt-16 relative z-10">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">مهام الشركاء (Bounties) 🎁</h2>
+        </div>
+      </div>
+      
+      <div className="bg-[#0B0F19]/80 backdrop-blur-3xl border border-white/5 rounded-3xl p-6 md:p-8 shadow-2xl relative z-10 overflow-x-auto">
+        <table className="w-full text-right text-sm text-slate-300 min-w-[800px]">
+          <thead>
+            <tr className="border-b border-white/5 text-slate-500">
+              <th className="py-4 px-4 font-bold">المستخدم</th>
+              <th className="py-4 px-4 font-bold">المهمة</th>
+              <th className="py-4 px-4 font-bold">الرابط</th>
+              <th className="py-4 px-4 font-bold">الحالة</th>
+              <th className="py-4 px-4 font-bold text-left">إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bounties.map(b => (
+              <tr key={b.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                <td className="py-4 px-4">
+                  {b.user_name} <br/>
+                  <span className="text-xs text-slate-500">{b.user_email}</span>
+                </td>
+                <td className="py-4 px-4 font-bold text-blue-400">
+                  {b.bounty_id === 'tiktok_review' && 'مراجعة تيك توك'}
+                  {b.bounty_id === 'ig_reel' && 'ريلز انستقرام'}
+                  {b.bounty_id === 'yt_video' && 'فيديو يوتيوب'}
+                </td>
+                <td className="py-4 px-4">
+                  <a href={b.proof_url} target="_blank" className="text-blue-500 hover:underline flex items-center gap-1" rel="noreferrer">
+                    <i className="fas fa-external-link-alt text-[10px]"></i> عرض الإثبات
+                  </a>
+                </td>
+                <td className="py-4 px-4">
+                  {b.status === 'pending' && <span className="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs font-bold">قيد المراجعة</span>}
+                  {b.status === 'approved' && <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-bold">مقبول</span>}
+                  {b.status === 'rejected' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold">مرفوض</span>}
+                </td>
+                <td className="py-4 px-4 text-left">
+                  {b.status === 'pending' ? (
+                    <div className="flex justify-end gap-2">
+                      <button onClick={() => openBountyModal(b.id, b.user_id, 'approved', b.bounty_id === 'tiktok_review' ? 10000 : b.bounty_id === 'ig_reel' ? 5000 : 50000)} className="bg-green-500/10 text-green-500 hover:bg-green-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-green-500/20">
+                        قبول ومنح
+                      </button>
+                      <button onClick={() => openBountyModal(b.id, b.user_id, 'rejected')} className="bg-red-500/10 text-red-500 hover:bg-red-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-red-500/20">
+                        رفض
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-500">منتهي</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+            {bounties.length === 0 && (
+              <tr>
+                <td colSpan={5} className="py-8 text-center text-slate-500">لا توجد مهام مسلمة حالياً</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
       {showNoteModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-[#121827] border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative animate-fade-in">
@@ -160,6 +275,47 @@ export default function AdminCollabPage() {
                  تأكيد الرفض
                </button>
                <button onClick={() => setShowNoteModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-all border border-white/5">
+                 إلغاء
+               </button>
+             </div>
+          </div>
+        </div>
+      )}
+
+      {showBountyModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#121827] border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative animate-fade-in">
+             <h3 className={`text-xl font-bold text-white mb-4 ${bountyAction === 'approved' ? 'text-green-400' : 'text-red-400'}`}>
+               {bountyAction === 'approved' ? 'تأكيد القبول والمكافأة' : 'سبب الرفض'}
+             </h3>
+             <p className="text-slate-400 text-sm mb-6">
+               {bountyAction === 'approved' ? 'يرجى مراجعة النقاط قبل منحها للمستخدم:' : 'سيظهر سبب الرفض للمستخدم في حسابه:'}
+             </p>
+
+             {bountyAction === 'approved' && (
+               <div className="mb-6">
+                 <label className="block text-xs text-slate-400 mb-2">مقدار المكافأة (نقطة)</label>
+                 <input 
+                   type="number" 
+                   value={bountyReward} 
+                   onChange={e => setBountyReward(Number(e.target.value))} 
+                   className="w-full bg-[#0B0F19] border border-white/5 rounded-2xl p-4 text-white focus:outline-none focus:border-green-500/50"
+                 />
+               </div>
+             )}
+
+             <textarea 
+               value={bountyNote}
+               onChange={(e) => setBountyNote(e.target.value)}
+               className={`w-full h-24 bg-[#0B0F19] border border-white/5 rounded-2xl p-4 text-white focus:outline-none mb-6 ${bountyAction === 'approved' ? 'focus:border-green-500/50' : 'focus:border-red-500/50'}`}
+               placeholder={bountyAction === 'approved' ? "ملاحظة إضافية (اختياري)..." : "السبب (مثال: المشاهدات لم تصل لـ 10 آلاف بعد)..."}
+             ></textarea>
+
+             <div className="flex gap-4">
+               <button onClick={handleBountyUpdate} className={`flex-1 font-bold py-3 rounded-xl transition-all shadow-lg text-white ${bountyAction === 'approved' ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500'}`}>
+                 تأكيد
+               </button>
+               <button onClick={() => setShowBountyModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-all border border-white/5">
                  إلغاء
                </button>
              </div>

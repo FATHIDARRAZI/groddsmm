@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { createSupabaseClient } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
+import BountiesSection from '@/components/BountiesSection';
 
 export default function CollabPage() {
   const [user, setUser] = useState<any>(null);
@@ -365,6 +366,10 @@ export default function CollabPage() {
            </div>
         </div>
       </div>
+
+      {/* BOUNTIES SECTION */}
+      <BountiesSection />
+
     </div>
   );
 }
