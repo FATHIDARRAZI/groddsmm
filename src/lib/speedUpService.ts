@@ -17,7 +17,7 @@ export async function sendSpeedUpRequest(orderId: string, serviceType: string, l
     }
 
     // 1. Generate polite message with OpenAI
-    const prompt = `Write a very short, polite, and professional message in Arabic to a social media panel provider. 
+    const prompt = `Write a very short, polite, and professional message in English to a social media panel provider. 
 The message should ask them to kindly speed up a specific order because the client is waiting.
 Order Details:
 - Order ID: ${orderId}
