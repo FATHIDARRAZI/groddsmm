@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SafeAdSlot from '@/components/SafeAdSlot';
-import { createSupabaseClient } from '@/lib/supabase';
+import { checkRemoveAdsCached } from '@/lib/adUtils';
 
 export default function HomeClientAds() {
   const [isStickyVisible, setIsStickyVisible] = useState(true);
@@ -13,15 +13,8 @@ export default function HomeClientAds() {
 
   useEffect(() => {
     async function checkRemoveAds() {
-      const supabase = createSupabaseClient();
-      if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
-        if (profile?.remove_ads) {
-          setRemoveAds(true);
-        }
-      }
+      const isRemoved = await checkRemoveAdsCached();
+      if (isRemoved) setRemoveAds(true);
     }
     checkRemoveAds();
   }, []);
@@ -108,13 +101,8 @@ export function HomeTopAd() {
   const [removeAds, setRemoveAds] = useState(false);
   useEffect(() => {
     async function checkRemoveAds() {
-      const supabase = createSupabaseClient();
-      if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
-        if (profile?.remove_ads) setRemoveAds(true);
-      }
+      const isRemoved = await checkRemoveAdsCached();
+      if (isRemoved) setRemoveAds(true);
     }
     checkRemoveAds();
   }, []);
@@ -140,13 +128,8 @@ export function HomeNativeAd() {
   const [removeAds, setRemoveAds] = useState(false);
   useEffect(() => {
     async function checkRemoveAds() {
-      const supabase = createSupabaseClient();
-      if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
-        if (profile?.remove_ads) setRemoveAds(true);
-      }
+      const isRemoved = await checkRemoveAdsCached();
+      if (isRemoved) setRemoveAds(true);
     }
     checkRemoveAds();
   }, []);
@@ -174,13 +157,8 @@ export function HomeMiddleAd() {
   const [removeAds, setRemoveAds] = useState(false);
   useEffect(() => {
     async function checkRemoveAds() {
-      const supabase = createSupabaseClient();
-      if (!supabase) return;
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
-        if (profile?.remove_ads) setRemoveAds(true);
-      }
+      const isRemoved = await checkRemoveAdsCached();
+      if (isRemoved) setRemoveAds(true);
     }
     checkRemoveAds();
   }, []);

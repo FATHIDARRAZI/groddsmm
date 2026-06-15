@@ -60,7 +60,6 @@ export default function Home() {
             alt="Grodd SMM Mockup" 
             width={800}
             height={500}
-            priority={true}
             className="w-full max-w-2xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(236,72,153,0.15)]" 
           />
         </div>
@@ -98,7 +97,7 @@ export default function Home() {
             <div className="order-1 md:order-2 w-full md:w-5/12 flex justify-center md:justify-end pr-16 md:pr-0 mb-8 md:mb-0">
               <div className="relative w-full max-w-[500px]">
                 <div className="absolute -inset-2 bg-gradient-to-tr from-pink-500 to-transparent rounded-3xl blur-xl opacity-20 group-hover:opacity-50 transition duration-500"></div>
-                <Image src="/img/choose_service.png" alt="الخطوة الأولى" width={600} height={400} priority={true} className="relative rounded-3xl border border-white/10 shadow-2xl object-cover w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500" />
+                <Image src="/img/choose_service.png" alt="الخطوة الأولى" width={600} height={400} loading="lazy" className="relative rounded-3xl border border-white/10 shadow-2xl object-cover w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500" />
               </div>
             </div>
           </div>

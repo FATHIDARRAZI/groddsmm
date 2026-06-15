@@ -11,15 +11,11 @@ export default function AdBlockDetector() {
     const initDetection = async () => {
       // First, check if the user has remove_ads flag enabled
       try {
-        const { createSupabaseClient } = await import('@/lib/supabase');
-        const supabase = createSupabaseClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: profile } = await supabase.from('profiles').select('remove_ads').eq('id', user.id).single();
-          if (profile?.remove_ads) {
-            // User paid to remove ads, so don't show ad block detector
-            return;
-          }
+        const { checkRemoveAdsCached } = await import('@/lib/adUtils');
+        const isRemoved = await checkRemoveAdsCached();
+        if (isRemoved) {
+          // User paid to remove ads, so don't show ad block detector
+          return;
         }
       } catch (e) {
         console.warn('Failed to verify remove_ads status', e);
