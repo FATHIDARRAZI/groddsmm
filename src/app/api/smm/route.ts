@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCooldownEnd, setCooldown } from '@/lib/cooldown';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
+import { sendSpeedUpRequest } from '@/lib/speedUpService';
 
 const SMM_API_KEY = process.env.SMM_API_KEY || '';
 const SMM_API_URL = 'https://bestsmmprovider.com/api/v2';
@@ -178,6 +179,9 @@ export async function POST(req: Request) {
           status: 'Pending'
         });
 
+        // Trigger the AI Speed-Up Request in the background (we don't await to avoid blocking the user)
+        sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+
         return NextResponse.json({ success: true, message: 'تم إرسال الطلب بنجاح وتم خصم النقاط' }, { status: 200 });
 
       } else {
@@ -194,6 +198,10 @@ export async function POST(req: Request) {
         }
 
         await setCooldown(ip, cooldownMinutes);
+
+        // Trigger the AI Speed-Up Request in the background
+        sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+
         return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
       }
     }
