@@ -108,6 +108,16 @@ export default function RootLayout({
                 <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
                   وكالة متخصصة في التسويق الرقمي، بناء الجماهير، وتحليل الخوارزميات. نساعد العلامات التجارية والمؤثرين على تحقيق نمو مستدام وموثوق لحضورهم الرقمي. مطور بواسطة Grodd Labs.
                 </p>
+                <div className="flex flex-col gap-2 mb-6 text-sm text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <i className="fas fa-envelope text-pink-500 w-4 text-center"></i>
+                    <a href="mailto:groddlabs@proton.me" className="hover:text-white transition-colors">groddlabs@proton.me</a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <i className="fab fa-whatsapp text-pink-500 w-4 text-center"></i>
+                    <a href="https://wa.me/212687097476" className="hover:text-white transition-colors" dir="ltr">+212 687-097476</a>
+                  </div>
+                </div>
                 <div className="flex items-center gap-4">
                   <a href="https://x.com/groddsmm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-twitter"></i>
