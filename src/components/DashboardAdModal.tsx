@@ -72,8 +72,13 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
           إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
         </p>
 
-        <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-center">
-          <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+        <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-center h-14 overflow-hidden">
+          <div className={`transition-all duration-1000 ease-out flex items-center justify-center w-full ${timeLeft <= 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-90 pointer-events-none'}`}>
+            <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-xs text-white font-bold hover:scale-105 transition-transform flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-white/20">
+              <i className="fas fa-crown text-amber-300"></i>
+              إزالة الإعلانات؟
+            </Link>
+          </div>
         </div>
       </div>
     </div>
