@@ -43,6 +43,17 @@ export default function HomeClientAds() {
     };
   }, [hasSeenIdleAd, showIdleAd, removeAds]);
 
+  const [showRemoveAdsLink, setShowRemoveAdsLink] = useState(false);
+
+  useEffect(() => {
+    if (showIdleAd) {
+      const t = setTimeout(() => setShowRemoveAdsLink(true), 4000);
+      return () => clearTimeout(t);
+    } else {
+      setShowRemoveAdsLink(false);
+    }
+  }, [showIdleAd]);
+
   if (removeAds) return null;
 
   return (
@@ -59,7 +70,9 @@ export default function HomeClientAds() {
           >
             <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
           </button>
-          <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors">إزالة الإعلانات؟</Link>
+          <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors flex items-center gap-1">
+            <i className="fas fa-crown text-amber-300"></i> إزالة الإعلانات؟
+          </Link>
         </div>
         <div className="w-full bg-[#121827]/90 backdrop-blur-md border-t border-white/10 p-3 flex justify-center shadow-[0_-10px_30px_rgba(0,0,0,0.3)] min-h-[80px]">
           <div className="hidden md:flex w-full items-center justify-center">
@@ -81,9 +94,14 @@ export default function HomeClientAds() {
             >
               <i className="fas fa-times"></i>
             </button>
-            <div className="w-full flex justify-between items-center mb-4 mt-2">
+            <div className="w-full flex justify-between items-center mb-4 mt-2 h-8">
               <h3 className="text-xl font-bold text-white">إعلان مدعوم</h3>
-              <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+              <div className={`transition-all duration-1000 ease-out flex items-center ${showRemoveAdsLink ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}`}>
+                <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-white font-bold hover:scale-105 transition-transform flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-white/20">
+                  <i className="fas fa-crown text-amber-300"></i>
+                  إزالة الإعلانات؟
+                </Link>
+              </div>
             </div>
             <p className="text-slate-400 text-sm text-center w-full mb-6">شكراً لانتظارك! نحن نعتمد على الإعلانات لإبقاء هذه الخدمة مجانية.</p>
             
