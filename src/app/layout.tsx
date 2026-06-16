@@ -45,7 +45,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={`dark ${cairo.variable} ${outfit.variable}`}>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+          document.addEventListener('dblclick', function(e) { e.preventDefault(); }, { passive: false });
+        `}} />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
