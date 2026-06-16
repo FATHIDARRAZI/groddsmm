@@ -18,6 +18,7 @@ const outfit = Outfit({
 import Script from 'next/script';
 import Image from 'next/image';
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
 import EnvGuard from '@/components/EnvGuard';
@@ -165,6 +166,7 @@ export default function RootLayout({
           </div>
         </footer>
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
