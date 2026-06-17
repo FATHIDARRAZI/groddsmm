@@ -92,7 +92,7 @@ export default function CouponsPage() {
         {/* Minimal Support Links */}
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-xs font-bold text-slate-500">
           <a 
-            href="https://t.me/grodd_labsBot" 
+            href="https://t.me/grodd_media" 
             target="_blank" 
             rel="noreferrer" 
             className="text-pink-500/80 hover:text-pink-400 transition-colors flex items-center gap-1.5"

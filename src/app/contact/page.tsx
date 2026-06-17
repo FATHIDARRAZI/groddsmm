@@ -18,7 +18,7 @@ export default function ContactUs() {
           </p>
           
           <div className="flex flex-col gap-4 w-full">
-            <a href="https://t.me/grodd_labsBot" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
+            <a href="https://t.me/grodd_media" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
               <i className="fas fa-chevron-left text-slate-600 group-hover:text-white transition-colors"></i>
               <div className="flex items-center gap-4">
                 <span className="font-bold text-white">تليجرام (أسرع استجابة)</span>
@@ -26,19 +26,19 @@ export default function ContactUs() {
               </div>
             </a>
             
-            <a href="https://x.com/groddsmm" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
+            <a href="https://wa.me/212687097476" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
                <i className="fas fa-chevron-left text-slate-600 group-hover:text-white transition-colors"></i>
               <div className="flex items-center gap-4">
-                <span className="font-bold text-white">منصة إكس (تويتر)</span>
-                <i className="fab fa-twitter text-2xl text-slate-300"></i>
+                <span className="font-bold text-white">واتساب (+212 687-097476)</span>
+                <i className="fab fa-whatsapp text-2xl text-green-500"></i>
               </div>
             </a>
             
-            <a href="https://www.instagram.com/grodd_media/" target="_blank" rel="noreferrer" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
+            <a href="mailto:groddlabs@proton.me" className="w-full bg-[#121827] hover:bg-slate-800 border border-slate-700 p-4 rounded-xl flex items-center justify-between group transition-all">
                <i className="fas fa-chevron-left text-slate-600 group-hover:text-white transition-colors"></i>
               <div className="flex items-center gap-4">
-                <span className="font-bold text-white">تواصل عبر إنستغرام</span>
-                <i className="fab fa-instagram text-2xl text-pink-500"></i>
+                <span className="font-bold text-white">البريد الإلكتروني</span>
+                <i className="fas fa-envelope text-2xl text-pink-500"></i>
               </div>
             </a>
           </div>

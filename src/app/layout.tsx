@@ -111,7 +111,7 @@ export default function RootLayout({
               "sameAs": [
                 "https://x.com/groddsmm",
                 "https://www.instagram.com/grodd_media/",
-                "https://t.me/grodd_labsBot"
+                "https://t.me/grodd_media"
               ]
             })
           }}
@@ -168,7 +168,7 @@ export default function RootLayout({
                   <a href="https://www.instagram.com/grodd_media/" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-instagram"></i>
                   </a>
-                  <a href="https://t.me/grodd_labsBot" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://t.me/grodd_media" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
                     <i className="fab fa-telegram"></i>
                   </a>
                 </div>

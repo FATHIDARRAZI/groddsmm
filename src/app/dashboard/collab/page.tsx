@@ -211,7 +211,7 @@ export default function CollabPage() {
           <div className="pt-6 border-t border-white/5">
              <p className="text-sm text-slate-400 mb-4">إذا كنت تعتقد أن هناك خطأ أو ترغب في الاستفسار، يمكنك التواصل معنا.</p>
              <a 
-               href="https://t.me/grodd_labsBot" 
+               href="https://t.me/grodd_media" 
                target="_blank" 
                rel="noreferrer"
                className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-white font-bold transition-all"
@@ -338,7 +338,7 @@ export default function CollabPage() {
                 للحصول على عروض مخصصة، حسابات مدفوعة مجانية، أو طلب تحويل الأرباح، يمكنك التحدث مباشرة مع فريق الشراكات.
               </p>
               <a 
-                href="https://t.me/grodd_labsBot" 
+                href="https://t.me/grodd_media" 
                 target="_blank" 
                 rel="noreferrer"
                 className="w-full py-4 bg-white text-blue-600 rounded-2xl font-black text-center block hover:bg-slate-50 transition-colors shadow-lg"
