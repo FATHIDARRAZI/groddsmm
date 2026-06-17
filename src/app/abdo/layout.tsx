@@ -37,7 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div className="min-h-screen bg-[#07090F] flex flex-col md:flex-row text-slate-200 font-cairo overflow-x-hidden">
+    <div className="min-h-screen bg-slate-950 flex flex-col md:flex-row text-slate-200 font-cairo overflow-x-hidden">
       <Toaster 
         position="bottom-left" 
         toastOptions={{ 
@@ -47,9 +47,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }} 
       />
       {/* Admin Sidebar (Desktop Only) */}
-      <aside className="hidden md:flex w-72 bg-[#0B0F19] border-r border-white/5 flex-col shrink-0 shadow-2xl relative z-50">
-        <div className="p-8 border-b border-white/5 flex items-center gap-4">
-          <div className="w-10 h-10 bg-red-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.4)]">
+      <aside className="hidden md:flex w-72 bg-slate-900 border-r border-slate-800 flex-col shrink-0 relative z-50">
+        <div className="p-8 border-b border-slate-800 flex items-center gap-4">
+          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
              <i className="fas fa-user-shield text-white text-lg"></i>
           </div>
           <h1 className="text-xl font-black text-white tracking-tight uppercase">Admin Center</h1>
@@ -62,24 +62,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                <Link 
                 key={link.href}
                 href={link.href}
-                className={`flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all relative group ${
+                className={`flex items-center gap-4 px-5 py-4 font-bold transition-all relative group ${
                   isActive 
-                    ? 'bg-red-600/10 text-white border border-red-600/20 shadow-lg' 
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent'
+                    ? 'bg-slate-800 text-white border-l-4 border-blue-500' 
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white border-l-4 border-transparent'
                 }`}
                >
-                 <i className={`fas ${link.icon} w-5 text-center transition-transform group-hover:scale-110 ${isActive ? 'text-red-500' : ''}`}></i>
+                 <i className={`fas ${link.icon} w-5 text-center transition-transform group-hover:scale-110 ${isActive ? 'text-blue-500' : ''}`}></i>
                  {link.label}
-                 {isActive && <span className="absolute left-[-2px] top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-red-600 rounded-full shadow-[0_0_10px_#dc2626]"></span>}
                </Link>
              );
            })}
         </nav>
 
-        <div className="p-6 border-t border-white/5">
+        <div className="p-6 border-t border-slate-800">
            <button 
              onClick={handleLogout}
-             className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold text-red-400 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
+             className="w-full flex items-center gap-4 px-5 py-4 rounded-lg font-bold text-red-400 hover:bg-red-500/10 transition-all border border-transparent hover:border-red-500/20"
            >
              <i className="fas fa-sign-out-alt w-5 text-center"></i>
              تسجيل الخروج
@@ -88,22 +87,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="md:hidden fixed bottom-6 left-6 right-6 h-20 bg-[#0B0F19]/80 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] z-[100] flex items-center justify-around px-4 shadow-2xl overflow-hidden">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-slate-900 border-t border-slate-800 z-[100] flex items-center justify-around px-2">
          {navLinks.map((link) => {
            const isActive = pathname === link.href;
            return (
              <Link 
                key={link.href} 
                href={link.href}
-               className={`flex flex-col items-center gap-1 transition-all relative ${isActive ? 'text-red-500' : 'text-slate-500'}`}
+               className={`flex flex-col items-center gap-1 transition-all p-2 ${isActive ? 'text-blue-500' : 'text-slate-500'}`}
              >
-               <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-red-600/10 text-red-500 scale-110' : ''}`}>
-                 <i className={`fas ${link.icon} text-lg`}></i>
-               </div>
-               <span className={`text-[9px] font-black uppercase tracking-tighter transition-all ${isActive ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
+               <i className={`fas ${link.icon} text-lg`}></i>
+               <span className="text-[10px] font-bold">
                  {link.label.split(' ')[0]}
                </span>
-               {isActive && <span className="absolute bottom-[-4px] w-1 h-1 bg-red-600 rounded-full shadow-[0_0_10px_#dc2626]"></span>}
              </Link>
            );
          })}
@@ -119,18 +115,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </nav>
 
       {/* Admin Main View */}
-      <main className="flex-1 p-6 md:p-12 pb-32 md:pb-12 relative overflow-x-hidden overflow-y-auto custom-scrollbar">
+      <main className="flex-1 p-6 md:p-8 relative overflow-x-hidden overflow-y-auto custom-scrollbar">
          {/* Top Info Bar */}
-         <div className="flex items-center justify-between mb-10">
+         <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-800">
             <div>
-               <p className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">System Status</p>
-               <h2 className="text-white text-lg font-bold">وحدة التحكم</h2>
+               <p className="text-xs font-bold text-slate-400 mb-1">System Overview</p>
+               <h2 className="text-white text-2xl font-bold">وحدة التحكم</h2>
             </div>
             <div className="flex items-center gap-3">
-               <Link href="/" className="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-[10px] font-black text-slate-300 transition-all uppercase tracking-widest">
+               <Link href="/" className="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-bold text-slate-300 transition-all">
                   Site
                </Link>
-               <button onClick={handleLogout} className="md:hidden w-10 h-10 bg-red-600/10 text-red-500 border border-red-500/20 rounded-xl flex items-center justify-center">
+               <button onClick={handleLogout} className="md:hidden w-10 h-10 bg-slate-800 text-slate-400 rounded-lg flex items-center justify-center">
                   <i className="fas fa-power-off"></i>
                </button>
             </div>

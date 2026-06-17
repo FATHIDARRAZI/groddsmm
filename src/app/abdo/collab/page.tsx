@@ -129,53 +129,54 @@ export default function AdminCollabPage() {
 
   return (
     <div className="flex-1 p-6 md:p-10 pb-24 lg:pb-10 relative overflow-hidden min-h-screen">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 relative z-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 relative z-10 border-b border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span className="bg-red-600/20 text-red-500 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-red-500/20">إدارة الشراكات</span>
+            <span className="bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded border border-blue-500/20">إدارة الشراكات</span>
           </div>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">طلبات الشراكة 🤝</h1>
+          <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">طلبات الشراكة 🤝</h1>
         </div>
       </div>
 
-      <div className="bg-[#0B0F19]/80 backdrop-blur-3xl border border-white/5 rounded-3xl p-6 md:p-8 shadow-2xl relative z-10 overflow-x-auto">
-        <table className="w-full text-right text-sm text-slate-300 min-w-[800px]">
-          <thead>
-            <tr className="border-b border-white/5 text-slate-500">
-              <th className="py-4 px-4 font-bold">اسم المستخدم (انستقرام)</th>
-              <th className="py-4 px-4 font-bold">حساب المنصة</th>
-              <th className="py-4 px-4 font-bold">الحالة</th>
-              <th className="py-4 px-4 font-bold">التاريخ</th>
-              <th className="py-4 px-4 font-bold text-left">إجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden relative z-10">
+        <div className="overflow-x-auto">
+          <table className="w-full text-right text-sm text-slate-300 min-w-[800px]">
+            <thead className="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+              <tr>
+                <th className="py-4 px-6 font-bold">اسم المستخدم (انستقرام)</th>
+                <th className="py-4 px-6 font-bold">حساب المنصة</th>
+                <th className="py-4 px-6 font-bold">الحالة</th>
+                <th className="py-4 px-6 font-bold">التاريخ</th>
+                <th className="py-4 px-6 font-bold text-left">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
             {requests.map(req => (
-              <tr key={req.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                <td className="py-4 px-4">
+              <tr key={req.id} className="hover:bg-slate-800/50 transition-colors">
+                <td className="py-4 px-6">
                   <a href={`https://instagram.com/${req.username}`} target="_blank" className="text-blue-400 font-bold hover:underline" rel="noreferrer">
                     @{req.username}
                   </a>
                 </td>
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   {req.profiles?.full_name} <br/>
                   <span className="text-xs text-slate-500">{req.profiles?.email}</span>
                 </td>
-                <td className="py-4 px-4">
-                  {req.status === 'pending' && <span className="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs font-bold">قيد المراجعة</span>}
-                  {req.status === 'accepted' && <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-bold">مقبول</span>}
-                  {req.status === 'declined' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold">مرفوض</span>}
+                <td className="py-4 px-6">
+                  {req.status === 'pending' && <span className="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded text-xs font-bold">قيد المراجعة</span>}
+                  {req.status === 'accepted' && <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded text-xs font-bold">مقبول</span>}
+                  {req.status === 'declined' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded text-xs font-bold">مرفوض</span>}
                 </td>
-                <td className="py-4 px-4 text-xs text-slate-500">
+                <td className="py-4 px-6 text-xs text-slate-500">
                   {new Date(req.created_at).toLocaleDateString('ar-SA')}
                 </td>
-                <td className="py-4 px-4 text-left">
+                <td className="py-4 px-6 text-left">
                   {req.status === 'pending' ? (
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => handleAccept(req.id)} className="bg-green-500/10 text-green-500 hover:bg-green-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-green-500/20">
+                      <button onClick={() => handleAccept(req.id)} className="bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white px-4 py-2 rounded font-bold transition-all text-xs border border-green-500/20">
                         قبول
                       </button>
-                      <button onClick={() => openDeclineModal(req.id)} className="bg-red-500/10 text-red-500 hover:bg-red-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-red-500/20">
+                      <button onClick={() => openDeclineModal(req.id)} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded font-bold transition-all text-xs border border-red-500/20">
                         رفض
                       </button>
                     </div>
@@ -192,55 +193,57 @@ export default function AdminCollabPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {/* BOUNTY SUBMISSIONS TABLE */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 mt-16 relative z-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-6 mt-12 relative z-10 border-b border-slate-800 pb-4">
         <div>
-          <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight">مهام الشركاء (Bounties) 🎁</h2>
+          <h2 className="text-2xl font-bold text-white tracking-tight">مهام الشركاء (Bounties) 🎁</h2>
         </div>
       </div>
       
-      <div className="bg-[#0B0F19]/80 backdrop-blur-3xl border border-white/5 rounded-3xl p-6 md:p-8 shadow-2xl relative z-10 overflow-x-auto">
-        <table className="w-full text-right text-sm text-slate-300 min-w-[800px]">
-          <thead>
-            <tr className="border-b border-white/5 text-slate-500">
-              <th className="py-4 px-4 font-bold">المستخدم</th>
-              <th className="py-4 px-4 font-bold">المهمة</th>
-              <th className="py-4 px-4 font-bold">الرابط</th>
-              <th className="py-4 px-4 font-bold">الحالة</th>
-              <th className="py-4 px-4 font-bold text-left">إجراءات</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden relative z-10">
+        <div className="overflow-x-auto">
+          <table className="w-full text-right text-sm text-slate-300 min-w-[800px]">
+            <thead className="bg-slate-950 text-slate-400 text-xs border-b border-slate-800">
+              <tr>
+                <th className="py-4 px-6 font-bold">المستخدم</th>
+                <th className="py-4 px-6 font-bold">المهمة</th>
+                <th className="py-4 px-6 font-bold">الرابط</th>
+                <th className="py-4 px-6 font-bold">الحالة</th>
+                <th className="py-4 px-6 font-bold text-left">إجراءات</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800">
             {bounties.map(b => (
-              <tr key={b.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                <td className="py-4 px-4">
+              <tr key={b.id} className="hover:bg-slate-800/50 transition-colors">
+                <td className="py-4 px-6">
                   {b.user_name} <br/>
                   <span className="text-xs text-slate-500">{b.user_email}</span>
                 </td>
-                <td className="py-4 px-4 font-bold text-blue-400">
+                <td className="py-4 px-6 font-bold text-blue-400">
                   {b.bounty_id === 'tiktok_review' && 'مراجعة تيك توك'}
                   {b.bounty_id === 'ig_reel' && 'ريلز انستقرام'}
                   {b.bounty_id === 'yt_video' && 'فيديو يوتيوب'}
                 </td>
-                <td className="py-4 px-4">
+                <td className="py-4 px-6">
                   <a href={b.proof_url} target="_blank" className="text-blue-500 hover:underline flex items-center gap-1" rel="noreferrer">
                     <i className="fas fa-external-link-alt text-[10px]"></i> عرض الإثبات
                   </a>
                 </td>
-                <td className="py-4 px-4">
-                  {b.status === 'pending' && <span className="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded-full text-xs font-bold">قيد المراجعة</span>}
-                  {b.status === 'approved' && <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded-full text-xs font-bold">مقبول</span>}
-                  {b.status === 'rejected' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded-full text-xs font-bold">مرفوض</span>}
+                <td className="py-4 px-6">
+                  {b.status === 'pending' && <span className="bg-yellow-500/20 text-yellow-500 px-3 py-1 rounded text-xs font-bold">قيد المراجعة</span>}
+                  {b.status === 'approved' && <span className="bg-green-500/20 text-green-500 px-3 py-1 rounded text-xs font-bold">مقبول</span>}
+                  {b.status === 'rejected' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded text-xs font-bold">مرفوض</span>}
                 </td>
-                <td className="py-4 px-4 text-left">
+                <td className="py-4 px-6 text-left">
                   {b.status === 'pending' ? (
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => openBountyModal(b.id, b.user_id, 'approved', b.bounty_id === 'tiktok_review' ? 10000 : b.bounty_id === 'ig_reel' ? 5000 : 50000)} className="bg-green-500/10 text-green-500 hover:bg-green-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-green-500/20">
+                      <button onClick={() => openBountyModal(b.id, b.user_id, 'approved', b.bounty_id === 'tiktok_review' ? 10000 : b.bounty_id === 'ig_reel' ? 5000 : 50000)} className="bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white px-4 py-2 rounded font-bold transition-all text-xs border border-green-500/20">
                         قبول ومنح
                       </button>
-                      <button onClick={() => openBountyModal(b.id, b.user_id, 'rejected')} className="bg-red-500/10 text-red-500 hover:bg-red-500/20 px-4 py-2 rounded-xl font-bold transition-all text-xs border border-red-500/20">
+                      <button onClick={() => openBountyModal(b.id, b.user_id, 'rejected')} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white px-4 py-2 rounded font-bold transition-all text-xs border border-red-500/20">
                         رفض
                       </button>
                     </div>
@@ -257,24 +260,25 @@ export default function AdminCollabPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
 
       {showNoteModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#121827] border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative animate-fade-in">
-             <h3 className="text-xl font-bold text-white mb-4">سبب الرفض</h3>
-             <p className="text-slate-400 text-sm mb-6">يرجى كتابة سبب رفض الطلب، سيظهر هذا السبب للمستخدم في لوحة التحكم الخاصة به.</p>
+        <div className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-xl relative animate-fade-in">
+             <h3 className="text-xl font-bold text-white mb-2">سبب الرفض</h3>
+             <p className="text-slate-400 text-sm mb-4">يرجى كتابة سبب رفض الطلب، سيظهر هذا السبب للمستخدم في لوحة التحكم الخاصة به.</p>
              <textarea 
                value={adminNote}
                onChange={(e) => setAdminNote(e.target.value)}
-               className="w-full h-32 bg-[#0B0F19] border border-white/5 rounded-2xl p-4 text-white focus:outline-none focus:border-red-500/50 mb-6"
+               className="w-full h-32 bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500 mb-6"
                placeholder="مثال: الحساب وهمي، أو لا يمتلك عدد كافي من المتابعين..."
              ></textarea>
              <div className="flex gap-4">
-               <button onClick={confirmDecline} className="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-xl transition-all shadow-lg">
+               <button onClick={confirmDecline} className="flex-1 bg-red-600 hover:bg-red-500 text-white font-bold py-2 rounded-lg transition-all">
                  تأكيد الرفض
                </button>
-               <button onClick={() => setShowNoteModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-all border border-white/5">
+               <button onClick={() => setShowNoteModal(false)} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg transition-all border border-slate-700">
                  إلغاء
                </button>
              </div>
@@ -283,23 +287,23 @@ export default function AdminCollabPage() {
       )}
 
       {showBountyModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#121827] border border-white/10 rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative animate-fade-in">
-             <h3 className={`text-xl font-bold text-white mb-4 ${bountyAction === 'approved' ? 'text-green-400' : 'text-red-400'}`}>
+        <div className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 w-full max-w-md shadow-xl relative animate-fade-in">
+             <h3 className={`text-xl font-bold text-white mb-2 ${bountyAction === 'approved' ? 'text-green-400' : 'text-red-400'}`}>
                {bountyAction === 'approved' ? 'تأكيد القبول والمكافأة' : 'سبب الرفض'}
              </h3>
-             <p className="text-slate-400 text-sm mb-6">
+             <p className="text-slate-400 text-sm mb-4">
                {bountyAction === 'approved' ? 'يرجى مراجعة النقاط قبل منحها للمستخدم:' : 'سيظهر سبب الرفض للمستخدم في حسابه:'}
              </p>
 
              {bountyAction === 'approved' && (
-               <div className="mb-6">
+               <div className="mb-4">
                  <label className="block text-xs text-slate-400 mb-2">مقدار المكافأة (نقطة)</label>
                  <input 
                    type="number" 
                    value={bountyReward} 
                    onChange={e => setBountyReward(Number(e.target.value))} 
-                   className="w-full bg-[#0B0F19] border border-white/5 rounded-2xl p-4 text-white focus:outline-none focus:border-green-500/50"
+                   className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none focus:border-green-500"
                  />
                </div>
              )}
@@ -307,15 +311,15 @@ export default function AdminCollabPage() {
              <textarea 
                value={bountyNote}
                onChange={(e) => setBountyNote(e.target.value)}
-               className={`w-full h-24 bg-[#0B0F19] border border-white/5 rounded-2xl p-4 text-white focus:outline-none mb-6 ${bountyAction === 'approved' ? 'focus:border-green-500/50' : 'focus:border-red-500/50'}`}
+               className={`w-full h-24 bg-slate-950 border border-slate-800 rounded-lg p-3 text-white focus:outline-none mb-6 ${bountyAction === 'approved' ? 'focus:border-green-500' : 'focus:border-red-500'}`}
                placeholder={bountyAction === 'approved' ? "ملاحظة إضافية (اختياري)..." : "السبب (مثال: المشاهدات لم تصل لـ 10 آلاف بعد)..."}
              ></textarea>
 
              <div className="flex gap-4">
-               <button onClick={handleBountyUpdate} className={`flex-1 font-bold py-3 rounded-xl transition-all shadow-lg text-white ${bountyAction === 'approved' ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500'}`}>
+               <button onClick={handleBountyUpdate} className={`flex-1 font-bold py-2 rounded-lg transition-all text-white ${bountyAction === 'approved' ? 'bg-green-600 hover:bg-green-500' : 'bg-red-600 hover:bg-red-500'}`}>
                  تأكيد
                </button>
-               <button onClick={() => setShowBountyModal(false)} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-xl transition-all border border-white/5">
+               <button onClick={() => setShowBountyModal(false)} className="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-lg transition-all border border-slate-700">
                  إلغاء
                </button>
              </div>

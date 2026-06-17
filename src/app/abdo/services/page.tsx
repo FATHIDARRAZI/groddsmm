@@ -83,7 +83,7 @@ export default function AdminServices() {
   if (loading) {
     return (
       <main className="flex-1 p-8 flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </main>
     );
   }
@@ -91,15 +91,15 @@ export default function AdminServices() {
   return (
     <main className="flex-1 p-6 md:p-8 ml-0 md:ml-72 pb-32 md:pb-8 min-h-screen relative dir-rtl text-right">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div>
-          <h1 className="text-3xl font-black text-white mb-2">إدارة الخدمات</h1>
-          <p className="text-slate-400">تحكم في معرفات الخدمات (IDs) المتصلة بمزود الـ SMM وحدود الكمية الخاصة بها.</p>
+        <div className="border-b border-slate-800 pb-6">
+          <h1 className="text-2xl font-bold text-white mb-2">إدارة الخدمات</h1>
+          <p className="text-slate-400 text-sm">تحكم في معرفات الخدمات (IDs) المتصلة بمزود الـ SMM وحدود الكمية الخاصة بها.</p>
         </div>
 
-        <div className="bg-[#121827] rounded-[2rem] border border-white/5 overflow-hidden relative">
+        <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden relative">
            <div className="overflow-x-auto">
              <table className="w-full text-sm text-right">
-               <thead className="bg-[#0B0F19] text-slate-400 font-bold border-b border-white/5">
+               <thead className="bg-slate-950 text-slate-400 font-bold border-b border-slate-800">
                  <tr>
                    <th className="px-6 py-4">المنصة</th>
                    <th className="px-6 py-4">الخدمة</th>
@@ -110,9 +110,9 @@ export default function AdminServices() {
                    <th className="px-6 py-4 text-center">الإجراءات</th>
                  </tr>
                </thead>
-               <tbody className="divide-y divide-white/5">
+               <tbody className="divide-y divide-slate-800">
                  {services.map((service) => (
-                   <tr key={service.id} className="hover:bg-white/[0.02] transition-colors">
+                   <tr key={service.id} className="hover:bg-slate-800/50 transition-colors">
                      <td className="px-6 py-4 font-bold text-white uppercase flex items-center gap-2">
                        {service.category === 'instagram' && <i className="fab fa-instagram text-pink-500"></i>}
                        {service.category === 'tiktok' && <i className="fab fa-tiktok text-white"></i>}
@@ -134,7 +134,7 @@ export default function AdminServices() {
                              handleUpdate(service.id, { provider_service_id: e.target.value });
                            }
                          }}
-                         className="w-24 bg-black/50 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 text-center font-mono"
+                         className="w-24 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-center font-mono"
                        />
                      </td>
                      <td className="px-6 py-4 text-slate-400 font-mono">{service.min_quantity}</td>

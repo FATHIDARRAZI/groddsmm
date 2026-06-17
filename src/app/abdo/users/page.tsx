@@ -188,15 +188,15 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-8 pb-24">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
          <div>
-            <h1 className="text-3xl font-black text-white">إدارة المستخدمين</h1>
-            <p className="text-slate-500 font-bold">التحكم الكامل في حسابات المنصة والارصدة</p>
+            <h1 className="text-2xl font-bold text-white">إدارة المستخدمين</h1>
+            <p className="text-slate-400 text-sm">التحكم الكامل في حسابات المنصة والأرصدة</p>
          </div>
          <div className="flex items-center gap-4">
             <button 
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="bg-red-600 hover:bg-red-500 text-white px-5 py-3 rounded-xl font-black transition-all flex items-center gap-2 shadow-lg shadow-red-600/20"
+              className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold transition-all flex items-center gap-2"
             >
                <i className={`fas ${showCreateForm ? 'fa-times' : 'fa-plus'}`}></i>
                {showCreateForm ? 'إلغاء' : 'إضافة مستخدم'}
@@ -205,60 +205,60 @@ export default function AdminUsersPage() {
                <input 
                  type="text" 
                  placeholder="البحث بالاسم أو المعرف..." 
-                 className="bg-[#121827] border border-white/5 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-red-600/50 w-full md:w-80"
+                 className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 w-full md:w-80 pr-10"
                  value={searchTerm}
                  onChange={(e) => setSearchTerm(e.target.value)}
                />
-               <i className="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+               <i className="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
             </div>
          </div>
       </div>
 
       {/* Create User Form */}
       {showCreateForm && (
-        <div className="bg-[#121827] rounded-[2.5rem] border border-red-600/20 p-8 shadow-2xl">
-           <h3 className="text-xl font-black text-white mb-6 flex items-center gap-3">
-              <i className="fas fa-user-plus text-red-600"></i>
+        <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+           <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-3">
+              <i className="fas fa-user-plus text-blue-500"></i>
               إنشاء حساب مستخدم جديد
            </h3>
            <form onSubmit={handleCreateUser} className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">الاسم الكامل</label>
+                 <label className="text-xs font-bold text-slate-400 uppercase">الاسم الكامل</label>
                  <input 
                    required
                    type="text" 
                    placeholder="مثال: أحمد محمد"
-                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600/50"
+                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
                    value={newUser.fullName}
                    onChange={(e) => setNewUser({...newUser, fullName: e.target.value})}
                  />
               </div>
               <div className="space-y-2">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">البريد الإلكتروني</label>
+                 <label className="text-xs font-bold text-slate-400 uppercase">البريد الإلكتروني</label>
                  <input 
                    required
                    type="email" 
                    placeholder="user@example.com"
-                   className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600/50"
+                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
                    value={newUser.email}
                    onChange={(e) => setNewUser({...newUser, email: e.target.value})}
                  />
               </div>
               <div className="space-y-2">
-                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest">كلمة المرور</label>
+                 <label className="text-xs font-bold text-slate-400 uppercase">كلمة المرور</label>
                  <div className="flex gap-3">
                    <input 
                      required
                      type="password" 
                      placeholder="••••••••"
-                     className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-red-600/50"
+                     className="w-full bg-slate-950 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500"
                      value={newUser.password}
                      onChange={(e) => setNewUser({...newUser, password: e.target.value})}
                    />
                    <button 
                      type="submit"
                      disabled={creating}
-                     className="bg-red-600 hover:bg-red-500 text-white px-8 rounded-xl font-black transition-all shadow-lg shadow-red-600/20 disabled:opacity-50"
+                     className="bg-blue-600 hover:bg-blue-500 text-white px-6 rounded-lg font-bold transition-all disabled:opacity-50"
                    >
                      {creating ? <i className="fas fa-spinner fa-spin"></i> : 'إنشاء'}
                    </button>
@@ -268,20 +268,20 @@ export default function AdminUsersPage() {
         </div>
       )}
 
-      <div className="bg-[#121827] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-2xl">
+      <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
          <div className="overflow-x-auto">
             <table className="w-full text-right border-collapse">
                <thead>
-                  <tr className="bg-white/5 border-b border-white/5">
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest">المستخدم</th>
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest">المعرف (UID)</th>
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">الرصيد الحقيقي</th>
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">الحالة</th>
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">إزالة الإعلانات</th>
-                     <th className="px-6 py-5 text-xs font-black text-slate-500 uppercase tracking-widest text-center">تعديل الرصيد</th>
+                  <tr className="bg-slate-950 border-b border-slate-800">
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase">المستخدم</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase">المعرف (UID)</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">الرصيد الحقيقي</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">الحالة</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">إزالة الإعلانات</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">تعديل الرصيد</th>
                   </tr>
                </thead>
-               <tbody className="divide-y divide-white/5">
+               <tbody className="divide-y divide-slate-800">
                   {loading ? (
                     <>
                       <TableRowSkeleton />
@@ -292,38 +292,38 @@ export default function AdminUsersPage() {
                     </>
                   ) : (
                     filteredUsers.map((user: any) => (
-                      <tr key={user.id} className="hover:bg-white/[0.02] transition-colors group">
-                         <td className="px-6 py-5">
+                      <tr key={user.id} className="hover:bg-slate-800/50 transition-colors">
+                         <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                               <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 overflow-hidden">
+                               <div className="w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center overflow-hidden">
                                   <Image src="/user-avatar-male-5.svg" alt="" width={40} height={40} className="w-full h-full object-cover" />
                                </div>
                                <div>
                                   <p className="text-white font-bold">{user.fullName || user.full_name || user.username || 'مجهول'}</p>
-                                  <p className="text-[10px] text-slate-500">منذ {new Date(user.created_at).toLocaleDateString()}</p>
+                                  <p className="text-xs text-slate-500">منذ {new Date(user.created_at).toLocaleDateString()}</p>
                                </div>
                             </div>
                          </td>
-                         <td className="px-6 py-5">
-                            <code className="text-[10px] text-slate-500 bg-white/5 px-2 py-1 rounded select-all">{user.id}</code>
+                         <td className="px-6 py-4">
+                            <code className="text-xs text-slate-500 bg-slate-950 px-2 py-1 rounded select-all">{user.id}</code>
                          </td>
-                         <td className="px-6 py-5 text-center">
+                         <td className="px-6 py-4 text-center">
                             <div className="flex flex-col items-center">
-                              <span className="text-white font-black text-xl">{user.points_balance?.toLocaleString() || '0'}</span>
-                              <span className="text-slate-600 text-[10px] uppercase font-bold">Points</span>
+                              <span className="text-white font-bold text-lg">{user.points_balance?.toLocaleString() || '0'}</span>
+                              <span className="text-slate-500 text-[10px] uppercase font-bold">Points</span>
                             </div>
                          </td>
-                           <td className="px-6 py-5 text-center">
+                           <td className="px-6 py-4 text-center">
                              {user.is_admin ? (
-                               <span className="px-4 py-1 rounded-full text-[10px] font-black border bg-blue-500/10 text-blue-500 border-blue-500/20">
-                                 مسؤول (ADMIN)
+                               <span className="px-3 py-1 rounded text-xs font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                                 مسؤول
                                </span>
                              ) : (
                                <div className="flex items-center justify-center gap-2">
                                  <button 
                                    onClick={() => handleToggleBan(user.id, user.is_banned)}
                                    disabled={!!updating}
-                                   className={`px-4 py-1 rounded-full text-[10px] font-black border transition-all ${
+                                   className={`px-3 py-1 rounded text-xs font-bold border transition-all ${
                                      user.is_banned 
                                        ? 'bg-red-500/10 text-red-500 border-red-500/20 hover:bg-red-500 hover:text-white' 
                                        : 'bg-green-500/10 text-green-500 border-green-500/20 hover:bg-green-500 hover:text-white'
@@ -334,23 +334,23 @@ export default function AdminUsersPage() {
                                  <button 
                                    onClick={() => handleDeleteUser(user.id, user.full_name || user.fullName || user.username)}
                                    disabled={!!updating}
-                                   className="w-8 h-8 rounded-full bg-red-600/10 text-red-500 border border-red-600/20 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all shadow-lg shadow-red-600/5 group"
+                                   className="w-7 h-7 rounded bg-red-500/10 text-red-500 border border-red-500/20 flex items-center justify-center hover:bg-red-600 hover:text-white transition-all"
                                    title="حذف الحساب نهائياً"
                                  >
-                                    <i className="fas fa-trash-alt text-[10px]"></i>
+                                    <i className="fas fa-trash-alt text-xs"></i>
                                  </button>
                                </div>
                              )}
                            </td>
-                           <td className="px-6 py-5 text-center">
+                           <td className="px-6 py-4 text-center">
                              {!user.is_admin ? (
                                <button 
                                  onClick={() => handleToggleRemoveAds(user.id, !!user.remove_ads)}
                                  disabled={!!updating}
-                                 className={`px-4 py-1 rounded-full text-[10px] font-black border transition-all ${
+                                 className={`px-3 py-1 rounded text-xs font-bold border transition-all ${
                                    user.remove_ads 
                                      ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 hover:bg-purple-500 hover:text-white' 
-                                     : 'bg-slate-500/10 text-slate-500 border-slate-500/20 hover:bg-slate-500 hover:text-white'
+                                     : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700 hover:text-white'
                                  }`}
                                >
                                  {user.remove_ads ? 'بدون إعلانات' : 'مع إعلانات'}
@@ -359,24 +359,23 @@ export default function AdminUsersPage() {
                                <span className="text-slate-600 text-xs">-</span>
                              )}
                            </td>
-                         <td className="px-6 py-5">
+                         <td className="px-6 py-4">
                             <div className="flex items-center justify-center gap-2 max-w-[200px] mx-auto">
                                <input 
                                   type="number"
                                   placeholder="+/-"
-                                  className="w-24 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-red-600/50"
+                                  className="w-20 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-blue-500"
                                   value={amounts[user.id] || ''}
                                   onChange={(e) => setAmounts(prev => ({ ...prev, [user.id]: parseInt(e.target.value) || 0 }))}
                                />
                                <button 
                                  onClick={() => handleAdjustBalance(user.id)}
                                  disabled={!!updating || !amounts[user.id]}
-                                 className="w-10 h-10 bg-red-600 text-white rounded-xl shadow-lg hover:bg-red-500 disabled:opacity-50 flex items-center justify-center transition-all"
+                                 className="w-8 h-8 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-50 flex items-center justify-center transition-all"
                                >
-                                  <i className={`fas ${updating === user.id ? 'fa-spinner fa-spin' : 'fa-check'}`}></i>
+                                  <i className={`fas ${updating === user.id ? 'fa-spinner fa-spin' : 'fa-check'} text-xs`}></i>
                                </button>
                             </div>
-                            <p className="text-[10px] text-slate-600 mt-1 text-center">أدخل قيمة سالبة للخصم</p>
                          </td>
                       </tr>
                     ))
