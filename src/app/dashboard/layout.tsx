@@ -74,6 +74,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const desktopNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
+    { href: '/dashboard/orders', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'المهام (Offerwall)', iconColor: 'text-green-500' },
     { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'المكافآت اليومية', iconColor: 'text-purple-500' },
@@ -83,6 +84,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const mobileNavLinks: NavLink[] = [
     { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
+    { href: '/dashboard/orders', icon: 'fa-history', label: 'الطلبات' },
     { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'مهام' },
     { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'يومي' },
     { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
