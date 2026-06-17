@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     }
 
     // 2. Find the specific service
-    const targetService = servicesData.find((s: any) => s.service === provider_service_id);
+    const targetService = servicesData.find((s: any) => String(s.service) === String(provider_service_id));
 
     if (!targetService) {
       return NextResponse.json({ error: 'Service ID not found in provider API' }, { status: 404 });
