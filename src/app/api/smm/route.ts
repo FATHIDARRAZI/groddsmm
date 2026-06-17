@@ -99,28 +99,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
     }
 
-    let serviceId = '';
+    // Fetch dynamic service configuration
+    const { data: serviceConfig } = await supabase
+      .from('services')
+      .select('provider_service_id, min_quantity, max_quantity, is_active')
+      .eq('category', category)
+      .eq('service_type', serviceType)
+      .single();
 
-    if (category === 'instagram' && serviceType === 'followers') {
-      serviceId = '758';
-    } else if (category === 'instagram' && serviceType === 'likes') {
-      serviceId = '917';
-    } else if (category === 'instagram' && serviceType === 'views') {
-      serviceId = '2020';
-    } else if (category === 'tiktok' && serviceType === 'likes') {
-      serviceId = '2651';
-    } else if (category === 'tiktok' && serviceType === 'followers') {
-      serviceId = '3764';
-    } else if (category === 'tiktok' && serviceType === 'views') {
-      serviceId = '3944';
-    } else if (category === 'facebook' && serviceType === 'followers') {
-      serviceId = '2112';
-    } else {
+    if (!serviceConfig) {
       return NextResponse.json({ error: 'This specific service is not available for this platform.' }, { status: 400 });
     }
 
+    if (!serviceConfig.is_active) {
+      return NextResponse.json({ error: 'هذه الخدمة معطلة حالياً. الرجاء المحاولة لاحقاً.' }, { status: 400 });
+    }
 
+    if (finalQuantity < serviceConfig.min_quantity) {
+      return NextResponse.json({ error: `الحد الأدنى للطلب هو ${serviceConfig.min_quantity}` }, { status: 400 });
+    }
 
+    if (finalQuantity > serviceConfig.max_quantity) {
+      return NextResponse.json({ error: `الحد الأقصى للطلب هو ${serviceConfig.max_quantity}` }, { status: 400 });
+    }
+
+    const serviceId = serviceConfig.provider_service_id;
 
     const smmLink = link.includes('http') ? link : `https://${link}`;
 
