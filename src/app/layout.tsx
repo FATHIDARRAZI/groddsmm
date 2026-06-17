@@ -31,7 +31,7 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://grodd-smm.com'),
+  metadataBase: new URL('https://www.grodd-smm.online'),
   title: {
     default: 'Grodd Media | أرخص وأسرع لوحة SMM لزيادة المتابعين',
     template: '%s | Grodd Media'
@@ -53,11 +53,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Grodd Media | أرخص وأسرع لوحة SMM',
     description: 'زيادة متابعين انستقرام وتيك توك بأرخص الأسعار. سيرفر بيع متابعين موثوق وسريع.',
-    url: 'https://grodd-smm.com',
+    url: 'https://www.grodd-smm.online',
     siteName: 'Grodd Media SMM',
     images: [
       {
-        url: 'https://grodd-smm.com/GRODD_LOGO.png',
+        url: 'https://www.grodd-smm.online/GRODD_LOGO.png',
         width: 1200,
         height: 630,
         alt: 'Grodd Media SMM Panel',
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Grodd Media | أرخص لوحة SMM',
     description: 'أرخص وأسرع سيرفر بيع متابعين انستقرام وتيك توك.',
-    images: ['https://grodd-smm.com/GRODD_LOGO.png'],
+    images: ['https://www.grodd-smm.online/GRODD_LOGO.png'],
   },
   verification: {
     other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] }
@@ -105,8 +105,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Grodd Media",
-              "url": "https://grodd-smm.com",
-              "logo": "https://grodd-smm.com/GRODD_LOGO.png",
+              "url": "https://www.grodd-smm.online",
+              "logo": "https://www.grodd-smm.online/GRODD_LOGO.png",
               "description": "وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الوصول العضوي للعلامات التجارية.",
               "sameAs": [
                 "https://x.com/groddsmm",

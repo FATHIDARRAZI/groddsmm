@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://grodd-smm.com';
+  const baseUrl = 'https://www.grodd-smm.online';
 
   return [
     {
