@@ -31,8 +31,47 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Grodd Media | تسويق رقمي احترافي، ترويج، ووصول عضوي',
-  description: 'وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل، إدارة الحملات الترويجية، وتسريع الوصول العضوي للعلامات التجارية وصناع المحتوى.',
+  metadataBase: new URL('https://grodd-smm.com'),
+  title: {
+    default: 'Grodd Media | أرخص وأسرع لوحة SMM لزيادة المتابعين',
+    template: '%s | Grodd Media'
+  },
+  description: 'أرخص سيرفر SMM في الشرق الأوسط. زيادة متابعين انستقرام، رشق متابعين تيك توك، لايكات، ومشاهدات حقيقية. وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل.',
+  keywords: [
+    'أرخص لوحة smm', 'لوحة smm', 'سيرفر بيع متابعين', 'زيادة متابعين انستقرام', 
+    'رشق متابعين تيك توك', 'شراء متابعين', 'دعم حسابات تيك توك', 'ارخص سيرفر SMM',
+    'smm panel arabic', 'grodd media', 'grodd smm', 'متابعين حقيقيين'
+  ],
+  authors: [{ name: 'Grodd Labs' }],
+  creator: 'Grodd Media',
+  publisher: 'Grodd Media',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: 'Grodd Media | أرخص وأسرع لوحة SMM',
+    description: 'زيادة متابعين انستقرام وتيك توك بأرخص الأسعار. سيرفر بيع متابعين موثوق وسريع.',
+    url: 'https://grodd-smm.com',
+    siteName: 'Grodd Media SMM',
+    images: [
+      {
+        url: 'https://grodd-smm.com/GRODD_LOGO.png',
+        width: 1200,
+        height: 630,
+        alt: 'Grodd Media SMM Panel',
+      },
+    ],
+    locale: 'ar_AE',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Grodd Media | أرخص لوحة SMM',
+    description: 'أرخص وأسرع سيرفر بيع متابعين انستقرام وتيك توك.',
+    images: ['https://grodd-smm.com/GRODD_LOGO.png'],
+  },
   verification: {
     other: { 'adsterra': ['YOUR-VERIFICATION-CODE-HERE'] }
   }
