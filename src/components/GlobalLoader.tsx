@@ -8,7 +8,10 @@ export default function GlobalLoader() {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
+    let fallbackTimer: NodeJS.Timeout;
+
     const handleLoad = () => {
+      clearTimeout(fallbackTimer);
       // Add a slight delay to ensure smooth rendering
       setTimeout(() => {
         setIsLoading(false);
@@ -17,11 +20,18 @@ export default function GlobalLoader() {
       }, 300);
     };
 
+    // Maximum time to show splash screen (2.5 seconds)
+    // This prevents the splash screen from getting stuck if ads/images take too long to load
+    fallbackTimer = setTimeout(handleLoad, 2500);
+
     if (document.readyState === 'complete') {
       handleLoad();
     } else {
       window.addEventListener('load', handleLoad);
-      return () => window.removeEventListener('load', handleLoad);
+      return () => {
+        window.removeEventListener('load', handleLoad);
+        clearTimeout(fallbackTimer);
+      };
     }
   }, []);
 
