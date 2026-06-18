@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from 'next/image';
 
 export default function GlobalLoader() {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,22 +38,11 @@ export default function GlobalLoader() {
 
   return (
     <div 
-      className={`fixed inset-0 z-[99999] bg-[#05070A] flex flex-col items-center justify-center transition-opacity duration-500 ${isLoading ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+      className={`fixed top-4 left-1/2 -translate-x-1/2 z-[99999] pointer-events-none transition-all duration-500 ${isLoading ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'}`}
     >
-      <div className="relative animate-pulse drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]">
-        <Image 
-          src="/GRODD_LOGO.png" 
-          alt="Grodd Logo" 
-          width={240} 
-          height={60} 
-          className="object-contain"
-          priority
-        />
-      </div>
-      <div className="mt-10 flex gap-3">
-        <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce shadow-[0_0_10px_rgba(59,130,246,0.8)]" style={{ animationDelay: '0ms' }} />
-        <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce shadow-[0_0_10px_rgba(59,130,246,0.8)]" style={{ animationDelay: '150ms' }} />
-        <div className="w-3 h-3 rounded-full bg-blue-500 animate-bounce shadow-[0_0_10px_rgba(59,130,246,0.8)]" style={{ animationDelay: '300ms' }} />
+      <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/50 shadow-lg px-4 py-2 rounded-full flex items-center gap-3">
+        <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+        <span className="text-xs font-bold text-slate-300">جاري التحميل...</span>
       </div>
     </div>
   );
