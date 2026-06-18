@@ -22,6 +22,7 @@ import { Analytics } from "@vercel/analytics/react";
 import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
 import EnvGuard from '@/components/EnvGuard';
+import GlobalLoader from '@/components/GlobalLoader';
 
 export const viewport = {
   width: 'device-width',
@@ -120,6 +121,9 @@ export default function RootLayout({
 
 
       <body className="text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo">
+        {/* Global Initial Loader */}
+        <GlobalLoader />
+
         {/* Cinematic Background Layer */}
         <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
           <div className="noise-bg"></div>
