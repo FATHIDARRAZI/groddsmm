@@ -68,7 +68,6 @@ export default function NotificationBell() {
       <button 
         onClick={() => {
           setIsOpen(!isOpen);
-          if (!isOpen && unreadCount > 0) markAllAsRead();
         }}
         className="w-10 h-10 bg-[#1C1C1E] rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors relative cursor-pointer"
       >
@@ -81,7 +80,7 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-12 left-0 md:right-0 md:left-auto w-80 bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[999] animate-fade-in dir-rtl">
+        <div className="absolute top-12 left-0 w-80 bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[999] animate-fade-in dir-rtl">
           <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#0B0F19]/50">
             <h3 className="font-bold text-white text-sm">الإشعارات</h3>
             {unreadCount > 0 && (
@@ -99,7 +98,13 @@ export default function NotificationBell() {
             ) : (
               <div className="flex flex-col">
                 {notifications.map((notif) => (
-                  <div key={notif.id} className={`p-4 border-b border-white/5 relative ${!notif.is_read ? 'bg-blue-500/5' : 'hover:bg-white/5'} transition-colors cursor-default`}>
+                  <div 
+                    key={notif.id} 
+                    onClick={(e) => {
+                      if (!notif.is_read) markAsRead(notif.id, e);
+                    }}
+                    className={`p-4 border-b border-white/5 relative ${!notif.is_read ? 'bg-blue-500/5 cursor-pointer' : 'hover:bg-white/5 cursor-default'} transition-colors`}
+                  >
                     {!notif.is_read && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-500 rounded-full"></div>}
                     <div className="pr-4">
                       <h4 className="text-sm font-bold text-white mb-1">{notif.title}</h4>
