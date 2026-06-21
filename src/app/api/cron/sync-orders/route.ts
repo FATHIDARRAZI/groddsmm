@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 import { createSupabaseAdminClient } from '@/lib/supabaseServer';
 
@@ -6,6 +7,7 @@ const SMM_API_URL = 'https://bestsmmprovider.com/api/v2';
 const CRON_SECRET = process.env.CRON_SECRET;
 
 export async function GET(req: Request) {
+  await connection();
   try {
     const authHeader = req.headers.get('authorization');
     

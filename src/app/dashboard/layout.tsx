@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Script from 'next/script';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,6 +8,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import DashboardAdModal from '@/components/DashboardAdModal';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { createSupabaseClient } from '@/lib/supabase';
+import AnnouncementsBanner from '@/components/dashboard/AnnouncementsBanner';
+import NotificationBell from '@/components/dashboard/NotificationBell';
 
 interface NavLink {
   href: string;
@@ -80,6 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'المكافآت اليومية', iconColor: 'text-purple-500' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات النقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
+    { href: '/dashboard/support', icon: 'fa-headset', label: 'الدعم الفني', iconColor: 'text-yellow-500', isSeparator: true },
   ];
 
   const mobileNavLinks: NavLink[] = [
@@ -175,13 +178,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                <img src="/user-avatar-male-5.svg" alt="User Avatar" className="w-full h-full object-cover" />
             </div>
           </div>
-          <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
-            <i className="fas fa-coins"></i> {isClient ? points.toLocaleString() : '0'} نقطة
-          </Link>
+          <div className="flex items-center gap-3">
+            <NotificationBell />
+            <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
+              <i className="fas fa-coins"></i> {isClient ? points.toLocaleString() : '0'}
+            </Link>
+          </div>
+        </header>
+
+        {/* Desktop Top Header (for Notifications) */}
+        <header className="hidden md:flex justify-end p-6 pb-0 w-full relative z-40">
+           <NotificationBell />
         </header>
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-10 w-full custom-scrollbar pb-24 md:pb-10">
-           {children}
+           <AnnouncementsBanner />
+           <Suspense fallback={<div className="p-10 text-center text-white/50">جاري التحميل...</div>}>
+             {children}
+           </Suspense>
 
              {isClient && !removeAds && (
                <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">

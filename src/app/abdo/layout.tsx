@@ -17,6 +17,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: '/abdo/coupons', icon: 'fa-ticket-alt', label: 'الكوبونات' },
     { href: '/abdo/collab', icon: 'fa-handshake', label: 'طلبات الشراكة' },
     { href: '/abdo/services', icon: 'fa-server', label: 'إدارة الخدمات' },
+    { href: '/abdo/announcements', icon: 'fa-bullhorn', label: 'الإعلانات' },
+    { href: '/abdo/support', icon: 'fa-headset', label: 'الدعم الفني' },
   ];
 
   useEffect(() => {

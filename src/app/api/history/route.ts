@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
@@ -5,6 +6,7 @@ const SMM_API_KEY = process.env.SMM_API_KEY || '';
 const SMM_API_URL = 'https://bestsmmprovider.com/api/v2';
 
 export async function GET(req: Request) {
+  await connection();
   try {
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();

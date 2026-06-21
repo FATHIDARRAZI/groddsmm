@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabaseServer';
 
@@ -17,6 +18,7 @@ const OFFERWALL_REWARDS: Record<string, number> = {
 // ==========================================
 
 export async function GET(req: Request) {
+  await connection();
   try {
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();

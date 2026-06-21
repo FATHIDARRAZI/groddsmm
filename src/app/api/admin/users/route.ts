@@ -1,7 +1,9 @@
+import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabaseServer';
 
 export async function GET() {
+  await connection();
   try {
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -52,6 +54,12 @@ export async function POST(req: Request) {
         details: { amount, new_balance: newBalance, by_admin: user.id }
       });
 
+      await adminSupabase.from('notifications').insert({
+        user_id: targetUserId,
+        title: 'تحديث الرصيد',
+        message: `تم إضافة ${amount} نقطة إلى رصيدك. رصيدك الحالي: ${newBalance} نقطة.`
+      });
+
       return NextResponse.json({ success: true, newBalance });
     }
 
@@ -68,6 +76,12 @@ export async function POST(req: Request) {
         user_id: targetUserId,
         action: 'ban_status_changed',
         details: { is_banned: isBanned, by_admin: user.id }
+      });
+
+      await adminSupabase.from('notifications').insert({
+        user_id: targetUserId,
+        title: isBanned ? 'إشعار إداري: حظر الحساب' : 'إشعار إداري: رفع الحظر',
+        message: isBanned ? 'تم حظر حسابك من قبل الإدارة. يرجى التواصل مع الدعم الفني.' : 'تم رفع الحظر عن حسابك بنجاح.'
       });
 
       return NextResponse.json({ success: true });
@@ -137,6 +151,13 @@ export async function POST(req: Request) {
         action: 'tier_changed',
         details: { new_tier: tier, by_admin: user.id }
       });
+
+      await adminSupabase.from('notifications').insert({
+        user_id: targetUserId,
+        title: 'ترقية الحساب',
+        message: `تم تغيير مستوى حسابك إلى: ${tier}.`
+      });
+
       return NextResponse.json({ success: true });
     }
 
