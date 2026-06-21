@@ -75,7 +75,7 @@ export async function GET() {
       chartDataMap[dateStr] = { name: dateStr, orders: 0, revenue: 0, newUsers: 0, rawDate: d.toISOString().split('T')[0] };
     }
 
-    recentOrders?.forEach(order => {
+    recentOrders?.forEach((order: any) => {
       const d = new Date(order.created_at);
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       if (chartDataMap[dateStr]) {
@@ -84,7 +84,7 @@ export async function GET() {
       }
     });
 
-    recentUsers?.forEach(user => {
+    recentUsers?.forEach((user: any) => {
       const d = new Date(user.created_at);
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
       if (chartDataMap[dateStr]) {
