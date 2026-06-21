@@ -2,38 +2,20 @@ import { connection } from 'next/server';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
+import { createSupabaseServerClient, createSupabaseAdminClient } from '@/lib/supabaseServer';
 
-export async function GET(request: Request) {
+export async function GET() {
   await connection();
   try {
-    const cookieStore = await cookies();
-    const adminSupabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll() },
-          setAll(cookiesToSet) {
-            try { cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options)) } catch {}
-          },
-        },
-      }
-    );
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const { data: userAuth } = await adminSupabase.auth.getUser();
-    if (!userAuth.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { data: profile } = await adminSupabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', userAuth.user.id)
-      .single();
+    const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single();
+    if (!profile?.is_admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-    if (!profile?.is_admin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    const adminSupabase = await createSupabaseAdminClient();
 
     const { data: announcements, error } = await adminSupabase
       .from('announcements')
@@ -49,34 +31,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const adminSupabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      {
-        cookies: {
-          getAll() { return cookieStore.getAll() },
-          setAll(cookiesToSet) {
-            try { cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options)) } catch {}
-          },
-        },
-      }
-    );
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    const { data: userAuth } = await adminSupabase.auth.getUser();
-    if (!userAuth.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { data: profile } = await adminSupabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', userAuth.user.id)
-      .single();
+    const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single();
+    if (!profile?.is_admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-    if (!profile?.is_admin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
+    const adminSupabase = await createSupabaseAdminClient();
 
     const body = await request.json();
     const { action } = body;
