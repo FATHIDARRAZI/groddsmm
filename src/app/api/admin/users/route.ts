@@ -46,6 +46,12 @@ export async function POST(req: Request) {
       const newBalance = (targetProfile.points_balance || 0) + amount;
       await adminSupabase.from('profiles').update({ points_balance: newBalance }).eq('id', targetUserId);
       
+      await adminSupabase.from('activity_logs').insert({
+        user_id: targetUserId,
+        action: 'balance_adjusted',
+        details: { amount, new_balance: newBalance, by_admin: user.id }
+      });
+
       return NextResponse.json({ success: true, newBalance });
     }
 
@@ -57,6 +63,13 @@ export async function POST(req: Request) {
       }
 
       await adminSupabase.from('profiles').update({ is_banned: isBanned }).eq('id', targetUserId);
+      
+      await adminSupabase.from('activity_logs').insert({
+        user_id: targetUserId,
+        action: 'ban_status_changed',
+        details: { is_banned: isBanned, by_admin: user.id }
+      });
+
       return NextResponse.json({ success: true });
     }
 
@@ -113,6 +126,30 @@ export async function POST(req: Request) {
       await adminSupabase.from('profiles').delete().eq('id', targetUserId);
 
       return NextResponse.json({ success: true });
+    }
+
+    if (action === 'set_tier') {
+      const { tier } = body;
+      await adminSupabase.from('profiles').update({ tier }).eq('id', targetUserId);
+      
+      await adminSupabase.from('activity_logs').insert({
+        user_id: targetUserId,
+        action: 'tier_changed',
+        details: { new_tier: tier, by_admin: user.id }
+      });
+      return NextResponse.json({ success: true });
+    }
+
+    if (action === 'fetch_logs') {
+      const { data: logs, error } = await adminSupabase
+        .from('activity_logs')
+        .select('*')
+        .eq('user_id', targetUserId)
+        .order('created_at', { ascending: false })
+        .limit(50);
+        
+      if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+      return NextResponse.json({ success: true, logs });
     }
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

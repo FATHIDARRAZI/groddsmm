@@ -53,6 +53,47 @@ export async function GET() {
     // Fetch total orders
     const { count: totalOrders } = await adminSupabase.from('orders').select('*', { count: 'exact', head: true });
 
+    // Fetch data for charts (Last 7 Days)
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    
+    const { data: recentOrders } = await adminSupabase
+      .from('orders')
+      .select('created_at, points_cost')
+      .gte('created_at', sevenDaysAgo.toISOString());
+      
+    const { data: recentUsers } = await adminSupabase
+      .from('profiles')
+      .select('created_at')
+      .gte('created_at', sevenDaysAgo.toISOString());
+
+    const chartDataMap: Record<string, any> = {};
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      chartDataMap[dateStr] = { name: dateStr, orders: 0, revenue: 0, newUsers: 0, rawDate: d.toISOString().split('T')[0] };
+    }
+
+    recentOrders?.forEach(order => {
+      const d = new Date(order.created_at);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      if (chartDataMap[dateStr]) {
+        chartDataMap[dateStr].orders += 1;
+        chartDataMap[dateStr].revenue += (order.points_cost || 0);
+      }
+    });
+
+    recentUsers?.forEach(user => {
+      const d = new Date(user.created_at);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      if (chartDataMap[dateStr]) {
+        chartDataMap[dateStr].newUsers += 1;
+      }
+    });
+
+    const chartData = Object.values(chartDataMap);
+
     return NextResponse.json({
       success: true,
       stats: {
@@ -60,6 +101,7 @@ export async function GET() {
         totalUsers: totalUsers || 0,
         totalCirculatingPoints,
         totalOrders: totalOrders || 0,
+        chartData,
         security: {
           bannedAccounts: bannedUsers || 0,
           apiStatus: providerBalance !== '0.00' ? 'Operational' : 'Error',

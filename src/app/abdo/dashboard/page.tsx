@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { CardSkeleton } from '@/components/admin/AdminSkeleton';
 import { toast } from 'react-hot-toast';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<any>(null);
@@ -178,6 +179,39 @@ export default function AdminDashboardPage() {
            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Order Throughput</p>
            <h3 className="text-3xl font-bold text-white tracking-tighter">{stats?.totalOrders}</h3>
            <p className="mt-4 text-xs text-slate-500 font-cairo">إجمالي الطلبات.</p>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-slate-900 p-6 rounded-xl border border-slate-800">
+           <h4 className="text-lg font-bold text-white mb-6">Revenue Trend (Last 7 Days)</h4>
+           <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+               <LineChart data={stats?.chartData || []}>
+                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                 <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
+                 <YAxis stroke="#64748b" fontSize={12} />
+                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }} />
+                 <Line type="monotone" dataKey="revenue" name="Revenue" stroke="#3b82f6" strokeWidth={3} dot={{ r: 4, fill: '#3b82f6' }} activeDot={{ r: 6 }} />
+               </LineChart>
+             </ResponsiveContainer>
+           </div>
+        </div>
+
+        <div className="bg-slate-900 p-6 rounded-xl border border-slate-800">
+           <h4 className="text-lg font-bold text-white mb-6">Orders Volume (Last 7 Days)</h4>
+           <div className="h-64">
+             <ResponsiveContainer width="100%" height="100%">
+               <BarChart data={stats?.chartData || []}>
+                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
+                 <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
+                 <YAxis stroke="#64748b" fontSize={12} />
+                 <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b', borderRadius: '8px' }} cursor={{ fill: '#1e293b' }} />
+                 <Bar dataKey="orders" name="Orders" fill="#10b981" radius={[4, 4, 0, 0]} />
+               </BarChart>
+             </ResponsiveContainer>
+           </div>
         </div>
       </div>
 

@@ -11,6 +11,9 @@ export default function AdminUsersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [amounts, setAmounts] = useState<Record<string, number>>({});
   const [updating, setUpdating] = useState<string | null>(null);
+  
+  const [logsModalUser, setLogsModalUser] = useState<any | null>(null);
+  const [activityLogs, setActivityLogs] = useState<any[]>([]);
 
   // Create User Form State
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -181,6 +184,47 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleSetTier = async (targetUserId: string, tier: string) => {
+    setUpdating(targetUserId);
+    const originalUsers = [...users];
+    setUsers(users.map((u: any) => u.id === targetUserId ? { ...u, tier } : u));
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'set_tier', targetUserId, tier })
+      });
+      if (res.ok) {
+        toast.success('تم تغيير المستوى بنجاح');
+      } else {
+        setUsers(originalUsers);
+        toast.error('فشل تغيير المستوى');
+      }
+    } catch {
+      setUsers(originalUsers);
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  const handleFetchLogs = async (user: any) => {
+    setLogsModalUser(user);
+    setActivityLogs([]);
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'fetch_logs', targetUserId: user.id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActivityLogs(data.logs);
+      }
+    } catch {
+      toast.error('فشل جلب السجلات');
+    }
+  };
+
   const filteredUsers = users.filter((u: any) => {
     const name = (u.fullName || u.full_name || u.username || '').toLowerCase();
     return name.includes(searchTerm.toLowerCase()) || u.id.includes(searchTerm);
@@ -276,9 +320,10 @@ export default function AdminUsersPage() {
                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase">المستخدم</th>
                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase">المعرف (UID)</th>
                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">الرصيد الحقيقي</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">المستوى</th>
                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">الحالة</th>
                      <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">إزالة الإعلانات</th>
-                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">تعديل الرصيد</th>
+                     <th className="px-6 py-4 text-xs font-bold text-slate-400 uppercase text-center">تعديل الرصيد / السجلات</th>
                   </tr>
                </thead>
                <tbody className="divide-y divide-slate-800">
@@ -312,6 +357,18 @@ export default function AdminUsersPage() {
                               <span className="text-white font-bold text-lg">{user.points_balance?.toLocaleString() || '0'}</span>
                               <span className="text-slate-500 text-[10px] uppercase font-bold">Points</span>
                             </div>
+                         </td>
+                         <td className="px-6 py-4 text-center">
+                           <select 
+                             value={user.tier || 'default'} 
+                             onChange={(e) => handleSetTier(user.id, e.target.value)}
+                             disabled={!!updating}
+                             className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none"
+                           >
+                             <option value="default">عادي (Default)</option>
+                             <option value="vip">VIP</option>
+                             <option value="reseller">موزع (Reseller)</option>
+                           </select>
                          </td>
                            <td className="px-6 py-4 text-center">
                              {user.is_admin ? (
@@ -375,6 +432,13 @@ export default function AdminUsersPage() {
                                >
                                   <i className={`fas ${updating === user.id ? 'fa-spinner fa-spin' : 'fa-check'} text-xs`}></i>
                                </button>
+                               <button 
+                                 onClick={() => handleFetchLogs(user)}
+                                 className="w-8 h-8 bg-slate-800 text-slate-400 rounded hover:bg-slate-700 hover:text-white flex items-center justify-center transition-all ml-2"
+                                 title="سجل النشاطات"
+                               >
+                                 <i className="fas fa-history text-xs"></i>
+                               </button>
                             </div>
                          </td>
                       </tr>
@@ -384,6 +448,41 @@ export default function AdminUsersPage() {
             </table>
          </div>
       </div>
+
+      {logsModalUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden">
+            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-white">
+                سجل نشاطات: {logsModalUser.full_name || logsModalUser.fullName || logsModalUser.username}
+              </h3>
+              <button onClick={() => setLogsModalUser(null)} className="text-slate-400 hover:text-white">
+                <i className="fas fa-times text-xl"></i>
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto flex-1">
+              {activityLogs.length === 0 ? (
+                <p className="text-center text-slate-500">لا توجد سجلات حالياً أو جاري التحميل...</p>
+              ) : (
+                <div className="space-y-4">
+                  {activityLogs.map((log, idx) => (
+                    <div key={idx} className="bg-slate-950 p-4 rounded-lg border border-slate-800">
+                      <div className="flex justify-between items-start mb-2">
+                        <span className="text-blue-400 font-bold text-sm">{log.action}</span>
+                        <span className="text-xs text-slate-500">{new Date(log.created_at).toLocaleString()}</span>
+                      </div>
+                      <pre className="text-xs text-slate-400 bg-black/50 p-2 rounded overflow-x-auto" dir="ltr">
+                        {JSON.stringify(log.details, null, 2)}
+                      </pre>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
