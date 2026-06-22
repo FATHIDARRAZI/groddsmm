@@ -21,12 +21,12 @@ export async function GET(request: Request) {
     const ticketId = url.searchParams.get('ticket_id');
 
     if (ticketId) {
-      const { data: ticket, error } = await adminSupabase.from('tickets').select('*, profiles(full_name, username)').eq('id', ticketId).single();
+      const { data: ticket, error } = await adminSupabase.from('tickets').select('*, profiles(full_name, email)').eq('id', ticketId).single();
       if (error) throw error;
 
       const { data: messages, error: msgError } = await adminSupabase
         .from('ticket_messages')
-        .select('*, profiles(full_name, username)')
+        .select('*, profiles(full_name, email)')
         .eq('ticket_id', ticketId)
         .order('created_at', { ascending: true });
 
@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     } else {
       const { data: tickets, error } = await adminSupabase
         .from('tickets')
-        .select('*, profiles(full_name, username)')
+        .select('*, profiles(full_name, email)')
         .order('updated_at', { ascending: false });
 
       if (error) throw error;

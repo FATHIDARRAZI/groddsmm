@@ -22,7 +22,7 @@ export async function GET() {
         *,
         profiles (
           full_name,
-          username
+          email
         )
       `)
       .order('created_at', { ascending: false });
