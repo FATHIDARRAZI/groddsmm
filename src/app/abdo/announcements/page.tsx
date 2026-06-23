@@ -161,7 +161,7 @@ export default function AdminAnnouncementsPage() {
                     {!ann.is_active && <span className="bg-slate-800 text-slate-400 text-[10px] px-2 py-0.5 rounded uppercase font-bold">معطل</span>}
                   </div>
                   <p className="text-slate-300 text-sm whitespace-pre-wrap">{ann.message}</p>
-                  <p className="text-xs text-slate-500 mt-3">{new Date(ann.created_at).toLocaleString('ar-SA')}</p>
+                  <p className="text-xs text-slate-500 mt-3">{new Date(ann.created_at).toLocaleString('en-GB')}</p>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto mt-4 md:mt-0">
                   <button 

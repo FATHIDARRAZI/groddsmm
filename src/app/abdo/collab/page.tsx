@@ -168,7 +168,7 @@ export default function AdminCollabPage() {
                   {req.status === 'declined' && <span className="bg-red-500/20 text-red-500 px-3 py-1 rounded text-xs font-bold">مرفوض</span>}
                 </td>
                 <td className="py-4 px-6 text-xs text-slate-500">
-                  {new Date(req.created_at).toLocaleDateString('ar-SA')}
+                  {new Date(req.created_at).toLocaleDateString('en-GB')}
                 </td>
                 <td className="py-4 px-6 text-left">
                   {req.status === 'pending' ? (

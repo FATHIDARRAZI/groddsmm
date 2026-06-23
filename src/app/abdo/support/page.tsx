@@ -123,7 +123,7 @@ export default function AdminSupportPage() {
                     <span className={`text-xs font-bold ${msg.is_admin_reply ? 'text-blue-400' : 'text-slate-400'}`}>
                       {msg.is_admin_reply ? 'أنت (الإدارة)' : msg.profiles?.full_name || 'المستخدم'}
                     </span>
-                    <span className="text-[10px] text-slate-500">{new Date(msg.created_at).toLocaleString('ar-SA')}</span>
+                    <span className="text-[10px] text-slate-500">{new Date(msg.created_at).toLocaleString('en-GB')}</span>
                   </div>
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
                 </div>
@@ -186,7 +186,7 @@ export default function AdminSupportPage() {
                       <span className="font-mono ml-3">#{ticket.id.split('-')[0]}</span>
                       <span>بواسطة: {ticket.profiles?.full_name || 'مجهول'}</span>
                     </div>
-                    <span>آخر تحديث: {new Date(ticket.updated_at).toLocaleString('ar-SA')}</span>
+                    <span>آخر تحديث: {new Date(ticket.updated_at).toLocaleString('en-GB')}</span>
                   </div>
                 </div>
               ))}

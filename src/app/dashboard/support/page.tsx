@@ -118,7 +118,7 @@ export default function SupportPage() {
                 </div>
                 <div className="flex justify-between items-center text-xs text-slate-500">
                   <span className="font-mono">#{ticket.id.split('-')[0]}</span>
-                  <span>آخر تحديث: {new Date(ticket.updated_at).toLocaleString('ar-SA')}</span>
+                  <span>آخر تحديث: {new Date(ticket.updated_at).toLocaleString('en-GB')}</span>
                 </div>
               </Link>
             ))}

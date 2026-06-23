@@ -124,7 +124,7 @@ export default function AdminOrdersPage() {
                               </span>
                            </td>
                            <td className="px-6 py-5 text-center text-[10px] text-slate-500">
-                              {new Date(order.created_at).toLocaleString('ar-EG')}
+                              {new Date(order.created_at).toLocaleString('en-GB')}
                            </td>
                         </tr>
                       );

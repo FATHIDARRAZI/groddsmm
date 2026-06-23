@@ -109,7 +109,7 @@ export default function NotificationBell() {
                     <div className="pr-4">
                       <h4 className="text-sm font-bold text-white mb-1">{notif.title}</h4>
                       <p className="text-xs text-slate-400 leading-relaxed mb-2">{notif.message}</p>
-                      <p className="text-[10px] text-slate-500">{new Date(notif.created_at).toLocaleString('ar-SA')}</p>
+                      <p className="text-[10px] text-slate-500">{new Date(notif.created_at).toLocaleString('en-GB')}</p>
                     </div>
                   </div>
                 ))}

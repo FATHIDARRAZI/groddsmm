@@ -104,7 +104,7 @@ export default function DashboardOrdersPage() {
                         {getStatusBadge(order.live_status || order.status)}
                      </td>
                      <td className="p-4">
-                        <div className="text-xs text-slate-400">{new Date(order.created_at).toLocaleDateString('ar-EG')}</div>
+                        <div className="text-xs text-slate-400">{new Date(order.created_at).toLocaleDateString('en-GB')}</div>
                      </td>
                    </tr>
                  ))}

@@ -85,7 +85,7 @@ export default function TicketClient({ id }: { id: string }) {
                 <span className={`text-xs font-bold ${msg.is_admin_reply ? 'text-blue-400' : 'text-slate-400'}`}>
                   {msg.is_admin_reply ? 'الدعم الفني' : 'أنت'}
                 </span>
-                <span className="text-[10px] text-slate-500">{new Date(msg.created_at).toLocaleString('ar-SA')}</span>
+                <span className="text-[10px] text-slate-500">{new Date(msg.created_at).toLocaleString('en-GB')}</span>
               </div>
               <p className="text-sm whitespace-pre-wrap leading-relaxed">{msg.message}</p>
             </div>
