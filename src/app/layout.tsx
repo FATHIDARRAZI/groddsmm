@@ -37,12 +37,16 @@ export const metadata: Metadata = {
     default: 'Grodd Media | أرخص وأسرع لوحة SMM لزيادة المتابعين',
     template: '%s | Grodd Media'
   },
-  description: 'أرخص سيرفر SMM في الشرق الأوسط. زيادة متابعين انستقرام، رشق متابعين تيك توك، لايكات، ومشاهدات حقيقية. وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل.',
+  description: 'أرخص سيرفر SMM وأفضل وكالة تسويق رقمي في الشرق الأوسط والمغرب. زيادة متابعين انستقرام حقيقيين، رشق تيك توك، لايكات ومشاهدات. نوفر خدمات B2B لتسريع النمو العضوي.',
   keywords: [
     'أرخص لوحة smm', 'لوحة smm', 'سيرفر بيع متابعين', 'زيادة متابعين انستقرام', 
     'رشق متابعين تيك توك', 'شراء متابعين', 'دعم حسابات تيك توك', 'ارخص سيرفر SMM',
-    'smm panel arabic', 'grodd media', 'grodd smm', 'متابعين حقيقيين'
+    'smm panel arabic', 'grodd media', 'grodd smm', 'متابعين حقيقيين',
+    'best smm panel morocco', 'وكالة تسويق رقمي', 'تسويق الكتروني'
   ],
+  alternates: {
+    canonical: '/',
+  },
   authors: [{ name: 'Grodd Labs' }],
   creator: 'Grodd Media',
   publisher: 'Grodd Media',
@@ -108,7 +112,14 @@ export default function RootLayout({
               "name": "Grodd Media",
               "url": "https://www.grodd-smm.online",
               "logo": "https://www.grodd-smm.online/GRODD_LOGO.png",
-              "description": "وكالة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الوصول العضوي للعلامات التجارية.",
+              "description": "وكالة تسويق رقمي B2B وأفضل لوحة SMM متخصصة في تحسين خوارزميات التفاعل وتسريع الوصول العضوي للعلامات التجارية.",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+212-687-097476",
+                "contactType": "customer service",
+                "email": "groddlabs@proton.me",
+                "availableLanguage": ["Arabic", "English"]
+              },
               "sameAs": [
                 "https://x.com/groddsmm",
                 "https://www.instagram.com/grodd_media/",

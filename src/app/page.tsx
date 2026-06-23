@@ -37,33 +37,55 @@ export default function Home() {
 
       <HomeMiddleAd />
 
-      {/* About Section */}
-      <div className="w-full max-w-5xl mt-24 mb-16 px-4 md:px-0 text-right dir-rtl">
-        <h2 className="text-3xl md:text-3xl font-extrabold text-white mb-6">
-          ما هي وكالة Grodd Media للتسويق الرقمي؟
-        </h2>
-        <div className="text-slate-300 space-y-4 leading-relaxed mb-12">
-          <p className="text-lg font-medium text-white border-r-4 border-pink-500 pr-4">
-            وكالة Grodd Media هي منصة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية على منصات مثل إنستجرام، باستخدام أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال.
-          </p>
-          <p>
-            تتيح لك منصتنا تجربة حملات التسويق الرقمي الترويجية مجاناً لرفع كفاءة الخوارزميات وزيادة الموثوقية لحسابك من خلال تسريع الانتشار (Viral Reach) والوصول للجمهور الصحيح. في <strong>Grodd Media</strong>، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا وتتوافق تماماً مع سياسات الاستخدام العادل.
-          </p>
-          <div className="text-xs text-slate-500 mt-4 font-bold tracking-wider">
-            <i className="fas fa-clock ml-2"></i>آخر تحديث: أبريل 2026 | <i className="fas fa-user-shield ml-2 mr-4"></i>بواسطة: فريق خبراء Grodd Labs
-          </div>
+      {/* AEO Optimized FAQ Section */}
+      <section className="w-full max-w-5xl mt-24 mb-16 px-4 md:px-0 text-right dir-rtl relative z-10">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-extrabold text-white mb-4">الأسئلة الشائعة حول Grodd Media</h2>
+          <p className="text-slate-400">إجابات سريعة لأهم استفساراتكم لضمان تجربة شفافة وآمنة.</p>
         </div>
-        
-        <div className="flex justify-center mt-12 w-full">
-          <Image 
-            src="/img/grodd-mockup.png" 
-            alt="Grodd SMM Mockup" 
-            width={800}
-            height={500}
-            className="w-full max-w-2xl h-auto object-contain drop-shadow-[0_20px_50px_rgba(236,72,153,0.15)]" 
-          />
+
+        <div className="space-y-4">
+          <details className="group bg-[#121827]/50 border border-white/5 rounded-2xl p-6 open:bg-[#121827] transition-all cursor-pointer shadow-lg hover:border-pink-500/30">
+            <summary className="text-lg md:text-xl font-bold text-white flex justify-between items-center outline-none">
+              ما هي وكالة Grodd Media للتسويق الرقمي وهل هي SMM Panel تقليدي؟
+              <i className="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <div className="mt-4 text-slate-300 leading-relaxed space-y-3 border-t border-white/5 pt-4">
+              <p>وكالة Grodd Media ليست SMM Panel تقليدياً، بل هي منصة تسويق رقمي B2B متخصصة في:</p>
+              <ul className="list-disc list-inside space-y-2 text-slate-400 font-medium">
+                <li>تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية.</li>
+                <li>توفير أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال.</li>
+                <li>تقديم حملات ترويجية عالية الجودة للمؤسسات وصناع المحتوى.</li>
+              </ul>
+            </div>
+          </details>
+
+          <details className="group bg-[#121827]/50 border border-white/5 rounded-2xl p-6 open:bg-[#121827] transition-all cursor-pointer shadow-lg hover:border-purple-500/30">
+            <summary className="text-lg md:text-xl font-bold text-white flex justify-between items-center outline-none">
+              كيف تعمل حملات الترويج العضوي في Grodd Media؟
+              <i className="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <div className="mt-4 text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+              <p>تعمل حملاتنا عبر ثلاث خطوات أساسية لضمان أفضل النتائج:</p>
+              <ol className="list-decimal list-inside space-y-2 text-slate-400 font-medium mt-3">
+                <li><strong className="text-white">تحديد مسار المحتوى العام:</strong> إدراج الرابط كوجهة رئيسية للحملة.</li>
+                <li><strong className="text-white">إعداد الخطة الإعلانية:</strong> اختيار خطة "تفاعل وتسويق" أو "وصول وانتشار".</li>
+                <li><strong className="text-white">متابعة النتائج:</strong> مراقبة التقدم الملحوظ وتحسين نتائج الخوارزميات بشكل آمن.</li>
+              </ol>
+            </div>
+          </details>
+
+          <details className="group bg-[#121827]/50 border border-white/5 rounded-2xl p-6 open:bg-[#121827] transition-all cursor-pointer shadow-lg hover:border-green-500/30">
+            <summary className="text-lg md:text-xl font-bold text-white flex justify-between items-center outline-none">
+              هل خدمات Grodd Media آمنة على حسابي؟
+              <i className="fas fa-chevron-down text-slate-500 group-open:rotate-180 transition-transform"></i>
+            </summary>
+            <div className="mt-4 text-slate-300 leading-relaxed border-t border-white/5 pt-4">
+              <p className="font-medium text-slate-400">نعم، بكل تأكيد. في Grodd Media، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا. جميع الخدمات المقدمة تتوافق تماماً مع سياسات الاستخدام العادل وتستخدم تقنيات آمنة لضمان عدم تعريض حساباتك لأي مخاطر، مما يجعلنا الخيار الأول لخدمات الـ B2B.</p>
+            </div>
+          </details>
         </div>
-      </div>
+      </section>
 
       {/* How It Works Section */}
       <div className="w-full max-w-5xl mt-24 mb-16 relative">
@@ -165,10 +187,10 @@ export default function Home() {
             "mainEntity": [
               {
                 "@type": "Question",
-                "name": "ما هي وكالة Grodd Media للتسويق الرقمي؟",
+                "name": "ما هي وكالة Grodd Media للتسويق الرقمي وهل هي SMM Panel تقليدي؟",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "وكالة Grodd Media هي منصة تسويق رقمي B2B متخصصة في تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية على منصات مثل إنستجرام، باستخدام أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال."
+                  "text": "وكالة Grodd Media ليست SMM Panel تقليدياً، بل هي منصة تسويق رقمي B2B متخصصة في: تحسين خوارزميات التفاعل وتسريع الانتشار العضوي للعلامات التجارية، وتوفير أدوات آمنة ترفع من موثوقية الحسابات بشكل قانوني وفعال، وتقديم حملات ترويجية عالية الجودة للمؤسسات وصناع المحتوى."
                 }
               },
               {
@@ -176,7 +198,15 @@ export default function Home() {
                 "name": "كيف تعمل حملات الترويج العضوي في Grodd Media؟",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "تعمل حملاتنا عبر ثلاث خطوات أساسية: تحديد مسار المحتوى العام، إعداد الخطة الإعلانية لزيادة التفاعل، ثم توجيه الزوار الحقيقيين لتحسين نتائج الخوارزميات بشكل آمن."
+                  "text": "تعمل حملاتنا عبر ثلاث خطوات أساسية لضمان أفضل النتائج: تحديد مسار المحتوى العام عبر إدراج الرابط كوجهة رئيسية للحملة، إعداد الخطة الإعلانية باختيار خطة تفاعل وتسويق أو وصول وانتشار، ومتابعة النتائج ومراقبة التقدم الملحوظ وتحسين نتائج الخوارزميات بشكل آمن."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "هل خدمات Grodd Media آمنة على حسابي؟",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "نعم، بكل تأكيد. في Grodd Media، تأتي خصوصيتك وأمان بياناتك في صدارة أولوياتنا. جميع الخدمات المقدمة تتوافق تماماً مع سياسات الاستخدام العادل وتستخدم تقنيات آمنة لضمان عدم تعريض حساباتك لأي مخاطر، مما يجعلنا الخيار الأول لخدمات الـ B2B."
                 }
               }
             ]
