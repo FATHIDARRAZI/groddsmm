@@ -49,6 +49,10 @@ export default function SafeAdSlot({ src, width, height, className, style, loadi
     iframe.height = height;
     iframe.setAttribute('frameBorder', '0');
     iframe.setAttribute('scrolling', 'no');
+    
+    // Prevent the ad network script from redirecting the parent window (anti-smartlink takeover)
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+
     if (className) iframe.className = className;
     iframe.loading = loading || "lazy";
     
