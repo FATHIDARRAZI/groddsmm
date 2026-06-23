@@ -200,7 +200,7 @@ export default function RootLayout({
             </div>
             
             <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-              <div>&copy; 2026 Grodd SMM by Grodd Labs. جميع الحقوق محفوظة.</div>
+              <div>&copy; 2026 Grodd SMM by Grodd Labs. جميع الحقوق محفوظة. <span className="mr-2 px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-xs font-mono">v1.0</span></div>
               <div className="flex items-center gap-2">
                 <span>صنع بكل <i className="fas fa-heart text-pink-500 mx-1"></i> في</span>
                 <span className="text-white font-bold">Grodd Labs</span>

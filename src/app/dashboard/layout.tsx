@@ -144,6 +144,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <i className="fas fa-sign-out-alt w-5 text-center"></i>
             تسجيل الخروج
           </button>
+
+          <div className="mt-auto pt-6 pb-2 w-full flex justify-center">
+            <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-mono text-slate-500 font-bold tracking-widest uppercase">
+              v1.0
+            </span>
+          </div>
         </nav>
 
         {/* Sidebar Sticky Ad Block */}
