@@ -22,7 +22,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const { data: messages, error: msgError } = await supabase
       .from('ticket_messages')
-      .select('*, profiles(full_name, username)')
+      .select('*, profiles(full_name, email)')
       .eq('ticket_id', id)
       .order('created_at', { ascending: true });
 
