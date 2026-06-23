@@ -50,8 +50,9 @@ export default function SafeAdSlot({ src, width, height, className, style, loadi
     iframe.setAttribute('frameBorder', '0');
     iframe.setAttribute('scrolling', 'no');
     
-    // Prevent the ad network script from redirecting the parent window (anti-smartlink takeover)
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+    // Prevent the ad network script from automatically redirecting the parent window, 
+    // but allow everything else so the ad actually renders.
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-forms allow-top-navigation-by-user-activation allow-presentation');
 
     if (className) iframe.className = className;
     iframe.loading = loading || "lazy";
