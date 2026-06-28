@@ -77,12 +77,41 @@ export default function DashboardHome() {
 
 
 
+  const postAdAction = async () => {
+    setShowAdModal(false);
+    if (service === 'followers' && category === 'instagram') {
+      setIsFetchingProfile(true);
+      setErrorMsg('');
+      try {
+        const res = await fetch('/api/ig-profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: postLink })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          setProfileData(data.data);
+          setShowProfileConfirm(true);
+        } else {
+          setErrorMsg(data.error || 'فشل جلب بيانات الحساب');
+        }
+      } catch (err) {
+        setErrorMsg('حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
+      } finally {
+        setIsFetchingProfile(false);
+      }
+    } else {
+      executeOrder();
+    }
+  };
+
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (showAdModal && adWaitTime > 0) {
       timer = setInterval(() => setAdWaitTime(p => p - 1), 1000);
     } else if (showAdModal && adWaitTime === 0) {
-      executeOrder();
+      postAdAction();
     }
     return () => clearInterval(timer);
   }, [showAdModal, adWaitTime]);
@@ -123,42 +152,18 @@ export default function DashboardHome() {
     }
     
     setShowProfileConfirm(false);
-    if (removeAds) {
-      executeOrder();
-    } else {
-      setAdWaitTime(10);
-      setShowAdModal(true);
-    }
+    executeOrder();
   };
 
   const handleLaunch = async () => {
     if (!postLink || postLink === '@') return setErrorMsg(service === 'followers' ? 'الرجاء إدخال اسم المستخدم أولاً' : 'الرجاء إدخال الرابط أولاً');
     if (!recaptchaToken) return setErrorMsg('يرجى تأكيد أنك لست روبوت');
     
-    if (service === 'followers' && category === 'instagram') {
-      setIsFetchingProfile(true);
-      setErrorMsg('');
-      try {
-        const res = await fetch('/api/ig-profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: postLink })
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-          setProfileData(data.data);
-          setShowProfileConfirm(true);
-        } else {
-          setErrorMsg(data.error || 'فشل جلب بيانات الحساب');
-        }
-      } catch (err) {
-        setErrorMsg('حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
-      } finally {
-        setIsFetchingProfile(false);
-      }
+    if (removeAds) {
+      postAdAction();
     } else {
-      submitOrder();
+      setAdWaitTime(10);
+      setShowAdModal(true);
     }
   };
 
