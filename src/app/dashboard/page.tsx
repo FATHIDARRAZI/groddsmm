@@ -384,42 +384,47 @@ export default function DashboardHome() {
       {/* Ad Wait Modal */}
       {showAdModal && (
         <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-xl animate-fade-in"></div>
+          <div className="absolute inset-0 bg-[#050505]/95 backdrop-blur-xl animate-fade-in"></div>
           
-          <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-slide-up">
-            <div className="w-full flex justify-between items-end mb-2">
-              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
-                <span className="text-[10px] text-slate-500 font-bold">مساحة إعلانية</span>
+          <div className="relative z-10 w-full max-w-[420px] flex flex-col animate-slide-up bg-[#0A0A0A] border border-red-500/20 rounded-[2rem] p-6 shadow-[0_0_50px_rgba(220,38,38,0.05)] overflow-hidden">
+            
+            {/* Animated Progress Line at the very top of the modal */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-white/5">
+              <div 
+                className="h-full bg-gradient-to-r from-red-600 to-pink-500 transition-all duration-1000 ease-linear shadow-[0_0_10px_rgba(220,38,38,0.8)]" 
+                style={{ width: `${Math.min(100, (adWaitTime / 10) * 100)}%` }}
+              ></div>
+            </div>
+
+            <div className="w-full flex justify-between items-center mb-6 pt-2">
+              <div className="border border-red-500/30 bg-red-500/10 px-4 py-1.5 rounded-full flex items-center gap-2">
+                <span className="text-xs font-black text-red-400 tracking-wider">
+                  {adWaitTime > 0 ? `يرجى الانتظار ${adWaitTime}ث` : 'جاري التنفيذ...'}
+                </span>
               </div>
-              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-pink-500 text-[10px] font-bold tracking-widest border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
-                {adWaitTime > 0 ? (
-                  <><span>يرجى الانتظار {adWaitTime} ثانية</span><i className="fas fa-clock"></i></>
-                ) : (
-                  <><span>جاري معالجة الطلب...</span><i className="fas fa-spinner fa-spin"></i></>
-                )}
+              <div className="bg-white/5 px-4 py-1.5 rounded-full">
+                <span className="text-xs font-bold text-slate-400">إعلان سبونسر</span>
               </div>
             </div>
 
-            <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(236,72,153,0.15)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] border border-white/5 relative">
-              <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
-                <SafeAdSlot src="/ad-728.html" width="728" height="90" className="mx-auto" loading="lazy" />
-              </div>
-              <div className="flex md:hidden w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
-                <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
-                  <SafeAdSlot src="/ad-300.html" width="300" height="250" className="mx-auto" loading="lazy" />
-                </div>
+            <div className="w-full flex justify-center mb-6">
+              <div className="w-[300px] h-[250px] bg-[#050505] rounded-2xl overflow-hidden border border-white/5 relative flex justify-center items-center shadow-lg shadow-black/50">
+                <SafeAdSlot src="/ad-300.html" width="300" height="250" className="mx-auto" loading="lazy" />
               </div>
             </div>
 
-            <div className="w-full mt-6 bg-[#161618] rounded-2xl p-6 border border-white/5 shadow-2xl">
-              <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
-                 {adWaitTime > 0 ? 'جاري تجهيز سيرفرات الإرسال...' : 'جاري التنفيذ الآن...'}
-              </h3>
-              <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
-                 <div className="absolute top-0 right-0 h-full bg-gradient-to-l from-pink-500 to-purple-500 transition-all duration-1000 ease-linear" style={{ width: `${Math.min(100, (1 - adWaitTime / 10) * 100)}%` }}></div>
+            <div className="w-full text-center px-2">
+              <p className="text-slate-500 text-[11px] leading-relaxed mb-4 font-medium">
+                شكراً لدعمك المنصة! مشاهدة الإعلانات تساعدنا على إبقاء الخدمات مجانية ومنخفضة التكلفة للجميع.
+              </p>
+              
+              <div className="bg-[#1A0505] border border-red-900/30 rounded-2xl p-4 shadow-inner">
+                <p className="text-red-500/90 text-[11px] font-black leading-relaxed">
+                  إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
+                </p>
               </div>
-              <p className="text-center text-slate-500 text-xs mt-4">نحن نعرض الإعلانات للحفاظ على أسعارنا التنافسية كأرخص مزود في الشرق الأوسط.</p>
             </div>
+            
           </div>
         </div>
       )}
