@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
 // import ReCAPTCHA from 'react-google-recaptcha';
 import { createSupabaseClient } from '@/lib/supabase';
@@ -32,6 +32,8 @@ export default function DashboardHome() {
   const [removeAds, setRemoveAds] = useState(false);
   const [showAdModal, setShowAdModal] = useState(false);
   const [adWaitTime, setAdWaitTime] = useState(0);
+
+  const profileFetchPromise = useRef<Promise<any> | null>(null);
 
   const getLimits = useCallback(() => {
     if (category === 'instagram' && service === 'followers') return { min: 100, max: 100000 };
@@ -80,26 +82,14 @@ export default function DashboardHome() {
   const postAdAction = async () => {
     setShowAdModal(false);
     if (service === 'followers' && category === 'instagram') {
-      setIsFetchingProfile(true);
-      setErrorMsg('');
-      try {
-        const res = await fetch('/api/ig-profile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username: postLink })
-        });
-        const data = await res.json();
-        
-        if (data.success) {
-          setProfileData(data.data);
-          setShowProfileConfirm(true);
-        } else {
-          setErrorMsg(data.error || 'فشل جلب بيانات الحساب');
-        }
-      } catch (err) {
-        setErrorMsg('حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
-      } finally {
-        setIsFetchingProfile(false);
+      if (profileFetchPromise.current) {
+         // Show spinner if somehow still loading
+         setIsProcessing(true);
+         const result = await profileFetchPromise.current;
+         setIsProcessing(false);
+         if (result.success) {
+           setShowProfileConfirm(true);
+         }
       }
     } else {
       executeOrder();
@@ -159,6 +149,31 @@ export default function DashboardHome() {
     if (!postLink || postLink === '@') return setErrorMsg(service === 'followers' ? 'الرجاء إدخال اسم المستخدم أولاً' : 'الرجاء إدخال الرابط أولاً');
     if (!recaptchaToken) return setErrorMsg('يرجى تأكيد أنك لست روبوت');
     
+    if (service === 'followers' && category === 'instagram') {
+      setIsFetchingProfile(true);
+      setErrorMsg('');
+      const fetchPromise = fetch('/api/ig-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: postLink })
+      }).then(res => res.json()).then(data => {
+        if (data.success) {
+          setProfileData(data.data);
+          return { success: true, data: data.data };
+        } else {
+          setErrorMsg(data.error || 'فشل جلب بيانات الحساب');
+          return { success: false };
+        }
+      }).catch(() => {
+        setErrorMsg('حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
+        return { success: false };
+      }).finally(() => {
+        setIsFetchingProfile(false);
+      });
+      
+      profileFetchPromise.current = fetchPromise;
+    }
+
     if (removeAds) {
       postAdAction();
     } else {
