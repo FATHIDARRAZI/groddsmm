@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
 // import ReCAPTCHA from 'react-google-recaptcha';
 import { createSupabaseClient } from '@/lib/supabase';
+import SafeAdSlot from '@/components/SafeAdSlot';
 
 
 
@@ -27,6 +28,10 @@ export default function DashboardHome() {
   const [isFetchingProfile, setIsFetchingProfile] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
   const [privateAlertMsg, setPrivateAlertMsg] = useState<string | null>(null);
+
+  const [removeAds, setRemoveAds] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [adWaitTime, setAdWaitTime] = useState(0);
 
   const getLimits = useCallback(() => {
     if (category === 'instagram' && service === 'followers') return { min: 100, max: 100000 };
@@ -60,8 +65,11 @@ export default function DashboardHome() {
   const fetchUserPoints = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      const { data: profile } = await supabase.from('profiles').select('points_balance').eq('id', user.id).single();
-      if (profile) setUserPoints(profile.points_balance);
+      const { data: profile } = await supabase.from('profiles').select('points_balance, remove_ads').eq('id', user.id).single();
+      if (profile) {
+        setUserPoints(profile.points_balance);
+        setRemoveAds(profile.remove_ads);
+      }
     }
   };
 
@@ -69,12 +77,17 @@ export default function DashboardHome() {
 
 
 
-  const submitOrder = async () => {
-    if (category === 'instagram' && service === 'followers' && profileData?.is_private) {
-      setPrivateAlertMsg(profileData.private_error_message || 'هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.');
-      return;
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showAdModal && adWaitTime > 0) {
+      timer = setInterval(() => setAdWaitTime(p => p - 1), 1000);
+    } else if (showAdModal && adWaitTime === 0) {
+      executeOrder();
     }
+    return () => clearInterval(timer);
+  }, [showAdModal, adWaitTime]);
 
+  const executeOrder = async () => {
     setIsProcessing(true);
     setErrorMsg('');
     setShowProfileConfirm(false);
@@ -97,7 +110,25 @@ export default function DashboardHome() {
         setErrorMsg(data.error);
       }
     } catch (e) { setErrorMsg('فشل إرسال الطلب'); }
-    finally { setIsProcessing(false); }
+    finally { 
+      setIsProcessing(false); 
+      setShowAdModal(false);
+    }
+  };
+
+  const submitOrder = async () => {
+    if (category === 'instagram' && service === 'followers' && profileData?.is_private) {
+      setPrivateAlertMsg(profileData.private_error_message || 'هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.');
+      return;
+    }
+    
+    setShowProfileConfirm(false);
+    if (removeAds) {
+      executeOrder();
+    } else {
+      setAdWaitTime(10);
+      setShowAdModal(true);
+    }
   };
 
   const handleLaunch = async () => {
@@ -347,6 +378,49 @@ export default function DashboardHome() {
                فهمت، سأقوم بتغييره
              </button>
            </div>
+        </div>
+      )}
+
+      {/* Ad Wait Modal */}
+      {showAdModal && (
+        <div className="fixed inset-0 z-[10002] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-xl animate-fade-in"></div>
+          
+          <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-slide-up">
+            <div className="w-full flex justify-between items-end mb-2">
+              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
+                <span className="text-[10px] text-slate-500 font-bold">مساحة إعلانية</span>
+              </div>
+              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-pink-500 text-[10px] font-bold tracking-widest border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
+                {adWaitTime > 0 ? (
+                  <><span>يرجى الانتظار {adWaitTime} ثانية</span><i className="fas fa-clock"></i></>
+                ) : (
+                  <><span>جاري معالجة الطلب...</span><i className="fas fa-spinner fa-spin"></i></>
+                )}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-b-xl rounded-tl-xl shadow-[0_0_50px_rgba(236,72,153,0.15)] overflow-hidden flex flex-col items-center justify-center w-full min-h-[90px] border border-white/5 relative">
+              <div className="hidden md:flex w-full items-center justify-center min-h-[90px]">
+                <SafeAdSlot src="/ad-728.html" width="728" height="90" className="mx-auto" loading="lazy" />
+              </div>
+              <div className="flex md:hidden w-full items-center justify-center min-h-[250px] overflow-hidden max-w-full">
+                <div className="scale-[0.9] sm:scale-100 origin-center flex justify-center items-center">
+                  <SafeAdSlot src="/ad-300.html" width="300" height="250" className="mx-auto" loading="lazy" />
+                </div>
+              </div>
+            </div>
+
+            <div className="w-full mt-6 bg-[#161618] rounded-2xl p-6 border border-white/5 shadow-2xl">
+              <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
+                 {adWaitTime > 0 ? 'جاري تجهيز سيرفرات الإرسال...' : 'جاري التنفيذ الآن...'}
+              </h3>
+              <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
+                 <div className="absolute top-0 right-0 h-full bg-gradient-to-l from-pink-500 to-purple-500 transition-all duration-1000 ease-linear" style={{ width: `${Math.min(100, (1 - adWaitTime / 10) * 100)}%` }}></div>
+              </div>
+              <p className="text-center text-slate-500 text-xs mt-4">نحن نعرض الإعلانات للحفاظ على أسعارنا التنافسية كأرخص مزود في الشرق الأوسط.</p>
+            </div>
+          </div>
         </div>
       )}
 
