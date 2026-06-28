@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Grodd SMM</string>
+    <string name="title_activity_main">Grodd SMM</string>
+    <string name="package_name">com.groddmedia.smm</string>
+    <string name="custom_url_scheme">com.groddmedia.smm</string>
+</resources>
