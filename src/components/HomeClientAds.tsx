@@ -19,6 +19,15 @@ export default function HomeClientAds() {
     checkRemoveAds();
   }, []);
 
+  // Auto-minimize sticky ad after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsStickyVisible(false);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
+
+
   useEffect(() => {
     if (hasSeenIdleAd || showIdleAd || removeAds) return;
 
