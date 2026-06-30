@@ -135,8 +135,8 @@ export function HomeTopAd() {
       <div className="hidden md:flex w-full justify-center">
         <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="lazy" className="bg-transparent rounded-lg" />
       </div>
-      <div className="flex md:hidden w-full justify-center min-h-[250px]">
-        <SafeAdSlot src="/ad-300.html" width="300" height="250" loading="lazy" className="bg-transparent rounded-lg" />
+      <div className="flex md:hidden w-full justify-center min-h-[50px]">
+        <SafeAdSlot src="/ad-320.html" width="320" height="50" loading="lazy" className="bg-transparent rounded-lg" />
       </div>
     </div>
   );
@@ -192,8 +192,8 @@ export function HomeMiddleAd() {
       <div className="hidden md:flex w-full justify-center">
         <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="lazy" className="bg-transparent rounded-lg" />
       </div>
-      <div className="flex md:hidden w-full justify-center min-h-[250px] overflow-hidden">
-        <SafeAdSlot src="/ad-300.html" width="300" height="250" loading="lazy" className="bg-transparent rounded-lg" />
+      <div className="flex md:hidden w-full justify-center min-h-[50px] overflow-hidden">
+        <SafeAdSlot src="/ad-320.html" width="320" height="50" loading="lazy" className="bg-transparent rounded-lg" />
       </div>
     </div>
   );
