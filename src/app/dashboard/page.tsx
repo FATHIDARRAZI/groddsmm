@@ -189,7 +189,7 @@ export default function DashboardHome() {
         {/* Centered Order Form */}
         <div className="w-full space-y-4 text-center">
            <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter">
-              إطلاق طلب <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400">جديد</span>
+              إطلاق حملة <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400">جديدة</span>
            </h1>
         </div>
 
@@ -320,7 +320,7 @@ export default function DashboardHome() {
                 </div>
 
                 <button onClick={handleLaunch} disabled={isProcessing || isFetchingProfile} className="w-full py-7 rounded-[2.5rem] font-black text-white text-xl bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 mt-4">
-                  {isProcessing || isFetchingProfile ? <i className="fas fa-spinner fa-spin"></i> : <span>إطلاق الطلب الآن</span>}
+                  {isProcessing || isFetchingProfile ? <i className="fas fa-spinner fa-spin"></i> : <span>إطلاق الحملة الآن</span>}
                 </button>
               </>
             )}
