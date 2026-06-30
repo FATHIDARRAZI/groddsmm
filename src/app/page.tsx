@@ -4,7 +4,7 @@ import HomeClientAds, { HomeTopAd, HomeNativeAd, HomeMiddleAd } from '@/componen
 
 export default function Home() {
   return (
-    <main className="relative z-10 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
+    <main className="relative z-20 flex-grow flex flex-col items-center justify-center px-4 py-12 pb-24 w-full">
       <HomeTopAd />
 
       <div className="text-center mb-10 w-full z-10 relative">
