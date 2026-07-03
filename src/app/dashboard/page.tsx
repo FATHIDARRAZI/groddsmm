@@ -9,10 +9,10 @@ import SafeAdSlot from '@/components/SafeAdSlot';
 
 
 const SOCIAL_CATEGORIES = [
-  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام' },
-  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك' },
-  { id: 'facebook', icon: 'fa-facebook', color: 'text-[#1877F2]', name: 'فيسبوك' },
-  { id: 'youtube', icon: 'fa-youtube', color: 'text-[#FF0000]', name: 'يوتيوب' },
+  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام', size: 'text-3xl md:text-4xl scale-[0.9]' },
+  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك', size: 'text-4xl md:text-5xl' },
+  { id: 'facebook', icon: 'fa-facebook', color: 'text-[#1877F2]', name: 'فيسبوك', size: 'text-4xl md:text-5xl' },
+  { id: 'youtube', icon: 'fa-youtube', color: 'text-[#FF0000]', name: 'يوتيوب', size: 'text-3xl md:text-4xl scale-[0.85]' },
 ];
 
 export default function DashboardHome() {
@@ -213,7 +213,7 @@ export default function DashboardHome() {
                     }`}
                     title={cat.name}
                   >
-                    <i className={`fab ${cat.icon} ${cat.color} text-3xl md:text-4xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    <i className={`fab ${cat.icon} ${cat.color} ${cat.size} drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
                     {/* Optional text label below icon if needed later, kept minimal for now */}
                   </button>
                 ))}
@@ -257,12 +257,12 @@ export default function DashboardHome() {
               </div>
             ) : (
               <>
-                <div className={`grid ${category === 'facebook' ? 'grid-cols-1' : 'grid-cols-3'} gap-4 md:gap-8 mt-6`}>
-                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'followers' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>متابعين</button>
+                <div className="flex flex-row bg-black/40 p-1.5 rounded-2xl w-full border border-white/5 gap-1 mt-6 shadow-inner">
+                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'followers' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>متابعين</button>
                   {category !== 'facebook' && (
                     <>
-                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'likes' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>إعجابات</button>
-                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'views' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>مشاهدات</button>
+                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'likes' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>إعجابات</button>
+                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'views' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>مشاهدات</button>
                     </>
                   )}
                 </div>

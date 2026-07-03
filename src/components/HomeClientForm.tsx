@@ -9,8 +9,8 @@ import { createSupabaseClient } from '@/lib/supabase';
 type ServiceType = 'likes' | 'views';
 
 const SOCIAL_CATEGORIES = [
-  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام' },
-  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك' },
+  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام', size: 'text-3xl md:text-4xl scale-[0.9]' },
+  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك', size: 'text-4xl md:text-5xl' },
 ];
 
 export default function HomeClientForm() {
@@ -166,7 +166,7 @@ export default function HomeClientForm() {
                     }`}
                     title={cat.name}
                   >
-                    <i className={`fab ${cat.icon} ${cat.color} text-3xl md:text-4xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    <i className={`fab ${cat.icon} ${cat.color} ${cat.size} drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
                   </button>
                 ))}
               </div>
