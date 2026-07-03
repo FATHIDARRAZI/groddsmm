@@ -69,18 +69,18 @@ export default function NotificationBell() {
         onClick={() => {
           setIsOpen(!isOpen);
         }}
-        className="w-10 h-10 bg-[#1C1C1E] rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-colors relative cursor-pointer"
+        className="w-12 h-12 md:w-14 md:h-14 bg-[#1C1C1E] rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all hover:scale-105 shadow-lg relative cursor-pointer"
       >
-        <i className="fas fa-bell"></i>
+        <i className="fas fa-bell text-xl md:text-2xl"></i>
         {unreadCount > 0 && (
-          <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center border-2 border-[#121214]">
+          <span className="absolute -top-1 -right-1 w-5 h-5 md:w-6 md:h-6 bg-red-500 text-white text-[10px] md:text-xs font-bold rounded-full flex items-center justify-center border-2 border-[#121214] shadow-md animate-pulse">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute top-12 left-0 w-80 bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[999] animate-fade-in dir-rtl">
+        <div className="absolute top-[3.5rem] md:top-[4rem] left-0 sm:left-auto sm:-right-4 w-[calc(100vw-32px)] sm:w-80 max-w-[350px] bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[9999] animate-fade-in dir-rtl">
           <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#0B0F19]/50">
             <h3 className="font-bold text-white text-sm">الإشعارات</h3>
             {unreadCount > 0 && (
