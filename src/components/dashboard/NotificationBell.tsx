@@ -80,7 +80,7 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-[3.5rem] md:top-[4rem] left-0 sm:left-auto sm:-right-4 w-[calc(100vw-32px)] sm:w-80 max-w-[350px] bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-[9999] animate-fade-in dir-rtl">
+        <div className="fixed top-[80px] left-4 right-4 z-[9999] md:absolute md:top-[4rem] md:left-0 md:right-auto md:w-80 bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-fade-in dir-rtl">
           <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#0B0F19]/50">
             <h3 className="font-bold text-white text-sm">الإشعارات</h3>
             {unreadCount > 0 && (
