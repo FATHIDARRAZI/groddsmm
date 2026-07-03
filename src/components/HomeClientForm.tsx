@@ -146,44 +146,44 @@ export default function HomeClientForm() {
   };
 
   return (
-    <div className="w-full max-w-xl bg-gradient-to-b from-[#1C1C1E] to-[#121214] rounded-2xl p-5 sm:p-8 relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/5 z-10 mx-auto">
+    <div className="w-full max-w-3xl bg-gradient-to-b from-[#1C1C1E] to-[#121214] rounded-3xl p-8 sm:p-12 relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/5 z-10 mx-auto">
       <div className="absolute top-0 left-0 w-1/3 h-[2px] bg-gradient-to-r from-purple-500/80 to-transparent rounded-tl-2xl pointer-events-none"></div>
       
       <div className="relative z-10">
         {(step === 1 || step === 1.5) && (
           <div className={`space-y-6 transition-all duration-500 relative ${step === 1.5 ? 'blur-sm pointer-events-none opacity-50' : 'animate-fade-in'}`}>
-            <div className="flex flex-col gap-3 items-center w-full mb-6 mt-2">
-              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest text-center w-full block">اختر المنصة (Platform)</label>
+            <div className="flex flex-col gap-4 items-center w-full mb-8 mt-2">
+              <label className="text-sm font-black text-slate-500 uppercase tracking-widest text-center w-full block">اختر المنصة (Platform)</label>
               <div className="flex justify-center gap-3 md:gap-5">
                 {SOCIAL_CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
                     onClick={() => setCategory(cat.id)}
-                    className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
                       category === cat.id 
                         ? 'bg-gradient-to-tr from-white/10 to-white/5 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/20 scale-110' 
                         : 'bg-black/40 border border-white/5 opacity-50 hover:opacity-100 hover:scale-105'
                     }`}
                     title={cat.name}
                   >
-                    <i className={`fab ${cat.icon} ${cat.color} text-2xl md:text-3xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    <i className={`fab ${cat.icon} ${cat.color} text-3xl md:text-4xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 relative group/input">
-              <label className="text-xs font-bold text-slate-500 tracking-widest block text-right w-full mb-1">رابط المحتوى (Post Link)</label>
+            <div className="flex flex-col gap-3 relative group/input">
+              <label className="text-sm font-bold text-slate-500 tracking-widest block text-right w-full mb-2">رابط المحتوى (Post Link)</label>
               <div className="relative">
-                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500 font-bold group-focus-within/input:text-[#FF8577] transition-colors">
-                  <i className="fas fa-link"></i>
+                <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-500 font-bold group-focus-within/input:text-[#FF8577] transition-colors">
+                  <i className="fas fa-link text-xl"></i>
                 </div>
                 <input
                   type="text"
                   value={postLink}
                   onChange={(e) => setPostLink(e.target.value)}
                   placeholder="ضع الرابط هنا..."
-                  className="w-full bg-[#18181A] border border-white/5 rounded-xl py-4 pr-12 pl-4 text-left dir-ltr text-white placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
+                  className="w-full bg-[#18181A] border border-white/5 rounded-2xl py-6 md:py-8 pr-14 pl-4 text-left dir-ltr text-white text-lg md:text-xl placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
                 />
               </div>
             </div>
@@ -194,30 +194,30 @@ export default function HomeClientForm() {
               </div>
             )}
 
-            <div className="flex flex-col gap-2 mt-6">
-              <label className="text-xs font-bold text-slate-500 tracking-widest block text-right w-full mb-1">الخطة الإعلانية (Strategy)</label>
-              <div className="flex flex-col sm:flex-row bg-[#0D0D0E] p-1 rounded-xl w-full border border-white/5 gap-1 sm:gap-0">
+            <div className="flex flex-col gap-3 mt-8">
+              <label className="text-sm font-bold text-slate-500 tracking-widest block text-right w-full mb-2">الخطة الإعلانية (Strategy)</label>
+              <div className="flex flex-col sm:flex-row bg-[#0D0D0E] p-1.5 rounded-2xl w-full border border-white/5 gap-1 sm:gap-0">
                 <button
                   onClick={() => setService('likes')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 ${
                     service === 'likes' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
                   }`}
                 >
-                  <i className={`fas fa-heart ${service === 'likes' ? 'text-[#FF8577]' : 'text-slate-600'}`}></i> زيادة لايكات
+                  <i className={`fas fa-heart text-xl ${service === 'likes' ? 'text-[#FF8577]' : 'text-slate-600'}`}></i> زيادة لايكات
                 </button>
                 <button
                   onClick={() => setService('views')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-sm transition-all duration-300 ${
+                  className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 ${
                     service === 'views' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
                   }`}
                 >
-                  <i className={`fas fa-eye ${service === 'views' ? 'text-slate-300' : 'text-slate-600'}`}></i> زيادة مشاهدات
+                  <i className={`fas fa-eye text-xl ${service === 'views' ? 'text-slate-300' : 'text-slate-600'}`}></i> زيادة مشاهدات
                 </button>
               </div>
             </div>
 
-            <div className="flex justify-center w-full my-6 max-w-full overflow-hidden">
-              <div className="bg-[#121214] p-2 rounded-xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
+            <div className="flex justify-center w-full my-8 max-w-full overflow-hidden">
+              <div className="bg-[#121214] p-3 rounded-2xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
                 <Turnstile
                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
                   onSuccess={(token: string) => setRecaptchaToken(token)}
@@ -229,9 +229,9 @@ export default function HomeClientForm() {
 
             <button
               onClick={handleStartProcess}
-              className="w-full py-4 mt-2 rounded-xl font-extrabold text-[#1F0A07] text-lg bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-[#FF8577]/30 shadow-[0_4px_20px_rgba(255,133,119,0.3)] flex items-center justify-center gap-3"
+              className="w-full py-6 mt-4 rounded-2xl font-extrabold text-[#1F0A07] text-xl md:text-2xl bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] hover:opacity-90 active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-[#FF8577]/30 shadow-[0_4px_20px_rgba(255,133,119,0.3)] flex items-center justify-center gap-3"
             >
-              بدء إطلاق الحملة <i className="fas fa-rocket text-sm"></i>
+              بدء إطلاق الحملة <i className="fas fa-rocket text-lg md:text-xl"></i>
             </button>
 
             <div className="w-full flex items-center gap-4 mt-6">

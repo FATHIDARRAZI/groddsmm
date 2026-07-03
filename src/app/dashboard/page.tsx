@@ -184,7 +184,7 @@ export default function DashboardHome() {
 
   return (
     <>
-      <div className="w-full max-w-2xl mx-auto flex flex-col gap-10 animate-fade-in relative z-10 pb-20">
+      <div className="w-full max-w-3xl mx-auto flex flex-col gap-10 animate-fade-in relative z-10 pb-20">
         
         {/* Centered Order Form */}
         <div className="w-full space-y-4 text-center">
@@ -197,7 +197,7 @@ export default function DashboardHome() {
           <div className="space-y-10 relative z-10">
             {/* Category Selector */}
             <div className="flex flex-col gap-4 items-center">
-              <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest">اختر المنصة</label>
+              <label className="text-sm font-black text-slate-500 uppercase tracking-widest">اختر المنصة</label>
               <div className="flex justify-center gap-3 md:gap-6">
                 {SOCIAL_CATEGORIES.map((cat) => (
                   <button
@@ -206,27 +206,27 @@ export default function DashboardHome() {
                       setCategory(cat.id);
                       if (cat.id === 'facebook') setService('followers');
                     }}
-                    className={`w-14 h-14 md:w-16 md:h-16 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${
+                    className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
                       category === cat.id 
                         ? 'bg-gradient-to-tr from-white/10 to-white/5 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/20 scale-110' 
                         : 'bg-black/40 border border-white/5 opacity-50 hover:opacity-100 hover:scale-105'
                     }`}
                     title={cat.name}
                   >
-                    <i className={`fab ${cat.icon} ${cat.color} text-2xl md:text-3xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    <i className={`fab ${cat.icon} ${cat.color} text-3xl md:text-4xl drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
                     {/* Optional text label below icon if needed later, kept minimal for now */}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <label className="text-[11px] font-black text-slate-500 uppercase px-2">
+            <div className="flex flex-col gap-4 mt-6">
+              <label className="text-sm font-black text-slate-500 uppercase px-2">
                 {service === 'followers' ? 'اسم المستخدم (يوزرنيم)' : 'رابط المحتوى'}
               </label>
               <div className="relative">
                 {service === 'followers' && (
-                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-lg font-mono">@</span>
+                  <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-2xl font-mono">@</span>
                 )}
                 <input
                   type="text"
@@ -241,7 +241,7 @@ export default function DashboardHome() {
                     setPostLink(val);
                   }}
                   placeholder={service === 'followers' ? 'username' : 'ضع الرابط هنا...'}
-                  className={`w-full bg-black/60 border border-white/5 rounded-3xl py-6 pr-8 ${service === 'followers' ? 'pl-12' : 'pl-8'} text-right text-white font-outfit text-base focus:outline-none focus:border-pink-500/40 transition-all shadow-inner`}
+                  className={`w-full bg-black/60 border border-white/5 rounded-[2rem] py-8 pr-10 ${service === 'followers' ? 'pl-16' : 'pl-10'} text-right text-white font-outfit text-lg md:text-xl focus:outline-none focus:border-pink-500/40 transition-all shadow-inner`}
                   dir={service === 'followers' ? 'ltr' : 'rtl'}
                 />
               </div>
@@ -257,20 +257,20 @@ export default function DashboardHome() {
               </div>
             ) : (
               <>
-                <div className={`grid ${category === 'facebook' ? 'grid-cols-1' : 'grid-cols-3'} gap-4 md:gap-8 mt-4`}>
-                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`py-4 rounded-2xl font-black transition-all ${service === 'followers' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>متابعين</button>
+                <div className={`grid ${category === 'facebook' ? 'grid-cols-1' : 'grid-cols-3'} gap-4 md:gap-8 mt-6`}>
+                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'followers' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>متابعين</button>
                   {category !== 'facebook' && (
                     <>
-                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`py-4 rounded-2xl font-black transition-all ${service === 'likes' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>إعجابات</button>
-                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`py-4 rounded-2xl font-black transition-all ${service === 'views' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>مشاهدات</button>
+                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'likes' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>إعجابات</button>
+                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`py-5 text-lg md:text-xl rounded-2xl font-black transition-all ${service === 'views' ? 'bg-pink-500 text-white shadow-xl' : 'bg-white/5 text-slate-500'}`}>مشاهدات</button>
                     </>
                   )}
                 </div>
 
-                <div className="bg-black/40 p-8 rounded-[2.5rem] border border-white/5 space-y-4">
+                <div className="bg-black/40 p-8 rounded-[2.5rem] border border-white/5 space-y-6 mt-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-white">{service === 'followers' ? quantity * 2 : service === 'views' ? Math.ceil(quantity / 50) : quantity}</span></span>
-                    <span className="text-xs font-black text-pink-500 uppercase">الكمية: <span className="text-white">{formatNumber(quantity)}</span></span>
+                    <span className="text-sm md:text-base font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-white">{service === 'followers' ? quantity * 2 : service === 'views' ? Math.ceil(quantity / 50) : quantity}</span></span>
+                    <span className="text-sm md:text-base font-black text-pink-500 uppercase">الكمية: <span className="text-white">{formatNumber(quantity)}</span></span>
                   </div>
                   <input type="range" min={getLimits().min} max={getLimits().max} step={getLimits().max > 1000000 ? 100 : 10} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="w-full h-2 bg-white/10 rounded-full accent-pink-500" />
                 </div>
@@ -307,8 +307,8 @@ export default function DashboardHome() {
 
             {category !== 'youtube' && (
               <>
-                <div className="flex flex-col items-center gap-4 mt-6">
-                   <div className="p-4 rounded-[2.5rem] bg-black/60 border border-white/5 scale-90">
+                <div className="flex flex-col items-center gap-4 mt-8">
+                   <div className="p-4 rounded-[2.5rem] bg-black/60 border border-white/5 scale-90 md:scale-100 transition-transform">
                      {/* <ReCAPTCHA sitekey={activeSiteKey} onChange={(t) => setRecaptchaToken(t || '')} theme="dark" /> */}
                      <Turnstile
                         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
@@ -316,10 +316,10 @@ export default function DashboardHome() {
                         options={{ theme: 'dark' }}
                      />
                    </div>
-                   {errorMsg && <p className="text-pink-500 text-xs font-black animate-pulse">{errorMsg}</p>}
+                   {errorMsg && <p className="text-pink-500 text-sm font-black animate-pulse">{errorMsg}</p>}
                 </div>
 
-                <button onClick={handleLaunch} disabled={isProcessing || isFetchingProfile} className="w-full py-7 rounded-[2.5rem] font-black text-white text-xl bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 mt-4">
+                <button onClick={handleLaunch} disabled={isProcessing || isFetchingProfile} className="w-full py-8 rounded-[2.5rem] font-black text-white text-2xl bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 mt-6">
                   {isProcessing || isFetchingProfile ? <i className="fas fa-spinner fa-spin"></i> : <span>إطلاق الحملة الآن</span>}
                 </button>
               </>
