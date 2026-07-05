@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from './SafeAdSlot';
+import { ThemeToggle } from './ThemeToggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,14 +36,15 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="relative z-50 w-full border-b border-white/5 bg-[#121827]/80 backdrop-blur-xl">
+    <nav className="relative z-50 w-full border-b border-black/5 dark:border-white/5 bg-white/80 dark:bg-[#121827]/80 backdrop-blur-xl transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-3 transition-transform hover:scale-105">
           <Image src="/GRODD_LOGO.png" alt="Grodd SMM Logo" width={200} height={40} priority className="h-10 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
         </Link>
         
         {/* Desktop Links */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-400">
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">
+          <ThemeToggle />
           {!isLoggedIn && (
             <>
               <span className="flex items-center gap-2">
@@ -65,21 +67,24 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          type="button"
-          className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 hover:text-white transition-all cursor-pointer touch-manipulation relative z-50"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} text-lg pointer-events-none`}></i>
-        </button>
+        <div className="md:hidden flex items-center gap-3 relative z-50">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="flex items-center justify-center w-10 h-10 rounded-lg bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/10 dark:hover:bg-white/10 text-slate-700 dark:text-slate-300 hover:text-black dark:hover:text-white transition-all cursor-pointer touch-manipulation"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} text-lg pointer-events-none`}></i>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Dropdown Menu (Hidden on Desktop) */}
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 bg-[#0B0F19]/95 backdrop-blur-3xl border-b border-white/10 p-6 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:hidden animate-fade-in">
+        <div className="absolute top-full left-0 right-0 bg-white/95 dark:bg-[#0B0F19]/95 backdrop-blur-3xl border-b border-black/10 dark:border-white/10 p-6 flex flex-col gap-6 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] md:hidden animate-fade-in transition-colors duration-300">
           
           <div className="flex flex-col gap-4 text-center">
-            <Link href="/" onClick={() => setIsOpen(false)} className="text-slate-300 font-bold hover:text-pink-500 transition-colors">الرئيسية</Link>
+            <Link href="/" onClick={() => setIsOpen(false)} className="text-slate-700 dark:text-slate-300 font-bold hover:text-pink-500 transition-colors">الرئيسية</Link>
             
             {isLoggedIn ? (
                <Link href="/dashboard" onClick={() => setIsOpen(false)} className="bg-[#1C1C1E] border border-white/5 text-white font-bold py-3 mx-4 rounded-xl shadow-md hover:bg-white/10 transition-all flex justify-center items-center gap-2">
@@ -87,7 +92,7 @@ export default function Navbar() {
                </Link>
             ) : (
               <>
-                <Link href="/auth/login" onClick={() => setIsOpen(false)} className="text-slate-300 font-bold hover:text-pink-500 transition-colors">تسجيل الدخول</Link>
+                <Link href="/auth/login" onClick={() => setIsOpen(false)} className="text-slate-700 dark:text-slate-300 font-bold hover:text-pink-500 transition-colors">تسجيل الدخول</Link>
                 <Link href="/auth/signup" onClick={() => setIsOpen(false)} className="bg-[#ec4899] text-white font-bold py-3 mx-4 rounded-xl shadow-[0_0_15px_rgba(236,72,153,0.3)] hover:brightness-110 transition-all">إنشاء حساب مجاني</Link>
               </>
             )}

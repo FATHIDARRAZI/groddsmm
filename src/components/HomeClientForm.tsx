@@ -146,7 +146,7 @@ export default function HomeClientForm() {
   };
 
   return (
-    <div className="w-full max-w-3xl bg-gradient-to-b from-[#1C1C1E] to-[#121214] rounded-3xl p-8 sm:p-12 relative shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-white/5 z-10 mx-auto">
+    <div className="w-full max-w-3xl bg-gradient-to-b from-white to-slate-50 dark:from-[#1C1C1E] dark:to-[#121214] rounded-3xl p-8 sm:p-12 relative shadow-[0_0_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.8)] border border-black/5 dark:border-white/5 z-10 mx-auto transition-colors duration-300">
       <div className="absolute top-0 left-0 w-1/3 h-[2px] bg-gradient-to-r from-purple-500/80 to-transparent rounded-tl-2xl pointer-events-none"></div>
       
       <div className="relative z-10">
@@ -161,8 +161,8 @@ export default function HomeClientForm() {
                     onClick={() => setCategory(cat.id)}
                     className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
                       category === cat.id 
-                        ? 'bg-gradient-to-tr from-white/10 to-white/5 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/20 scale-110' 
-                        : 'bg-black/40 border border-white/5 opacity-50 hover:opacity-100 hover:scale-105'
+                        ? 'bg-gradient-to-tr from-black/5 to-black/5 dark:from-white/10 dark:to-white/5 shadow-[0_0_30px_rgba(0,0,0,0.05)] dark:shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-black/10 dark:border-white/20 scale-110' 
+                        : 'bg-slate-100 dark:bg-black/40 border border-black/5 dark:border-white/5 opacity-70 hover:opacity-100 hover:scale-105'
                     }`}
                     title={cat.name}
                   >
@@ -183,7 +183,7 @@ export default function HomeClientForm() {
                   value={postLink}
                   onChange={(e) => setPostLink(e.target.value)}
                   placeholder="ضع الرابط هنا..."
-                  className="w-full bg-[#18181A] border border-white/5 rounded-2xl py-6 md:py-8 pr-14 pl-4 text-left dir-ltr text-white text-lg md:text-xl placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
+                  className="w-full bg-slate-50 dark:bg-[#18181A] border border-black/5 dark:border-white/5 rounded-2xl py-6 md:py-8 pr-14 pl-4 text-left dir-ltr text-slate-900 dark:text-white text-lg md:text-xl placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577] transition-all shadow-inner"
                 />
               </div>
             </div>
@@ -196,28 +196,28 @@ export default function HomeClientForm() {
 
             <div className="flex flex-col gap-3 mt-8">
               <label className="text-sm font-bold text-slate-500 tracking-widest block text-right w-full mb-2">الخطة الإعلانية (Strategy)</label>
-              <div className="flex flex-col sm:flex-row bg-[#0D0D0E] p-1.5 rounded-2xl w-full border border-white/5 gap-1 sm:gap-0">
+              <div className="flex flex-col sm:flex-row bg-slate-100 dark:bg-[#0D0D0E] p-1.5 rounded-2xl w-full border border-black/5 dark:border-white/5 gap-1 sm:gap-0">
                 <button
                   onClick={() => setService('likes')}
                   className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 ${
-                    service === 'likes' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
+                    service === 'likes' ? 'bg-white dark:bg-[#1C1C1E] text-slate-900 dark:text-white shadow-sm border border-black/5 dark:border-white/5' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border border-transparent'
                   }`}
                 >
-                  <i className={`fas fa-heart text-xl ${service === 'likes' ? 'text-[#FF8577]' : 'text-slate-600'}`}></i> زيادة لايكات
+                  <i className={`fas fa-heart text-xl ${service === 'likes' ? 'text-[#FF8577]' : 'text-slate-400 dark:text-slate-600'}`}></i> زيادة لايكات
                 </button>
                 <button
                   onClick={() => setService('views')}
                   className={`flex-1 flex items-center justify-center gap-3 py-5 rounded-xl font-bold text-base md:text-lg transition-all duration-300 ${
-                    service === 'views' ? 'bg-[#1C1C1E] text-white shadow-sm border border-white/5' : 'text-slate-500 hover:text-white border border-transparent'
+                    service === 'views' ? 'bg-white dark:bg-[#1C1C1E] text-slate-900 dark:text-white shadow-sm border border-black/5 dark:border-white/5' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white border border-transparent'
                   }`}
                 >
-                  <i className={`fas fa-eye text-xl ${service === 'views' ? 'text-slate-300' : 'text-slate-600'}`}></i> زيادة مشاهدات
+                  <i className={`fas fa-eye text-xl ${service === 'views' ? 'text-slate-700 dark:text-slate-300' : 'text-slate-400 dark:text-slate-600'}`}></i> زيادة مشاهدات
                 </button>
               </div>
             </div>
 
             <div className="flex justify-center w-full my-8 max-w-full overflow-hidden">
-              <div className="bg-[#121214] p-3 rounded-2xl shadow-inner border border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
+              <div className="bg-slate-50 dark:bg-[#121214] p-3 rounded-2xl shadow-inner border border-black/5 dark:border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-x-auto">
                 <Turnstile
                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
                   onSuccess={(token: string) => setRecaptchaToken(token)}
@@ -242,7 +242,7 @@ export default function HomeClientForm() {
 
             {!isLoggedIn ? (
               <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
-                <Link href="/auth/login" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-slate-300 hover:text-white border border-white/5 hover:bg-white/5 transition-all text-center flex justify-center items-center gap-2">
+                <Link href="/auth/login" className="flex-1 py-3 rounded-xl font-bold bg-white dark:bg-[#1C1C1E] text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-black/5 dark:border-white/5 hover:bg-slate-50 dark:hover:bg-white/5 transition-all text-center flex justify-center items-center gap-2">
                   <i className="fas fa-sign-in-alt text-slate-500"></i> تسجيل الدخول
                 </Link>
                 <Link href="/auth/signup" className="flex-1 py-3 rounded-xl font-bold bg-[#ec4899]/10 text-[#ec4899] hover:bg-[#ec4899]/20 border border-[#ec4899]/20 transition-all text-center flex justify-center items-center gap-2 shadow-[0_0_10px_rgba(236,72,153,0.1)]">
@@ -251,7 +251,7 @@ export default function HomeClientForm() {
               </div>
             ) : (
               <div className="w-full flex flex-col sm:flex-row gap-3 mt-6">
-                <Link href="/dashboard" className="flex-1 py-3 rounded-xl font-bold bg-[#1C1C1E] text-white hover:bg-white/5 border border-white/5 transition-all text-center flex justify-center items-center gap-2 shadow-md">
+                <Link href="/dashboard" className="flex-1 py-3 rounded-xl font-bold bg-white dark:bg-[#1C1C1E] text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5 border border-black/5 dark:border-white/5 transition-all text-center flex justify-center items-center gap-2 shadow-md">
                   <i className="fas fa-layer-group text-[#FF8577]"></i> الانتقال إلى لوحة التحكم
                 </Link>
               </div>
@@ -273,10 +273,10 @@ export default function HomeClientForm() {
               
           <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
             <div className="w-full flex justify-between items-end mb-2">
-              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-white/5 border-b-0">
-                <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+              <div className="bg-white dark:bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-black/5 dark:border-white/5 border-b-0">
+                <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
               </div>
-              <div className="bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
+              <div className="bg-white dark:bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-black/5 dark:border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
                 <span>يرجى الانتظار {sponsorTimeLeft} ثانية</span>
                 <i className="fas fa-times"></i>
               </div>
@@ -293,11 +293,11 @@ export default function HomeClientForm() {
               </div>
             </div>
             
-            <div className="w-full mt-6 bg-[#161618] rounded-2xl p-6 border border-white/5 shadow-2xl">
-              <h3 className="text-xl font-bold text-white text-center mb-4 flex justify-center items-center gap-2">
+            <div className="w-full mt-6 bg-white dark:bg-[#161618] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-2xl">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-4 flex justify-center items-center gap-2">
                 <i className="fas fa-spinner fa-spin text-[#FF8577]"></i> جاري تحضير طلبك...
               </h3>
-              <div className="relative w-full h-3 bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
+              <div className="relative w-full h-3 bg-slate-100 dark:bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
                  <div className="absolute top-0 right-0 h-full luminary-gradient-bg transition-all duration-1000 ease-linear" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
               </div>
               <p className="text-center text-slate-500 text-xs mt-4">نحن نعتمد على الإعلانات لإبقاء الخدمة مجانية للجميع.</p>
@@ -312,11 +312,11 @@ export default function HomeClientForm() {
             <i className="fas fa-check text-4xl text-[#FF8577]"></i>
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
-            <p className="text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
+            <p className="text-slate-600 dark:text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
           </div>
 
-          <div className="bg-[#1C1C1E] rounded-2xl p-6 border border-white/5 shadow-2xl">
+          <div className="bg-white dark:bg-[#1C1C1E] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-2xl">
             <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold block w-full text-center">الوقت المتبقي للطلب القادم</div>
             <div className="text-5xl font-mono font-extrabold luminary-gradient-text tabular-nums text-center w-full block">
               {formatTime(timeLeft)}
@@ -328,7 +328,7 @@ export default function HomeClientForm() {
       {showUnlockModal && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-md transition-all"></div>
-          <div className="relative z-10 w-full max-w-[450px] bg-gradient-to-br from-[#1C1C1E] to-[#121827] border border-[#FF8577]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(255,133,119,0.2)] animate-fade-in flex flex-col items-center text-center">
+          <div className="relative z-10 w-full max-w-[450px] bg-gradient-to-br from-white to-slate-50 dark:from-[#1C1C1E] dark:to-[#121827] border border-[#FF8577]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(255,133,119,0.2)] animate-fade-in flex flex-col items-center text-center">
              
              <button 
                onClick={() => setShowUnlockModal(false)}
@@ -341,14 +341,14 @@ export default function HomeClientForm() {
                 <i className="fas fa-gift"></i>
              </div>
 
-             <h2 className="text-2xl font-black text-white mb-2">تهانينا! تمت إضافة طلبك 🚀</h2>
-             <p className="text-slate-300 text-sm mb-6 leading-relaxed">
+             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">تهانينا! تمت إضافة طلبك 🚀</h2>
+             <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
                تمت الجدولة بنجاح. هل تريد الحصول على <strong>1,000 مشاهدة إضافية</strong> فوراً وبشكل مجاني تماماً؟
              </p>
 
-             <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
-                <p className="text-xs text-slate-400 font-bold mb-3">أنشئ حساب مجاني في المنصة لفتح برنامج شركاء النجاح وتحصل على:</p>
-                <ul className="text-right text-xs text-slate-300 space-y-2 dir-rtl">
+             <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-4 mb-6">
+                <p className="text-xs text-slate-600 dark:text-slate-400 font-bold mb-3">أنشئ حساب مجاني في المنصة لفتح برنامج شركاء النجاح وتحصل على:</p>
+                <ul className="text-right text-xs text-slate-700 dark:text-slate-300 space-y-2 dir-rtl">
                   <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> رصيد مجاني ترحيبي.</li>
                   <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مكافآت يومية متجددة.</li>
                   <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مهام سهلة بآلاف النقاط.</li>

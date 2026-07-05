@@ -23,6 +23,7 @@ import Navbar from '@/components/Navbar';
 import AdBlockDetector from '@/components/AdBlockDetector';
 import EnvGuard from '@/components/EnvGuard';
 import GlobalLoader from '@/components/GlobalLoader';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const viewport = {
   width: 'device-width',
@@ -88,7 +89,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ar" dir="rtl" className={`dark ${cairo.variable} ${outfit.variable}`}>
+    <html lang="ar" dir="rtl" className={`${cairo.variable} ${outfit.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           document.addEventListener('gesturestart', function(e) { e.preventDefault(); });
@@ -131,7 +132,13 @@ export default function RootLayout({
       </head>
 
 
-      <body className="text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo">
+      <body className="text-slate-900 dark:text-slate-200 antialiased min-h-screen flex flex-col relative font-cairo bg-white dark:bg-[#05070A] transition-colors duration-300">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
         {/* Global Initial Loader */}
         <GlobalLoader />
 
@@ -156,42 +163,42 @@ export default function RootLayout({
         </EnvGuard>
 
 
-        <footer className="relative z-10 border-t border-white/5 bg-[#121827]/50 mt-auto pt-16 pb-24">
+        <footer className="relative z-10 border-t border-black/5 dark:border-white/5 bg-slate-50/50 dark:bg-[#121827]/50 mt-auto pt-16 pb-24 transition-colors duration-300">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-white/5 pb-10">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-10 border-b border-black/5 dark:border-white/5 pb-10">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-6">
                   <Image src="/GRODD_LOGO.png" alt="Grodd SMM Logo" width={200} height={48} className="h-12 w-auto object-contain drop-shadow-[0_0_15px_rgba(236,72,153,0.3)]" />
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
+                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 max-w-sm">
                   وكالة متخصصة في التسويق الرقمي، بناء الجماهير، وتحليل الخوارزميات. نساعد العلامات التجارية والمؤثرين على تحقيق نمو مستدام وموثوق لحضورهم الرقمي. مطور بواسطة Grodd Labs.
                 </p>
-                <div className="flex flex-col gap-2 mb-6 text-sm text-slate-400">
+                <div className="flex flex-col gap-2 mb-6 text-sm text-slate-600 dark:text-slate-400">
                   <div className="flex items-center gap-2">
                     <i className="fas fa-envelope text-pink-500 w-4 text-center"></i>
-                    <a href="mailto:groddlabs@proton.me" className="hover:text-white transition-colors">groddlabs@proton.me</a>
+                    <a href="mailto:groddlabs@proton.me" className="hover:text-slate-900 dark:hover:text-white transition-colors">groddlabs@proton.me</a>
                   </div>
                   <div className="flex items-center gap-2">
                     <i className="fab fa-whatsapp text-pink-500 w-4 text-center"></i>
-                    <a href="https://wa.me/212687097476" className="hover:text-white transition-colors" dir="ltr">+212 687-097476</a>
+                    <a href="https://wa.me/212687097476" className="hover:text-slate-900 dark:hover:text-white transition-colors" dir="ltr">+212 687-097476</a>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <a href="https://x.com/groddsmm" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://x.com/groddsmm" className="w-10 h-10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
                     <i className="fab fa-twitter"></i>
                   </a>
-                  <a href="https://www.instagram.com/grodd_media/" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://www.instagram.com/grodd_media/" className="w-10 h-10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
                     <i className="fab fa-instagram"></i>
                   </a>
-                  <a href="https://t.me/grodd_media" className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                  <a href="https://t.me/grodd_media" className="w-10 h-10 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-lg flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all">
                     <i className="fab fa-telegram"></i>
                   </a>
                 </div>
               </div>
               
               <div>
-                <h4 className="text-white font-bold mb-4">روابط سريعة</h4>
-                <ul className="space-y-3 text-sm text-slate-400">
+                <h4 className="text-slate-900 dark:text-white font-bold mb-4">روابط سريعة</h4>
+                <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                   <li><a href="#" className="hover:text-pink-500 transition-colors">الرئيسية</a></li>
                   <li><a href="#" className="hover:text-pink-500 transition-colors">الحملات التجريبية</a></li>
                   <li><a href="#" className="hover:text-pink-500 transition-colors">الأسئلة الشائعة</a></li>
@@ -200,8 +207,8 @@ export default function RootLayout({
               </div>
 
               <div>
-                <h4 className="text-white font-bold mb-4">الدعم الفني</h4>
-                <ul className="space-y-3 text-sm text-slate-400">
+                <h4 className="text-slate-900 dark:text-white font-bold mb-4">الدعم الفني</h4>
+                <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-400">
                   <li><a href="/terms" className="hover:text-pink-500 transition-colors">شروط الاستخدام</a></li>
                   <li><a href="/privacy" className="hover:text-pink-500 transition-colors">سياسة الخصوصية</a></li>
                   <li><a href="/disclaimer" className="hover:text-pink-500 transition-colors">إخلاء المسؤولية</a></li>
@@ -211,14 +218,15 @@ export default function RootLayout({
             </div>
             
             <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-              <div>&copy; 2026 Grodd SMM by Grodd Labs. جميع الحقوق محفوظة. <span className="mr-2 px-2 py-0.5 bg-white/5 rounded-md border border-white/10 text-xs font-mono">v1.0</span></div>
+              <div>&copy; 2026 Grodd SMM by Grodd Labs. جميع الحقوق محفوظة. <span className="mr-2 px-2 py-0.5 bg-black/5 dark:bg-white/5 rounded-md border border-black/10 dark:border-white/10 text-xs font-mono">v1.0</span></div>
               <div className="flex items-center gap-2">
                 <span>صنع بكل <i className="fas fa-heart text-pink-500 mx-1"></i> في</span>
-                <span className="text-white font-bold">Grodd Labs</span>
+                <span className="text-slate-900 dark:text-white font-bold">Grodd Labs</span>
               </div>
             </div>
           </div>
         </footer>
+        </ThemeProvider>
         <SpeedInsights />
         <Analytics />
       </body>
