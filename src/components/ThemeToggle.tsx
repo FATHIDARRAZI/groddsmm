@@ -7,6 +7,9 @@ import { useTheme } from "next-themes";
 export function ThemeToggle() {
   const { setTheme, theme } = useTheme();
 
+  // Temporarily disable light mode for now.
+  return null;
+  /*
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
@@ -17,4 +20,5 @@ export function ThemeToggle() {
       <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100 text-slate-300" />
     </button>
   );
+  */
 }

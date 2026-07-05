@@ -94,16 +94,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   ];
 
   return (
-    <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-[#0B0F19] rounded-3xl border border-white/5 shadow-2xl dir-rtl mb-12">
+    <div className="flex w-full max-w-[1400px] mx-auto min-h-[85vh] mt-6 md:mt-12 bg-slate-50 dark:bg-[#0B0F19] rounded-3xl border border-black/5 dark:border-white/5 shadow-2xl dir-rtl mb-12 transition-colors duration-300">
       
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex flex-col w-72 bg-[#121214] border-l border-white/5 shrink-0 relative z-20 rounded-r-3xl overflow-hidden">
-        <div className="p-8 border-b border-white/5 flex flex-col items-center justify-center">
-          <div className="w-20 h-20 bg-gradient-to-tr from-[#1C1C1E] to-[#2A2A2D] rounded-full border border-white/10 mb-4 flex items-center justify-center shadow-inner overflow-hidden">
+      <aside className="hidden md:flex flex-col w-72 bg-white dark:bg-[#121214] border-l border-black/5 dark:border-white/5 shrink-0 relative z-20 rounded-r-3xl overflow-hidden">
+        <div className="p-8 border-b border-black/5 dark:border-white/5 flex flex-col items-center justify-center">
+          <div className="w-20 h-20 bg-gradient-to-tr from-slate-100 to-slate-200 dark:from-[#1C1C1E] dark:to-[#2A2A2D] rounded-full border border-black/10 dark:border-white/10 mb-4 flex items-center justify-center shadow-inner overflow-hidden">
              <Image src="/user-avatar-male-5.svg" alt="User Avatar" width={80} height={80} className="w-full h-full object-cover" />
           </div>
-          <h2 className="text-lg font-bold text-white mb-1">مرحباً، {isClient ? userName : '...'}</h2>
-          <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-pink-500 text-xs font-bold border border-pink-500/20 flex items-center gap-2 hover:bg-pink-500/10 transition-colors cursor-pointer">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-1">مرحباً، {isClient ? userName : '...'}</h2>
+          <Link href="/dashboard/store" className="bg-slate-100 dark:bg-[#1C1C1E] px-4 py-1.5 rounded-full text-pink-500 text-xs font-bold border border-pink-500/20 flex items-center gap-2 hover:bg-pink-500/10 transition-colors cursor-pointer">
             <i className="fas fa-coins"></i> الرصيد: {isClient ? points.toLocaleString() : '0'} نقطة
           </Link>
         </div>
@@ -117,9 +117,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 href={link.href} 
                 className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all ${
                   isActive 
-                    ? 'bg-[#1C1C1E] text-white border border-white/5 shadow-md' 
-                    : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent'
-                } ${link.isSeparator ? 'mt-4 pt-6 border-t border-t-white/5' : ''}`}
+                    ? 'bg-slate-100 dark:bg-[#1C1C1E] text-slate-900 dark:text-white border border-black/5 dark:border-white/5 shadow-md' 
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white border border-transparent'
+                } ${link.isSeparator ? 'mt-4 pt-6 border-t border-t-black/5 dark:border-t-white/5' : ''}`}
               >
                 <i className={`fas ${link.icon} ${link.iconColor} w-5 text-center`}></i>
                 {link.label}
@@ -139,14 +139,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all text-red-400 hover:bg-red-500/10 hover:text-red-300 border border-transparent mt-2 border-t border-t-white/5 pt-4"
+            className="flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all text-red-500 dark:text-red-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-300 border border-transparent mt-2 border-t border-t-black/5 dark:border-t-white/5 pt-4"
           >
             <i className="fas fa-sign-out-alt w-5 text-center"></i>
             تسجيل الخروج
           </button>
 
           <div className="mt-auto pt-6 pb-2 w-full flex justify-center">
-            <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-mono text-slate-500 font-bold tracking-widest uppercase">
+            <span className="px-3 py-1 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-lg text-[10px] font-mono text-slate-500 font-bold tracking-widest uppercase">
               v1.0
             </span>
           </div>
@@ -154,8 +154,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Sidebar Sticky Ad Block */}
         {!removeAds && (
-          <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50">
-            <div className="bg-black/50 rounded-xl overflow-hidden border border-white/5 flex items-center justify-center p-0 h-[250px] relative">
+          <div className="p-4 border-t border-black/5 dark:border-white/5 bg-slate-50/50 dark:bg-[#0B0F19]/50">
+            <div className="bg-black/5 dark:bg-black/50 rounded-xl overflow-hidden border border-black/5 dark:border-white/5 flex items-center justify-center p-0 h-[250px] relative">
               <p className="absolute text-[10px] text-slate-600 font-bold top-1 tracking-widest">ADVERTISEMENT</p>
               <div className="absolute top-1 right-3 z-20">
                 <Link href="/dashboard/remove-ads" className="text-[8px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات</Link>
@@ -173,20 +173,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </aside>
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col relative w-full overflow-hidden bg-gradient-to-tl from-[#0B0F19] to-[#141416]">
+      <div className="flex-1 flex flex-col relative w-full overflow-hidden bg-gradient-to-tl from-slate-50 to-slate-100 dark:from-[#0B0F19] dark:to-[#141416]">
         {/* Mobile Header */}
-        <header className="md:hidden bg-[#121214] border-b border-white/5 p-4 flex items-center justify-between sticky top-0 shadow-lg" style={{zIndex: 40}}>
+        <header className="md:hidden bg-white dark:bg-[#121214] border-b border-black/5 dark:border-white/5 p-4 flex items-center justify-between sticky top-0 shadow-lg" style={{zIndex: 40}}>
           <div className="flex items-center gap-4">
-             <button type="button" onClick={() => setIsMobileMenuOpen(true)} className="w-10 h-10 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white hover:bg-white/10 transition-colors cursor-pointer touch-manipulation relative z-50">
+             <button type="button" onClick={() => setIsMobileMenuOpen(true)} className="w-10 h-10 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl flex items-center justify-center text-slate-900 dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-colors cursor-pointer touch-manipulation relative z-50">
                <i className="fas fa-bars text-lg pointer-events-none"></i>
              </button>
-             <div className="w-10 h-10 bg-[#1C1C1E] rounded-full border border-white/10 flex items-center justify-center shadow-inner overflow-hidden">
+             <div className="w-10 h-10 bg-slate-100 dark:bg-[#1C1C1E] rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center shadow-inner overflow-hidden">
                <img src="/user-avatar-male-5.svg" alt="User Avatar" className="w-full h-full object-cover" />
             </div>
           </div>
           <div className="flex items-center gap-3">
             <NotificationBell />
-            <Link href="/dashboard/store" className="bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
+            <Link href="/dashboard/store" className="bg-slate-100 dark:bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
               <i className="fas fa-coins"></i> {isClient ? points.toLocaleString() : '0'}
             </Link>
           </div>
@@ -199,12 +199,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-10 w-full custom-scrollbar pb-24 md:pb-10">
            <AnnouncementsBanner />
-           <Suspense fallback={<div className="p-10 text-center text-white/50">جاري التحميل...</div>}>
+           <Suspense fallback={<div className="p-10 text-center text-slate-500 dark:text-white/50">جاري التحميل...</div>}>
              {children}
            </Suspense>
 
              {isClient && !removeAds && (
-               <div key={pathname} className="w-full mt-12 bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
+               <div key={pathname} className="w-full mt-12 bg-slate-100/50 dark:bg-[#0B0F19]/50 rounded-2xl overflow-hidden border border-black/5 dark:border-white/5 flex flex-col items-center justify-center relative shadow-inner mx-auto p-8">
                   <div className="w-full flex justify-between items-center mb-4">
                     <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
                     <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
@@ -224,7 +224,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* Mobile Bottom Navigation anchored globally inside the main node */}
-      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-[#121214]/95 backdrop-blur-xl border-t border-white/10 z-[9999] flex justify-around items-center px-1 py-3 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+      <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 dark:bg-[#121214]/95 backdrop-blur-xl border-t border-black/5 dark:border-white/10 z-[9999] flex justify-around items-center px-1 py-3 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
          {mobileNavLinks.map((link) => {
            const isActive = link.exact ? pathname === link.href : pathname.startsWith(link.href);
            return (
@@ -251,17 +251,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Sidebar Overlay (Hamburger Drawer) */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 md:hidden" style={{zIndex: 999999}}>
-          <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}></div>
-          <aside className="absolute right-0 top-0 h-full w-72 bg-[#121214] border-l border-white/5 flex flex-col shadow-2xl animate-fade-in dir-rtl z-10">
-            <div className="p-6 border-b border-white/5 flex justify-between items-center bg-[#0B0F19]/50">
+          <div className="absolute inset-0 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}></div>
+          <aside className="absolute right-0 top-0 h-full w-72 bg-white dark:bg-[#121214] border-l border-black/5 dark:border-white/5 flex flex-col shadow-2xl animate-fade-in dir-rtl z-10">
+            <div className="p-6 border-b border-black/5 dark:border-white/5 flex justify-between items-center bg-slate-50/50 dark:bg-[#0B0F19]/50">
               <div className="flex flex-col gap-1">
-                <h2 className="text-lg font-bold text-white">مرحباً، {isClient ? userName : '...'}</h2>
-                <Link href="/dashboard/store" onClick={() => setIsMobileMenuOpen(false)} className="bg-[#1C1C1E] px-3 py-1 rounded-full text-[#FF8577] text-[10px] font-bold border border-[#FF8577]/20 flex items-center gap-2 w-fit">
+                <h2 className="text-lg font-bold text-slate-900 dark:text-white">مرحباً، {isClient ? userName : '...'}</h2>
+                <Link href="/dashboard/store" onClick={() => setIsMobileMenuOpen(false)} className="bg-slate-100 dark:bg-[#1C1C1E] px-3 py-1 rounded-full text-[#FF8577] text-[10px] font-bold border border-[#FF8577]/20 flex items-center gap-2 w-fit">
                    <i className="fas fa-coins"></i> الرصيد: {isClient ? points.toLocaleString() : '0'} نقطة
                 </Link>
               </div>
-              <button type="button" onClick={() => setIsMobileMenuOpen(false)} className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center border border-white/10 transition-colors cursor-pointer touch-manipulation">
-                 <i className="fas fa-times text-slate-400 pointer-events-none"></i>
+              <button type="button" onClick={() => setIsMobileMenuOpen(false)} className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center border border-black/10 dark:border-white/10 transition-colors cursor-pointer touch-manipulation">
+                 <i className="fas fa-times text-slate-600 dark:text-slate-400 pointer-events-none"></i>
               </button>
             </div>
             
@@ -275,9 +275,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all ${
                       isActive 
-                        ? 'bg-[#1C1C1E] text-white border border-white/5 shadow-md' 
-                        : 'text-slate-400 hover:bg-white/5 hover:text-white border border-transparent'
-                    } ${link.isSeparator ? 'mt-4 pt-6 border-t border-t-white/5' : ''}`}
+                        ? 'bg-slate-100 dark:bg-[#1C1C1E] text-slate-900 dark:text-white border border-black/5 dark:border-white/5 shadow-md' 
+                        : 'text-slate-600 dark:text-slate-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-white border border-transparent'
+                    } ${link.isSeparator ? 'mt-4 pt-6 border-t border-t-black/5 dark:border-t-white/5' : ''}`}
                   >
                     <i className={`fas ${link.icon} ${link.iconColor} w-5 text-center`}></i>
                     {link.label}
@@ -296,7 +296,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             
             {/* Mobile Sidebar Ad */}
              {!removeAds && (
-               <div className="p-4 border-t border-white/5 bg-[#0B0F19]/50 flex flex-col items-center justify-center pb-safe overflow-hidden w-full">
+               <div className="p-4 border-t border-black/5 dark:border-white/5 bg-slate-50/50 dark:bg-[#0B0F19]/50 flex flex-col items-center justify-center pb-safe overflow-hidden w-full">
                   <div className="w-full flex justify-between items-center mb-2 px-4">
                     <Link href="/dashboard/remove-ads" onClick={() => setIsMobileMenuOpen(false)} className="text-[9px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
                   </div>

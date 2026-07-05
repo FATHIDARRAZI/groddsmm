@@ -10,7 +10,7 @@ import SafeAdSlot from '@/components/SafeAdSlot';
 
 const SOCIAL_CATEGORIES = [
   { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام', size: 'text-3xl md:text-4xl scale-[0.9]' },
-  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك', size: 'text-4xl md:text-5xl' },
+  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-slate-900 dark:text-white', name: 'تيك توك', size: 'text-4xl md:text-5xl' },
   { id: 'facebook', icon: 'fa-facebook', color: 'text-[#1877F2]', name: 'فيسبوك', size: 'text-4xl md:text-5xl' },
   { id: 'youtube', icon: 'fa-youtube', color: 'text-[#FF0000]', name: 'يوتيوب', size: 'text-3xl md:text-4xl scale-[0.85]' },
 ];
@@ -188,12 +188,12 @@ export default function DashboardHome() {
         
         {/* Centered Order Form */}
         <div className="w-full space-y-4 text-center">
-           <h1 className="text-5xl md:text-7xl font-black text-white tracking-tighter">
+           <h1 className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white tracking-tighter">
               إطلاق حملة <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400">جديدة</span>
            </h1>
         </div>
 
-        <div className="glass-panel rounded-[3rem] p-10 md:p-14 border-white/5 bg-[#09090b]/80 backdrop-blur-3xl shadow-2xl relative overflow-hidden">
+        <div className="glass-panel rounded-[3rem] p-10 md:p-14 border-black/5 dark:border-white/5 bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-3xl shadow-2xl relative overflow-hidden transition-colors duration-300">
           <div className="space-y-10 relative z-10">
             {/* Category Selector */}
             <div className="flex flex-col gap-4 items-center">
@@ -208,8 +208,8 @@ export default function DashboardHome() {
                     }}
                     className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
                       category === cat.id 
-                        ? 'bg-gradient-to-tr from-white/10 to-white/5 shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-white/20 scale-110' 
-                        : 'bg-black/40 border border-white/5 opacity-50 hover:opacity-100 hover:scale-105'
+                        ? 'bg-gradient-to-tr from-black/5 to-black/5 dark:from-white/10 dark:to-white/5 shadow-[0_0_30px_rgba(0,0,0,0.05)] dark:shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-black/10 dark:border-white/20 scale-110' 
+                        : 'bg-slate-100 dark:bg-black/40 border border-black/5 dark:border-white/5 opacity-70 hover:opacity-100 hover:scale-105'
                     }`}
                     title={cat.name}
                   >
@@ -241,38 +241,38 @@ export default function DashboardHome() {
                     setPostLink(val);
                   }}
                   placeholder={service === 'followers' ? 'username' : 'ضع الرابط هنا...'}
-                  className={`w-full bg-black/60 border border-white/5 rounded-[2rem] py-8 pr-10 ${service === 'followers' ? 'pl-16' : 'pl-10'} text-right text-white font-outfit text-lg md:text-xl focus:outline-none focus:border-pink-500/40 transition-all shadow-inner`}
+                  className={`w-full bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 rounded-[2rem] py-8 pr-10 ${service === 'followers' ? 'pl-16' : 'pl-10'} text-right text-slate-900 dark:text-white font-outfit text-lg md:text-xl focus:outline-none focus:border-pink-500/40 transition-all shadow-inner`}
                   dir={service === 'followers' ? 'ltr' : 'rtl'}
                 />
               </div>
             </div>
 
             {category === 'youtube' ? (
-              <div className="bg-[#1C1C1E] border border-white/5 rounded-[2rem] p-8 text-center animate-fade-in shadow-xl mt-8">
+              <div className="bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/5 rounded-[2rem] p-8 text-center animate-fade-in shadow-xl mt-8">
                  <div className="w-20 h-20 rounded-full bg-red-500/10 mx-auto flex items-center justify-center mb-6">
                    <i className="fab fa-youtube text-red-500 text-4xl"></i>
                  </div>
-                 <h2 className="text-3xl font-black text-white mb-4 tracking-tight">قريباً جداً!</h2>
-                 <p className="text-slate-400 font-bold text-lg">سيتم إضافة خدمات يوتيوب المميزة قريباً، شكراً لانتظارك.</p>
+                 <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">قريباً جداً!</h2>
+                 <p className="text-slate-600 dark:text-slate-400 font-bold text-lg">سيتم إضافة خدمات يوتيوب المميزة قريباً، شكراً لانتظارك.</p>
               </div>
             ) : (
               <>
-                <div className="flex flex-row bg-black/40 p-1.5 rounded-2xl w-full border border-white/5 gap-1 mt-6 shadow-inner">
-                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'followers' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>متابعين</button>
+                <div className="flex flex-row bg-slate-100 dark:bg-black/40 p-1.5 rounded-2xl w-full border border-black/5 dark:border-white/5 gap-1 mt-6 shadow-inner">
+                  <button onClick={() => { setService('followers'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'followers' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}>متابعين</button>
                   {category !== 'facebook' && (
                     <>
-                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'likes' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>إعجابات</button>
-                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'views' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}>مشاهدات</button>
+                      <button onClick={() => { setService('likes'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'likes' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}>إعجابات</button>
+                      <button onClick={() => { setService('views'); setPostLink(''); }} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'views' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'}`}>مشاهدات</button>
                     </>
                   )}
                 </div>
 
-                <div className="bg-black/40 p-8 rounded-[2.5rem] border border-white/5 space-y-6 mt-6">
+                <div className="bg-slate-100 dark:bg-black/40 p-8 rounded-[2.5rem] border border-black/5 dark:border-white/5 space-y-6 mt-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm md:text-base font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-white">{service === 'followers' ? quantity * 2 : service === 'views' ? Math.ceil(quantity / 50) : quantity}</span></span>
-                    <span className="text-sm md:text-base font-black text-pink-500 uppercase">الكمية: <span className="text-white">{formatNumber(quantity)}</span></span>
+                    <span className="text-sm md:text-base font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{service === 'followers' ? quantity * 2 : service === 'views' ? Math.ceil(quantity / 50) : quantity}</span></span>
+                    <span className="text-sm md:text-base font-black text-pink-500 uppercase">الكمية: <span className="text-slate-900 dark:text-white">{formatNumber(quantity)}</span></span>
                   </div>
-                  <input type="range" min={getLimits().min} max={getLimits().max} step={getLimits().max > 1000000 ? 100 : 10} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="w-full h-2 bg-white/10 rounded-full accent-pink-500" />
+                  <input type="range" min={getLimits().min} max={getLimits().max} step={getLimits().max > 1000000 ? 100 : 10} value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-pink-500" />
                 </div>
 
                 {category === 'facebook' && service === 'followers' && (
@@ -282,8 +282,8 @@ export default function DashboardHome() {
                      </div>
                      <div className="text-right flex-1">
                         <h4 className="text-blue-500 font-bold text-sm mb-1">ملاحظة بشأن سرعة التنفيذ</h4>
-                        <p className="text-slate-400 text-xs leading-relaxed">
-                          قد يتأخر وصول متابعين فيسبوك حتى <span className="text-white font-bold px-1 bg-white/10 rounded">24 ساعة</span>، يرجى التواصل معنا لتسريع الطلب إذا لزم الأمر.
+                        <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                          قد يتأخر وصول متابعين فيسبوك حتى <span className="text-slate-900 dark:text-white font-bold px-1 bg-black/5 dark:bg-white/10 rounded">24 ساعة</span>، يرجى التواصل معنا لتسريع الطلب إذا لزم الأمر.
                         </p>
                      </div>
                   </div>
@@ -296,8 +296,8 @@ export default function DashboardHome() {
                      </div>
                      <div className="text-right flex-1">
                         <h4 className="text-yellow-500 font-bold text-sm mb-1">ملاحظة هامة لحماية حسابك</h4>
-                        <p className="text-slate-400 text-xs leading-relaxed">
-                          يتم إرسال المتابعين بشكل تدريجي وآمن لضمان توافقها مع خوارزميات المنصة. قد يستغرق اكتمال الطلب <span className="text-white font-bold px-1 bg-white/10 rounded">24 ساعة أو أقل</span>.
+                        <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                          يتم إرسال المتابعين بشكل تدريجي وآمن لضمان توافقها مع خوارزميات المنصة. قد يستغرق اكتمال الطلب <span className="text-slate-900 dark:text-white font-bold px-1 bg-black/5 dark:bg-white/10 rounded">24 ساعة أو أقل</span>.
                         </p>
                      </div>
                   </div>
@@ -308,7 +308,7 @@ export default function DashboardHome() {
             {category !== 'youtube' && (
               <>
                 <div className="flex flex-col items-center gap-4 mt-8">
-                   <div className="p-4 rounded-[2.5rem] bg-black/60 border border-white/5 scale-90 md:scale-100 transition-transform">
+                   <div className="p-4 rounded-[2.5rem] bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 scale-90 md:scale-100 transition-transform">
                      {/* <ReCAPTCHA sitekey={activeSiteKey} onChange={(t) => setRecaptchaToken(t || '')} theme="dark" /> */}
                      <Turnstile
                         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
@@ -331,16 +331,16 @@ export default function DashboardHome() {
       {/* Profile Confirmation Modal */}
       {showProfileConfirm && (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4">
-           <div className="absolute inset-0 bg-[#0B0F19]/80 backdrop-blur-md animate-fade-in" onClick={() => setShowProfileConfirm(false)}></div>
-           <div className="bg-[#1C1C1E] border border-white/5 rounded-[2rem] p-8 max-w-md w-full relative z-10 animate-slide-up shadow-2xl flex flex-col items-center">
-             <button onClick={() => setShowProfileConfirm(false)} className="absolute top-4 right-4 w-8 h-8 bg-white/5 hover:bg-white/10 rounded-full flex items-center justify-center text-slate-400 transition-all">
+           <div className="absolute inset-0 bg-white/80 dark:bg-[#0B0F19]/80 backdrop-blur-md animate-fade-in" onClick={() => setShowProfileConfirm(false)}></div>
+           <div className="bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/5 rounded-[2rem] p-8 max-w-md w-full relative z-10 animate-slide-up shadow-2xl flex flex-col items-center">
+             <button onClick={() => setShowProfileConfirm(false)} className="absolute top-4 right-4 w-8 h-8 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 rounded-full flex items-center justify-center text-slate-500 dark:text-slate-400 transition-all">
                 <i className="fas fa-times text-sm"></i>
              </button>
              
-             <h2 className="text-2xl font-black text-white mb-2">هل هذا هو حسابك حقاً؟</h2>
-             <p className="text-slate-400 text-sm text-center mb-6">يرجى التأكيد لنتمكن من إتمام طلبك بشكل صحيح.</p>
+             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">هل هذا هو حسابك حقاً؟</h2>
+             <p className="text-slate-600 dark:text-slate-400 text-sm text-center mb-6">يرجى التأكيد لنتمكن من إتمام طلبك بشكل صحيح.</p>
              
-             <div className="bg-[#0B0F19] rounded-2xl w-full p-4 flex items-center gap-4 mb-8 border border-white/5 shadow-inner">
+             <div className="bg-slate-50 dark:bg-[#0B0F19] rounded-2xl w-full p-4 flex items-center gap-4 mb-8 border border-black/5 dark:border-white/5 shadow-inner">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-pink-500 to-purple-600 p-0.5 shrink-0">
                    <img 
                      src={profileData?.profile_pic || `https://ui-avatars.com/api/?name=${postLink.replace('@', '')}&background=random`} 
@@ -353,12 +353,12 @@ export default function DashboardHome() {
                    />
                 </div>
                 <div className="flex-1 dir-rtl text-right overflow-hidden">
-                   <h3 className="text-white font-bold text-lg truncate">{profileData?.full_name || postLink.replace('@', '')}</h3>
-                   <p className="text-slate-400 text-sm mb-1 truncate dir-ltr text-right">@{profileData?.username || postLink.replace('@', '')}</p>
+                   <h3 className="text-slate-900 dark:text-white font-bold text-lg truncate">{profileData?.full_name || postLink.replace('@', '')}</h3>
+                   <p className="text-slate-500 dark:text-slate-400 text-sm mb-1 truncate dir-ltr text-right">@{profileData?.username || postLink.replace('@', '')}</p>
                    <div className="flex gap-3 text-xs font-bold justify-start mt-1">
-                      <span className="text-white">{formatNumber(profileData?.followers)} <span className="text-slate-500 font-normal">متابع</span></span>
-                      <span className="text-white">{formatNumber(profileData?.following)} <span className="text-slate-500 font-normal">يتابع</span></span>
-                      <span className="text-white">{formatNumber(profileData?.posts)} <span className="text-slate-500 font-normal">منشور</span></span>
+                      <span className="text-slate-900 dark:text-white">{formatNumber(profileData?.followers)} <span className="text-slate-500 font-normal">متابع</span></span>
+                      <span className="text-slate-900 dark:text-white">{formatNumber(profileData?.following)} <span className="text-slate-500 font-normal">يتابع</span></span>
+                      <span className="text-slate-900 dark:text-white">{formatNumber(profileData?.posts)} <span className="text-slate-500 font-normal">منشور</span></span>
                    </div>
                 </div>
              </div>
@@ -367,7 +367,7 @@ export default function DashboardHome() {
                 <button onClick={submitOrder} className="flex-[2] bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(236,72,153,0.3)] hover:scale-[1.02] active:scale-[0.98] transition-all flex justify-center items-center gap-2">
                   نعم، هذا حسابي <i className="fas fa-check text-sm mt-0.5"></i>
                 </button>
-                <button onClick={() => setShowProfileConfirm(false)} className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-xl transition-all">
+                <button onClick={() => setShowProfileConfirm(false)} className="flex-1 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-slate-900 dark:text-white font-bold py-4 rounded-xl transition-all">
                   تغيير الحساب
                 </button>
              </div>
@@ -378,15 +378,15 @@ export default function DashboardHome() {
       {/* Custom Private Account Alert Modal */}
       {privateAlertMsg && (
         <div className="fixed inset-0 z-[10001] flex items-center justify-center p-4">
-           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setPrivateAlertMsg(null)}></div>
-           <div className="bg-[#1C1C1E] border border-white/5 rounded-[2rem] p-8 max-w-sm w-full relative z-10 animate-slide-up shadow-2xl flex flex-col items-center text-center">
+           <div className="absolute inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setPrivateAlertMsg(null)}></div>
+           <div className="bg-white dark:bg-[#1C1C1E] border border-black/5 dark:border-white/5 rounded-[2rem] p-8 max-w-sm w-full relative z-10 animate-slide-up shadow-2xl flex flex-col items-center text-center">
              
              <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-6">
                 <i className="fas fa-lock text-red-500 text-2xl"></i>
              </div>
              
-             <h3 className="text-xl font-black text-white mb-3">حساب خاص!</h3>
-             <p className="text-slate-400 text-sm leading-relaxed mb-8">{privateAlertMsg}</p>
+             <h3 className="text-xl font-black text-slate-900 dark:text-white mb-3">حساب خاص!</h3>
+             <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-8">{privateAlertMsg}</p>
              
              <button 
                onClick={() => {

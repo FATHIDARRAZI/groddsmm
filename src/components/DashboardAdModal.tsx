@@ -37,17 +37,17 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
   if (!showModal) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-xl bg-black/60 p-4">
-      <div className="bg-[#121214] border border-[#FF8577]/20 rounded-3xl p-6 w-full max-w-md relative shadow-[0_0_100px_rgba(255,133,119,0.15)] animate-fade-in flex flex-col items-center">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-xl bg-slate-900/60 p-4">
+      <div className="bg-white dark:bg-[#121214] border border-[#FF8577]/20 rounded-3xl p-6 w-full max-w-md relative shadow-[0_0_100px_rgba(255,133,119,0.15)] animate-fade-in flex flex-col items-center transition-colors duration-300">
         
         {/* Header/Close Logic */}
         <div className="w-full flex justify-between items-center mb-6">
-          <span className="text-[10px] text-slate-500 font-bold tracking-widest bg-white/5 px-3 py-1 rounded-full">إعلان سبونسر</span>
+          <span className="text-[10px] text-slate-500 font-bold tracking-widest bg-black/5 dark:bg-white/5 px-3 py-1 rounded-full">إعلان سبونسر</span>
           
           {timeLeft <= 0 ? (
             <button 
               onClick={() => { setShowModal(false); setHasClosed(true); }}
-              className="w-8 h-8 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors"
+              className="w-8 h-8 flex items-center justify-center bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 text-slate-900 dark:text-white rounded-full transition-colors"
             >
               <i className="fas fa-times text-sm"></i>
             </button>
@@ -59,10 +59,10 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
         </div>
 
         {/* Ad Container */}
-        <div className="w-[300px] h-[250px] bg-black rounded-lg overflow-hidden border border-white/5 flex items-center justify-center relative">
+        <div className="w-[300px] h-[250px] bg-slate-100 dark:bg-black rounded-lg overflow-hidden border border-black/5 dark:border-white/5 flex items-center justify-center relative">
            <SafeAdSlot src="/ad-300.html" width="300" height="250" className="border-0 relative z-10" />
            {/* Fallback spinner while iframe loads internally */}
-           <i className="fas fa-circle-notch fa-spin absolute text-white/20 text-3xl"></i>
+           <i className="fas fa-circle-notch fa-spin absolute text-slate-400 dark:text-white/20 text-3xl"></i>
         </div>
         
         <p className="text-xs text-slate-500 mt-6 text-center max-w-xs leading-relaxed">
@@ -72,7 +72,7 @@ export default function DashboardAdModal({ removeAds = false }: { removeAds?: bo
           إخلاء مسؤولية: الإعلانات غير تابعة لنا. يرجى عدم إيداع الأموال أو ممارسة القمار أو التداول فيها.
         </p>
 
-        <div className="w-full mt-4 pt-4 border-t border-white/5 flex items-center justify-center h-14 overflow-hidden">
+        <div className="w-full mt-4 pt-4 border-t border-black/5 dark:border-white/5 flex items-center justify-center h-14 overflow-hidden">
           <div className={`transition-all duration-1000 ease-out flex items-center justify-center w-full ${timeLeft <= 0 ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-6 scale-90 pointer-events-none'}`}>
             <Link href="/dashboard/remove-ads" onClick={() => setShowModal(false)} className="text-xs text-white font-bold hover:scale-105 transition-transform flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-2 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-white/20">
               <i className="fas fa-crown text-amber-300"></i>

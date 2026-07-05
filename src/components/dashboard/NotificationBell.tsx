@@ -69,7 +69,7 @@ export default function NotificationBell() {
         onClick={() => {
           setIsOpen(!isOpen);
         }}
-        className="w-12 h-12 md:w-14 md:h-14 bg-[#1C1C1E] rounded-full border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition-all hover:scale-105 shadow-lg relative cursor-pointer"
+        className="w-12 h-12 md:w-14 md:h-14 bg-white dark:bg-[#1C1C1E] rounded-full border border-black/5 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all hover:scale-105 shadow-lg relative cursor-pointer"
       >
         <i className="fas fa-bell text-xl md:text-2xl"></i>
         {unreadCount > 0 && (
@@ -80,9 +80,9 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="fixed top-[80px] left-4 right-4 z-[9999] md:absolute md:top-[4rem] md:left-0 md:right-auto md:w-80 bg-[#121214] border border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-fade-in dir-rtl">
-          <div className="p-4 border-b border-white/10 flex justify-between items-center bg-[#0B0F19]/50">
-            <h3 className="font-bold text-white text-sm">الإشعارات</h3>
+        <div className="fixed top-[80px] left-4 right-4 z-[9999] md:absolute md:top-[4rem] md:left-0 md:right-auto md:w-80 bg-slate-50 dark:bg-[#121214] border border-black/5 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden animate-fade-in dir-rtl">
+          <div className="p-4 border-b border-black/5 dark:border-white/10 flex justify-between items-center bg-slate-100/80 dark:bg-[#0B0F19]/50">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">الإشعارات</h3>
             {unreadCount > 0 && (
               <button onClick={markAllAsRead} className="text-xs text-blue-400 hover:text-blue-300">
                 تحديد الكل كمقروء
@@ -103,12 +103,12 @@ export default function NotificationBell() {
                     onClick={(e) => {
                       if (!notif.is_read) markAsRead(notif.id, e);
                     }}
-                    className={`p-4 border-b border-white/5 relative ${!notif.is_read ? 'bg-blue-500/5 cursor-pointer' : 'hover:bg-white/5 cursor-default'} transition-colors`}
+                    className={`p-4 border-b border-black/5 dark:border-white/5 relative ${!notif.is_read ? 'bg-blue-500/5 cursor-pointer' : 'hover:bg-black/5 dark:hover:bg-white/5 cursor-default'} transition-colors`}
                   >
                     {!notif.is_read && <div className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-500 rounded-full"></div>}
                     <div className="pr-4">
-                      <h4 className="text-sm font-bold text-white mb-1">{notif.title}</h4>
-                      <p className="text-xs text-slate-400 leading-relaxed mb-2">{notif.message}</p>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-1">{notif.title}</h4>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-2">{notif.message}</p>
                       <p className="text-[10px] text-slate-500">{new Date(notif.created_at).toLocaleString('en-GB')}</p>
                     </div>
                   </div>

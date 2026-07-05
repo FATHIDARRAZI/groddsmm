@@ -69,13 +69,13 @@ export default function AnnouncementsBanner() {
             <div className="flex items-start md:items-center gap-4">
               <i className={`fas ${icon} text-2xl drop-shadow-md`}></i>
               <div>
-                <h4 className="font-bold text-white text-base md:text-lg mb-1">{ann.title}</h4>
-                <p className="text-sm opacity-90 whitespace-pre-wrap">{ann.message}</p>
+                <h4 className="font-bold text-slate-900 dark:text-white text-base md:text-lg mb-1">{ann.title}</h4>
+                <p className="text-sm opacity-90 whitespace-pre-wrap text-slate-800 dark:text-slate-200">{ann.message}</p>
               </div>
             </div>
             <button 
               onClick={() => handleDismiss(ann.id)}
-              className="w-8 h-8 flex items-center justify-center rounded-full bg-black/20 hover:bg-black/40 text-white/70 hover:text-white transition-colors shrink-0"
+              className="w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-black/20 hover:bg-black/10 dark:hover:bg-black/40 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors shrink-0"
               title="إخفاء"
             >
               <i className="fas fa-times"></i>
