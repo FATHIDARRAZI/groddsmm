@@ -193,12 +193,12 @@ export default function DashboardHome() {
            </h1>
         </div>
 
-        <div className="glass-panel rounded-[3rem] p-10 md:p-14 border-black/5 dark:border-white/5 bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-3xl shadow-2xl relative overflow-hidden transition-colors duration-300">
+        <div className="glass-panel rounded-[2rem] md:rounded-[3rem] p-6 sm:p-10 md:p-14 border-black/5 dark:border-white/5 bg-white/80 dark:bg-[#09090b]/80 backdrop-blur-3xl shadow-2xl relative overflow-hidden transition-colors duration-300">
           <div className="space-y-10 relative z-10">
             {/* Category Selector */}
             <div className="flex flex-col gap-4 items-center">
               <label className="text-sm font-black text-slate-500 uppercase tracking-widest">اختر المنصة</label>
-              <div className="flex justify-center gap-3 md:gap-6">
+              <div className="flex flex-wrap justify-center gap-3 md:gap-6">
                 {SOCIAL_CATEGORIES.map((cat) => (
                   <button
                     key={cat.id}
@@ -206,14 +206,14 @@ export default function DashboardHome() {
                       setCategory(cat.id);
                       if (cat.id === 'facebook') setService('followers');
                     }}
-                    className={`w-20 h-20 md:w-24 md:h-24 rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
+                    className={`w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl md:rounded-3xl flex flex-col items-center justify-center gap-1 transition-all group ${
                       category === cat.id 
                         ? 'bg-gradient-to-tr from-black/5 to-black/5 dark:from-white/10 dark:to-white/5 shadow-[0_0_30px_rgba(0,0,0,0.05)] dark:shadow-[0_0_30px_rgba(255,255,255,0.05)] border border-black/10 dark:border-white/20 scale-110' 
                         : 'bg-slate-100 dark:bg-black/40 border border-black/5 dark:border-white/5 opacity-70 hover:opacity-100 hover:scale-105'
                     }`}
                     title={cat.name}
                   >
-                    <i className={`fab ${cat.icon} ${cat.color} ${cat.size} drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
+                    <i className={`fab ${cat.icon} ${cat.color} ${cat.size.replace('text-3xl md:text-4xl', 'text-2xl sm:text-3xl md:text-4xl').replace('text-4xl md:text-5xl', 'text-3xl sm:text-4xl md:text-5xl')} drop-shadow-md group-hover:drop-shadow-xl transition-all`}></i>
                     {/* Optional text label below icon if needed later, kept minimal for now */}
                   </button>
                 ))}
