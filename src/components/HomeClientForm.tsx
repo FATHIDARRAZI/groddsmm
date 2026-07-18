@@ -216,9 +216,9 @@ export default function HomeClientForm() {
               </div>
             </div>
 
-            <div className="flex justify-center w-full my-8 max-w-full overflow-hidden">
+            <div className="flex justify-center w-full my-8 max-w-full">
               <div 
-                className="bg-slate-50 dark:bg-[#121214] p-3 rounded-2xl shadow-inner border border-black/5 dark:border-white/5 flex justify-center w-full md:w-auto max-w-full overflow-hidden scale-[0.95] sm:scale-100"
+                className="bg-slate-50 dark:bg-[#121214] p-3 rounded-2xl shadow-inner border border-black/5 dark:border-white/5 flex justify-center min-h-[85px] items-center"
               >
                 <Turnstile
                   siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}

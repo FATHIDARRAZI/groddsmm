@@ -308,7 +308,7 @@ export default function DashboardHome() {
             {category !== 'youtube' && (
               <>
                 <div className="flex flex-col items-center gap-4 mt-8">
-                   <div className="p-4 rounded-[2.5rem] bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 scale-90 md:scale-100 transition-transform">
+                   <div className="p-4 rounded-[2.5rem] bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 flex justify-center min-h-[85px] items-center">
                      {/* <ReCAPTCHA sitekey={activeSiteKey} onChange={(t) => setRecaptchaToken(t || '')} theme="dark" /> */}
                      <Turnstile
                         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
