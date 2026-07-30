@@ -59,6 +59,7 @@ export default function SafeAdSlot({ src, width, height, className, style, loadi
     
     // Add some default styles for ad iframes
     iframe.style.backgroundColor = 'transparent';
+    iframe.style.colorScheme = 'dark';
     iframe.style.display = 'block';
     iframe.style.margin = '0 auto';
     
