@@ -11,6 +11,10 @@ import { createSupabaseClient } from '@/lib/supabase';
 import AnnouncementsBanner from '@/components/dashboard/AnnouncementsBanner';
 import NotificationBell from '@/components/dashboard/NotificationBell';
 
+function formatPoints(num: number): string {
+  return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }).format(num);
+}
+
 interface NavLink {
   href: string;
   label: string;
@@ -104,7 +108,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-1">مرحباً، {isClient ? userName : '...'}</h2>
           <Link href="/dashboard/store" className="bg-slate-100 dark:bg-[#1C1C1E] px-4 py-1.5 rounded-full text-pink-500 text-xs font-bold border border-pink-500/20 flex items-center gap-2 hover:bg-pink-500/10 transition-colors cursor-pointer">
-            <i className="fas fa-coins"></i> الرصيد: {isClient ? points.toLocaleString() : '0'} نقطة
+            <i className="fas fa-coins"></i> الرصيد: {isClient ? formatPoints(points) : '0'} نقطة
           </Link>
         </div>
 
@@ -187,7 +191,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex items-center gap-3">
             <NotificationBell />
             <Link href="/dashboard/store" className="bg-slate-100 dark:bg-[#1C1C1E] px-4 py-1.5 rounded-full text-[#FF8577] text-xs font-bold border border-[#FF8577]/20 flex items-center gap-2 hover:bg-[#FF8577]/10 transition-colors cursor-pointer">
-              <i className="fas fa-coins"></i> {isClient ? points.toLocaleString() : '0'}
+              <i className="fas fa-coins"></i> {isClient ? formatPoints(points) : '0'}
             </Link>
           </div>
         </header>
@@ -257,7 +261,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="flex flex-col gap-1">
                 <h2 className="text-lg font-bold text-slate-900 dark:text-white">مرحباً، {isClient ? userName : '...'}</h2>
                 <Link href="/dashboard/store" onClick={() => setIsMobileMenuOpen(false)} className="bg-slate-100 dark:bg-[#1C1C1E] px-3 py-1 rounded-full text-[#FF8577] text-[10px] font-bold border border-[#FF8577]/20 flex items-center gap-2 w-fit">
-                   <i className="fas fa-coins"></i> الرصيد: {isClient ? points.toLocaleString() : '0'} نقطة
+                   <i className="fas fa-coins"></i> الرصيد: {isClient ? formatPoints(points) : '0'} نقطة
                 </Link>
               </div>
               <button type="button" onClick={() => setIsMobileMenuOpen(false)} className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 flex items-center justify-center border border-black/10 dark:border-white/10 transition-colors cursor-pointer touch-manipulation">
