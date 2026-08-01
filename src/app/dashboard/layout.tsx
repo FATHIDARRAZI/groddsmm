@@ -22,6 +22,7 @@ interface NavLink {
   iconColor?: string;
   exact?: boolean;
   isSeparator?: boolean;
+  isAction?: boolean;
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -79,22 +80,22 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [router]);
 
   const desktopNavLinks: NavLink[] = [
-    { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'أداة التحكم', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/orders', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'المهام (Offerwall)', iconColor: 'text-green-500' },
+    { href: '/dashboard/followers', icon: 'fa-user-friends', label: 'متابعين', iconColor: 'text-[#FF8577]' },
+    { href: '/dashboard/posts', icon: 'fa-heart', label: 'منشورات', iconColor: 'text-[#FF8577]' },
+    { href: '/dashboard/offerwall', icon: 'fa-clipboard-list', label: 'المهام (Offerwall)', iconColor: 'text-green-500' },
     { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'المكافآت اليومية', iconColor: 'text-purple-500' },
+    { href: '/dashboard/orders', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-[#FF8577]', isSeparator: true },
+    { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'شراء نقاط', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/coupons', icon: 'fa-ticket-alt', label: 'كوبونات النقاط', iconColor: 'text-[#FF8577]' },
-    { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات كمنشئ محتوى', iconColor: 'text-blue-500' },
+    { href: '/dashboard/collab', icon: 'fa-handshake', label: 'الشراكات', iconColor: 'text-blue-500' },
     { href: '/dashboard/support', icon: 'fa-headset', label: 'الدعم الفني', iconColor: 'text-yellow-500', isSeparator: true },
   ];
 
   const mobileNavLinks: NavLink[] = [
-    { href: '/dashboard', exact: true, icon: 'fa-chart-pie', label: 'الرئيسية' },
-    { href: '/dashboard/orders', icon: 'fa-history', label: 'الطلبات' },
-    { href: '/dashboard/offerwall', icon: 'fa-tasks', label: 'مهام' },
-    { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'يومي' },
-    { href: '/dashboard/store', icon: 'fa-shopping-cart', label: 'المتجر' },
+    { href: '#more', icon: 'fa-ellipsis-h', label: 'المزيد', isAction: true },
+    { href: '/dashboard/followers', icon: 'fa-user-friends', label: 'متابعين' },
+    { href: '/dashboard/posts', icon: 'fa-heart', label: 'منشورات' },
+    { href: '/dashboard/offerwall', icon: 'fa-clipboard-list', label: 'المهام' },
   ];
 
   return (
@@ -230,11 +231,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       {/* Mobile Bottom Navigation anchored globally inside the main node */}
       <nav className="md:hidden fixed bottom-0 left-0 w-full bg-white/95 dark:bg-[#121214]/95 backdrop-blur-xl border-t border-black/5 dark:border-white/10 z-[9999] flex justify-around items-center px-1 py-3 pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
          {mobileNavLinks.map((link) => {
-           const isActive = link.exact ? pathname === link.href : pathname.startsWith(link.href);
+           const isActive = !link.isAction && (link.exact ? pathname === link.href : pathname.startsWith(link.href));
            return (
              <Link 
                key={link.href} 
                href={link.href} 
+               onClick={link.isAction ? (e) => { e.preventDefault(); setIsMobileMenuOpen(true); } : undefined}
                className={`flex flex-col items-center gap-1.5 p-2 transition-colors ${isActive ? 'text-[#FF8577]' : 'text-slate-500 hover:text-slate-300'}`}
              >
                <i className={`fas ${link.icon} text-xl ${isActive ? 'drop-shadow-[0_0_8px_rgba(255,133,119,0.5)]' : ''}`}></i>
@@ -242,14 +244,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
              </Link>
            );
          })}
-         <button 
-           type="button"
-           onClick={handleLogout}
-           className="flex flex-col items-center gap-1.5 p-2 transition-colors text-red-500 hover:text-red-400 cursor-pointer touch-manipulation relative z-[99999]"
-         >
-           <i className="fas fa-sign-out-alt text-xl pointer-events-none"></i>
-           <span className="text-[9px] font-bold tracking-wider pointer-events-none">خروج</span>
-         </button>
+
       </nav>
 
       {/* Mobile Sidebar Overlay (Hamburger Drawer) */}

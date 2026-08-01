@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
+import { ProxyAgent, fetch as undiciFetch } from 'undici';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const proxyUrl = 'http://rpW0KdeSoIywvifr:VkSkxqGz0xJb1om8@geo.iproyal.com:12321';
 
 export async function POST(request: Request) {
   try {
@@ -15,67 +13,69 @@ export async function POST(request: Request) {
 
     // Clean username (remove @ and whitespace)
     const cleanUsername = username.replace('@', '').trim();
-
-    const res = await fetch('https://instagram120.p.rapidapi.com/api/instagram/profile', {
-      method: 'POST',
+    
+    // We are using IPRoyal Proxy as requested by the user
+    const client = new ProxyAgent(proxyUrl);
+    
+    const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
+    
+    const res = await undiciFetch(url, {
+      dispatcher: client,
       headers: {
-        'Content-Type': 'application/json',
-        'x-rapidapi-host': 'instagram120.p.rapidapi.com',
-        'x-rapidapi-key': process.env.RAPIDAPI_KEY || 'f210407f75mshc2c1b1ef790a7fbp109dbdjsn52ae80fe8f74'
-      },
-      body: JSON.stringify({ username: cleanUsername })
+        'x-ig-app-id': '936619743392459',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin'
+      }
     });
 
-    const data = await res.json();
+    if (res.status !== 200) {
+      console.error('IG Fetch failed with status:', res.status);
+      return NextResponse.json({ success: false, error: 'لم يتم العثور على الحساب أو الحساب خاص.' });
+    }
 
-    if (data.result) {
-      let isPrivate = data.result.is_private === true;
-      let errorMessage = 'هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.';
+    const data = await res.json() as any;
 
-      // Check with OpenAI if key is configured
-      if (process.env.OPENAI_API_KEY) {
-        try {
-          const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: [
-              {
-                role: "system",
-                content: "You are an Instagram Profile Analyzer. Based on the provided raw JSON data of a profile, determine if it is a private account. If the 'is_private' field is true, or if there is other clear evidence, return JSON: { \"isPrivate\": true, \"message\": \"هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.\" }. Otherwise, return { \"isPrivate\": false, \"message\": \"\" }."
-              },
-              { role: "user", content: JSON.stringify(data.result) }
-            ],
-            response_format: { type: "json_object" }
-          });
+    if (data?.data?.user) {
+      const user = data.data.user;
+      const isPrivate = user.is_private === true;
+      const errorMessage = 'هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.';
 
-          const aiResult = JSON.parse(completion.choices[0].message.content || '{}');
-          if (typeof aiResult.isPrivate === 'boolean') {
-            isPrivate = aiResult.isPrivate;
-          }
-          if (aiResult.message) {
-            errorMessage = aiResult.message;
-          }
-        } catch (openaiErr) {
-          console.error('OpenAI profile check error:', openaiErr);
-        }
-      }
-
-      // Remove immediate blocking return; pass flags to client to validate upon confirmation
-      const rawProfilePic = data.result.profile_pic_url || data.result.profile_pic_url_hd || '';
+      const rawProfilePic = user.profile_pic_url_hd || user.profile_pic_url || '';
       const proxiedProfilePic = rawProfilePic 
         ? `/api/proxy-image?url=${encodeURIComponent(rawProfilePic)}` 
         : '';
+        
+      // Extract recent posts
+      const edges = user.edge_owner_to_timeline_media?.edges || [];
+      const recentPosts = edges.map((edge: any) => {
+        const node = edge.node;
+        const postImg = node.display_url || node.thumbnail_src || '';
+        return {
+          id: node.id,
+          shortcode: node.shortcode,
+          url: `https://instagram.com/p/${node.shortcode}/`,
+          thumbnail: postImg ? `/api/proxy-image?url=${encodeURIComponent(postImg)}` : '',
+          likes: node.edge_media_preview_like?.count || 0,
+          comments: node.edge_media_to_comment?.count || 0,
+          isVideo: node.is_video,
+          views: node.video_view_count || 0
+        };
+      });
 
       return NextResponse.json({
         success: true,
         data: {
-          username: data.result.username,
-          full_name: data.result.full_name,
+          username: user.username,
+          full_name: user.full_name,
           profile_pic: proxiedProfilePic,
-          followers: data.result.edge_followed_by?.count || 0,
-          following: data.result.edge_follow?.count || 0,
-          posts: data.result.edge_owner_to_timeline_media?.count || 0,
+          followers: user.edge_followed_by?.count || 0,
+          following: user.edge_follow?.count || 0,
+          posts: user.edge_owner_to_timeline_media?.count || 0,
           is_private: isPrivate,
-          private_error_message: errorMessage
+          private_error_message: errorMessage,
+          recent_posts: recentPosts
         }
       });
     }
