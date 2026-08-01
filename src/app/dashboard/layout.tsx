@@ -265,7 +265,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             
             <nav className="flex-1 p-4 flex flex-col gap-2 overflow-y-auto">
-              {desktopNavLinks.map((link) => {
+              {desktopNavLinks.filter(link => !mobileNavLinks.some(ml => ml.href === link.href)).map((link) => {
                 const isActive = link.exact ? pathname === link.href : pathname.startsWith(link.href);
                 return (
                   <Link 
