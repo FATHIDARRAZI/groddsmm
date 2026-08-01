@@ -77,14 +77,38 @@ export default function PostsPage() {
     }
   };
 
-  const handleLinkSubmit = () => {
+  const handleLinkSubmit = async () => {
     if (!postLink || !postLink.includes('instagram.com/')) {
       setErrorMsg('الرابط غير صحيح');
       return;
     }
-    // We treat the raw link as the target
-    setSelectedPost({ url: postLink, thumbnail: '' });
-    setShowLinkModal(false);
+    
+    setIsFetchingProfile(true);
+    setErrorMsg('');
+    
+    try {
+      const res = await fetch('/api/ig-post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ link: postLink })
+      });
+      const data = await res.json();
+      
+      if (data.success) {
+        setSelectedPost({ 
+          url: postLink, 
+          thumbnail: data.data.thumbnail, 
+          likes: data.data.likes 
+        });
+        setShowLinkModal(false);
+      } else {
+        setErrorMsg(data.error || 'فشل جلب المنشور');
+      }
+    } catch (e) {
+      setErrorMsg('حدث خطأ أثناء الاتصال.');
+    } finally {
+      setIsFetchingProfile(false);
+    }
   };
 
   const postAdAction = async () => {
@@ -333,10 +357,10 @@ export default function PostsPage() {
              <div className="flex w-full gap-3 dir-rtl">
                 <button 
                   onClick={handleLinkSubmit} 
-                  disabled={!postLink}
+                  disabled={!postLink || isFetchingProfile}
                   className="flex-[2] bg-pink-500 hover:bg-pink-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-pink-500/20 transition-all flex justify-center items-center disabled:opacity-50"
                 >
-                  موافق (OK)
+                  {isFetchingProfile ? <i className="fas fa-spinner fa-spin"></i> : 'موافق (OK)'}
                 </button>
                 <button 
                   onClick={() => setShowLinkModal(false)} 
