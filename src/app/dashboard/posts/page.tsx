@@ -98,8 +98,10 @@ export default function PostsPage() {
         setSelectedPost({ 
           url: postLink, 
           thumbnail: data.data.thumbnail, 
-          likes: data.data.likes 
+          likes: data.data.likes,
+          isVideo: data.data.isVideo
         });
+        if (!data.data.isVideo) setService('likes');
         setShowLinkModal(false);
       } else {
         setErrorMsg(data.error || 'فشل جلب المنشور');
@@ -214,7 +216,10 @@ export default function PostsPage() {
                      {profileData.recent_posts.map((post: any) => (
                        <div 
                          key={post.id} 
-                         onClick={() => setSelectedPost(post)}
+                         onClick={() => {
+                           setSelectedPost(post);
+                           if (!post.isVideo) setService('likes');
+                         }}
                          className="aspect-square bg-slate-100 dark:bg-[#1C1C1E] rounded-xl overflow-hidden cursor-pointer hover:ring-2 ring-pink-500 transition-all relative group"
                        >
                          {post.thumbnail ? (
@@ -254,7 +259,9 @@ export default function PostsPage() {
 
                 <div className="flex flex-row bg-slate-100 dark:bg-black/40 p-1.5 rounded-2xl w-full border border-black/5 dark:border-white/5 gap-1 shadow-inner">
                   <button onClick={() => setService('likes')} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'likes' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>إعجابات (Likes)</button>
-                  <button onClick={() => setService('views')} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'views' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>مشاهدات (Views)</button>
+                  {selectedPost.isVideo && (
+                    <button onClick={() => setService('views')} className={`flex-1 py-3.5 text-sm md:text-base rounded-xl font-black transition-all duration-300 ${service === 'views' ? 'bg-pink-500 text-white shadow-lg' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'}`}>مشاهدات (Views)</button>
+                  )}
                 </div>
 
                 <div className="bg-slate-100 dark:bg-black/40 p-8 rounded-[2rem] border border-black/5 dark:border-white/5 space-y-6">
