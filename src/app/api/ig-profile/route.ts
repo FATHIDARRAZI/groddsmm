@@ -19,26 +19,36 @@ export async function POST(request: Request) {
     
     const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
     
-    const res = await undiciFetch(url, {
-      dispatcher: client,
-      headers: {
-        'x-ig-app-id': '936619743392459',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-        'Sec-Fetch-Dest': 'empty',
-        'Sec-Fetch-Mode': 'cors',
-        'Sec-Fetch-Site': 'same-origin'
+    // Fire 5 requests in parallel to guarantee one clean proxy IP hits and returns quickly
+    const fetchPromises = Array.from({ length: 5 }).map(async (_, i) => {
+      const client = new ProxyAgent(proxyUrl); // Creates a new agent, potentially triggering IP rotation
+      const res = await undiciFetch(url, {
+        dispatcher: client,
+        headers: {
+          'x-ig-app-id': '936619743392459',
+          'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${Math.floor(Math.random()*100)} Safari/537.36`,
+          'Sec-Fetch-Dest': 'empty',
+          'Sec-Fetch-Mode': 'cors',
+          'Sec-Fetch-Site': 'same-origin'
+        }
+      });
+      if (res.status === 200) {
+        return await res.json();
       }
+      throw new Error(`Status ${res.status}`);
     });
 
-    if (res.status !== 200) {
-      console.error('IG Fetch failed with status:', res.status);
+    let data;
+    try {
+      data = await Promise.any(fetchPromises);
+    } catch (aggregateError) {
+      console.error('All IG Profile fetches failed:', aggregateError);
       return NextResponse.json({ success: false, error: 'لم يتم العثور على الحساب أو الحساب خاص.' });
     }
 
-    const data = await res.json() as any;
-
-    if (data?.data?.user) {
-      const user = data.data.user;
+    const typedData = data as any;
+    if (typedData?.data?.user) {
+      const user = typedData.data.user;
       const isPrivate = user.is_private === true;
       const errorMessage = 'هذا الحساب خاص (Private). يرجى تحويل الحساب إلى عام (Public) وإعادة المحاولة لاحقاً.';
 

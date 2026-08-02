@@ -35,19 +35,27 @@ export async function POST(request: Request) {
     // We use the embed endpoint because it's public and doesn't require auth to see thumbnail/likes
     const url = `https://www.instagram.com/p/${shortcode}/embed/captioned/`;
     
-    const res = await undiciFetch(url, {
-      dispatcher: client,
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    const fetchPromises = Array.from({ length: 5 }).map(async (_, i) => {
+      const client = new ProxyAgent(proxyUrl);
+      const res = await undiciFetch(url, {
+        dispatcher: client,
+        headers: {
+          'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${Math.floor(Math.random()*100)} Safari/537.36`,
+        }
+      });
+      if (res.status === 200) {
+        return await res.text();
       }
+      throw new Error(`Status ${res.status}`);
     });
 
-    if (res.status !== 200) {
-      console.error('IG Post Fetch failed with status:', res.status);
+    let html = '';
+    try {
+      html = await Promise.any(fetchPromises);
+    } catch (aggregateError) {
+      console.error('All IG Post fetches failed:', aggregateError);
       return NextResponse.json({ success: false, error: 'لم يتم العثور على المنشور أو الحساب خاص.' });
     }
-
-    const html = await res.text();
     
     // Extract thumbnail
     const imgMatch = html.match(/<img class="EmbeddedMediaImage"[^>]+src="([^"]+)"/);
