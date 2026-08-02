@@ -16,6 +16,7 @@ export default function FollowersPage() {
   const [quantity, setQuantity] = useState(100);
   const [recaptchaToken, setRecaptchaToken] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [turnstileKey, setTurnstileKey] = useState(0);
   
   const [privateAlertMsg, setPrivateAlertMsg] = useState<string | null>(null);
 
@@ -134,8 +135,14 @@ export default function FollowersPage() {
         window.dispatchEvent(new Event('pointsUpdated'));
       } else {
         setErrorMsg(data.error);
+        setRecaptchaToken('');
+        setTurnstileKey(prev => prev + 1);
       }
-    } catch (e) { setErrorMsg('فشل إرسال الطلب'); }
+    } catch (e) { 
+      setErrorMsg('فشل إرسال الطلب'); 
+      setRecaptchaToken('');
+      setTurnstileKey(prev => prev + 1);
+    }
     finally { 
       setIsProcessing(false); 
       setShowAdModal(false);
@@ -228,6 +235,7 @@ export default function FollowersPage() {
                 <div className="flex flex-col items-center gap-4 mt-2">
                    <div className="p-4 rounded-[2rem] bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 flex justify-center min-h-[85px] items-center">
                      <Turnstile
+                        key={turnstileKey}
                         siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
                         onSuccess={(token: string) => setRecaptchaToken(token)}
                         options={{ theme: 'dark' }}
