@@ -68,6 +68,40 @@ export async function POST(request: Request) {
     }
     
     if (Number.isNaN(likes)) likes = 0;
+    
+    let isVideo = html.includes('video');
+
+    // Fallback to Microlink API if thumbnail is not found (meaning IG blocked the proxy)
+    if (!thumbnail) {
+      try {
+        const mlRes = await fetch(`https://api.microlink.io/?url=https://www.instagram.com/p/${shortcode}/`);
+        const mlData = await mlRes.json();
+        if (mlData.status === 'success' && mlData.data) {
+           if (mlData.data.image?.url) {
+             thumbnail = mlData.data.image.url;
+             thumbnail = `/api/proxy-image?url=${encodeURIComponent(thumbnail)}`;
+           }
+           if (mlData.data.title) {
+             const title = mlData.data.title.toLowerCase();
+             if (title.includes('reel') || title.includes('video')) {
+               isVideo = true;
+             }
+           }
+           if (likes === 0 && mlData.data.description) {
+             const desc = mlData.data.description;
+             const likesMatch = desc.match(/([\d,KMB]+)\s+likes/i);
+             if (likesMatch) {
+                let likesStr = likesMatch[1].replace(/,/g, '');
+                if (likesStr.toLowerCase().includes('m')) likes = parseFloat(likesStr) * 1000000;
+                else if (likesStr.toLowerCase().includes('k')) likes = parseFloat(likesStr) * 1000;
+                else likes = parseInt(likesStr);
+             }
+           }
+        }
+      } catch(e) {
+        console.error('Microlink fallback failed:', e);
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -76,7 +110,7 @@ export async function POST(request: Request) {
         thumbnail,
         likes,
         views: 0,
-        isVideo: html.includes('video')
+        isVideo
       }
     });
 
