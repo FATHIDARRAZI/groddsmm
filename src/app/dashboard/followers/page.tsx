@@ -66,9 +66,6 @@ export default function FollowersPage() {
       if (data.success) {
         setProfileData(data.data);
         setShowTargetModal(false);
-        if (data.data.is_private) {
-          setPrivateAlertMsg(data.data.private_error_message || 'هذا الحساب خاص (Private). يرجى تحويله إلى عام.');
-        }
       } else {
         setErrorMsg(data.error || 'فشل جلب بيانات الحساب');
       }
@@ -232,6 +229,21 @@ export default function FollowersPage() {
                    </div>
                 </div>
 
+                {/* Private Warning */}
+                {profileData.is_private && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-start gap-3 mt-2">
+                     <div className="mt-0.5 w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                        <i className="fas fa-lock text-red-500 text-xs"></i>
+                     </div>
+                     <div className="text-right flex-1">
+                        <h4 className="text-red-500 font-bold text-sm mb-1">حساب خاص (Private)</h4>
+                        <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+                          هذا الحساب خاص. يرجى تحويله إلى عام (Public) لتتمكن من استخدام أدواتنا. لا يمكن إرسال المتابعين لحساب خاص.
+                        </p>
+                     </div>
+                  </div>
+                )}
+
                 <div className="flex flex-col items-center gap-4 mt-2">
                    <div className="p-4 rounded-[2rem] bg-slate-50 dark:bg-black/60 border border-black/5 dark:border-white/5 flex justify-center min-h-[85px] items-center">
                      <Turnstile
@@ -244,8 +256,17 @@ export default function FollowersPage() {
                    {errorMsg && <p className="text-pink-500 text-sm font-black animate-pulse">{errorMsg}</p>}
                 </div>
 
-                <button onClick={handleLaunch} disabled={isProcessing} className="w-full py-6 rounded-[2rem] font-black text-white text-xl bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg shadow-pink-500/30 flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all">
-                  {isProcessing ? <i className="fas fa-spinner fa-spin"></i> : <span>اطلب الآن</span>}
+                <button 
+                  onClick={handleLaunch} 
+                  disabled={isProcessing || profileData.is_private} 
+                  className={`w-full py-6 rounded-[2rem] font-black text-white text-xl shadow-lg flex items-center justify-center gap-2 transition-all ${
+                    profileData.is_private 
+                      ? 'bg-slate-400 dark:bg-slate-700 cursor-not-allowed opacity-70' 
+                      : 'bg-gradient-to-r from-pink-500 to-rose-500 shadow-pink-500/30 hover:scale-[1.02] active:scale-[0.98]'
+                  }`}
+                >
+                  {isProcessing ? <i className="fas fa-spinner fa-spin"></i> : 
+                   profileData.is_private ? <span>افتح الحساب للطلب</span> : <span>اطلب الآن</span>}
                 </button>
              </div>
            )}
