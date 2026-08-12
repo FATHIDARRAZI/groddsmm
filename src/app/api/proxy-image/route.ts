@@ -12,6 +12,23 @@ export async function GET(request: Request) {
       return new Response('Missing URL parameter', { status: 400 });
     }
 
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+    
+    // Whitelist allowed domains for proxying
+    const allowedDomains = [
+      'instagram.com',
+      'cdninstagram.com',
+      'fbcdn.net',
+      'ui-avatars.com' // Used for fallbacks
+    ];
+    
+    const isAllowed = allowedDomains.some(domain => hostname === domain || hostname.endsWith(`.${domain}`));
+    
+    if (!isAllowed) {
+      return new Response('Forbidden domain', { status: 403 });
+    }
+
     // Fetch the image with a generic User-Agent to avoid getting blocked
     const response = await fetch(url, {
       headers: {

@@ -1,18 +1,29 @@
 import { NextResponse } from 'next/server';
 import { ProxyAgent, fetch as undiciFetch } from 'undici';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
-const proxyUrl = 'http://rpW0KdeSoIywvifr:VkSkxqGz0xJb1om8@geo.iproyal.com:12321';
+const proxyUrl = process.env.IG_PROXY_URL || '';
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized. You must be logged in.' }, { status: 401 });
+    }
+
     const { username } = await request.json();
 
-    if (!username) {
+    if (!username || typeof username !== 'string') {
       return NextResponse.json({ success: false, error: 'Username is required' }, { status: 400 });
     }
 
     // Clean username (remove @ and whitespace)
     const cleanUsername = username.replace('@', '').trim();
+    if (!/^[a-zA-Z0-9._]+$/.test(cleanUsername)) {
+      return NextResponse.json({ success: false, error: 'Invalid username format' }, { status: 400 });
+    }
     
     // We are using IPRoyal Proxy as requested by the user
     const client = new ProxyAgent(proxyUrl);

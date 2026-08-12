@@ -1,17 +1,28 @@
 import { NextResponse } from 'next/server';
 import { ProxyAgent, fetch as undiciFetch } from 'undici';
+import { createSupabaseServerClient } from '@/lib/supabaseServer';
 
-const proxyUrl = 'http://rpW0KdeSoIywvifr:VkSkxqGz0xJb1om8@geo.iproyal.com:12321';
+const proxyUrl = process.env.IG_PROXY_URL || '';
 
 export async function POST(request: Request) {
   try {
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ success: false, error: 'Unauthorized. You must be logged in.' }, { status: 401 });
+    }
+
     const { username } = await request.json();
 
-    if (!username) {
+    if (!username || typeof username !== 'string') {
       return NextResponse.json({ success: false, error: 'Username is required' }, { status: 400 });
     }
 
     const cleanUsername = username.replace('@', '').trim();
+    if (!/^[a-zA-Z0-9._]+$/.test(cleanUsername)) {
+      return NextResponse.json({ success: false, error: 'Invalid username format' }, { status: 400 });
+    }
     const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
     
     // Fire parallel requests to bypass rate limits using proxy
@@ -62,8 +73,8 @@ export async function POST(request: Request) {
         ? `/api/proxy-image?url=${encodeURIComponent(rawProfilePic)}` 
         : '';
 
-      const sessionId = '48595278422%3ASJnei0jdyuga4r%3A19%3AAYhXqZCYt_6ZZlg-ZW5rhGuQjndQtsFtzQMnAOP3kQ';
-      let realStories = [];
+      const sessionId = process.env.IG_SESSION_ID || '';
+      let realStories: any[] = [];
       
       try {
         const client = new ProxyAgent(proxyUrl);

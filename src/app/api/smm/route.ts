@@ -8,6 +8,7 @@ const SMM_API_URL = 'https://bestsmmprovider.com/api/v2';
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS = 10;
 const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+const userLocks = new Map<string, boolean>();
 
 export async function POST(req: Request) {
   try {
@@ -57,156 +58,162 @@ export async function POST(req: Request) {
       } else {
         rateLimitMap.set(ip, { count: 1, timestamp: now });
       }
-    } else {
-      // AUTHENTICATED: Enforce Points Balance logic
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('points_balance')
-        .eq('id', user.id)
+    if (user) {
+      if (userLocks.get(user.id)) {
+        return NextResponse.json({ error: 'الرجاء الانتظار، جاري معالجة طلبك السابق' }, { status: 429 });
+      }
+      userLocks.set(user.id, true);
+    }
+
+    try {
+      if (user) {
+        // AUTHENTICATED: Enforce Points Balance logic
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points_balance')
+          .eq('id', user.id)
+          .single();
+
+        if (!profile || profile.points_balance < pointsToDeduct) {
+          return NextResponse.json({ error: 'رصيد النقاط غير كافي' }, { status: 402 });
+        }
+      }
+
+      // Verify Turnstile
+      const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '';
+      const formData = new URLSearchParams();
+      formData.append('secret', turnstileSecret);
+      formData.append('response', recaptchaToken);
+
+      const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
+      }
+
+      // Fetch dynamic service configuration
+      const { data: serviceConfig } = await supabase
+        .from('services')
+        .select('provider_service_id, min_quantity, max_quantity, is_active')
+        .eq('category', category)
+        .eq('service_type', serviceType)
         .single();
 
-      if (!profile || profile.points_balance < pointsToDeduct) {
-        return NextResponse.json({ error: 'رصيد النقاط غير كافي' }, { status: 402 }); // Insufficient payment
+      if (!serviceConfig) {
+        return NextResponse.json({ error: 'This specific service is not available for this platform.' }, { status: 400 });
       }
-    }
 
+      if (!serviceConfig.is_active) {
+        return NextResponse.json({ error: 'هذه الخدمة معطلة حالياً. الرجاء المحاولة لاحقاً.' }, { status: 400 });
+      }
 
-    // Verify Cloudflare Turnstile Token (reCAPTCHA kept as fallback in comments)
-    /* 
-    const recaptchaSecret = process.env.RECAPTCHA_SECRET_KEY || '';
-    const formData = new URLSearchParams();
-    formData.append('secret', recaptchaSecret);
-    formData.append('response', recaptchaToken);
+      if (finalQuantity < serviceConfig.min_quantity) {
+        return NextResponse.json({ error: `الحد الأدنى للطلب هو ${serviceConfig.min_quantity}` }, { status: 400 });
+      }
 
-    const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      body: formData,
-    });
-    */
+      if (finalQuantity > serviceConfig.max_quantity) {
+        return NextResponse.json({ error: `الحد الأقصى للطلب هو ${serviceConfig.max_quantity}` }, { status: 400 });
+      }
 
-    const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '';
-    const formData = new URLSearchParams();
-    formData.append('secret', turnstileSecret);
-    formData.append('response', recaptchaToken); // The variable is still called recaptchaToken for backward compatibility
+      const serviceId = serviceConfig.provider_service_id;
+      const smmLink = link.includes('http') ? link : `https://${link}`;
 
-    const verifyRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const verifyData = await verifyRes.json();
-    if (!verifyData.success) {
-      return NextResponse.json({ error: 'التحقق البشري غير صالح' }, { status: 403 });
-    }
-
-    // Fetch dynamic service configuration
-    const { data: serviceConfig } = await supabase
-      .from('services')
-      .select('provider_service_id, min_quantity, max_quantity, is_active')
-      .eq('category', category)
-      .eq('service_type', serviceType)
-      .single();
-
-    if (!serviceConfig) {
-      return NextResponse.json({ error: 'This specific service is not available for this platform.' }, { status: 400 });
-    }
-
-    if (!serviceConfig.is_active) {
-      return NextResponse.json({ error: 'هذه الخدمة معطلة حالياً. الرجاء المحاولة لاحقاً.' }, { status: 400 });
-    }
-
-    if (finalQuantity < serviceConfig.min_quantity) {
-      return NextResponse.json({ error: `الحد الأدنى للطلب هو ${serviceConfig.min_quantity}` }, { status: 400 });
-    }
-
-    if (finalQuantity > serviceConfig.max_quantity) {
-      return NextResponse.json({ error: `الحد الأقصى للطلب هو ${serviceConfig.max_quantity}` }, { status: 400 });
-    }
-
-    const serviceId = serviceConfig.provider_service_id;
-
-    const smmLink = link.includes('http') ? link : `https://${link}`;
-
-    const params = new URLSearchParams({
-      key: SMM_API_KEY,
-      action: 'add',
-      service: serviceId,
-      link: smmLink,
-      quantity: finalQuantity.toString()
-    });
-
-    const smmRes = await fetch(SMM_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: params.toString()
-    });
-
-    const smmData = await smmRes.json();
-
-    if (smmData.error) {
-      console.error('SMM Panel Error:', smmData.error);
-      return NextResponse.json({ error: 'تعذر إرسال الطلب في الوقت الحالي' }, { status: 500 });
-    }
-
-    if (smmData.order) {
-      const providerOrderId = smmData.order;
-
-      // POST-ORDER PROCESSING LOGIC
+      // PRE-ORDER: Deduct Points First to prevent free orders if SMM API hangs or fails
       if (user) {
-
-        
-        // Decrement wallet balance safely
-        await supabase.rpc('decrement_points', {
+        const { error: rpcError } = await supabase.rpc('decrement_points', {
           user_id: user.id,
           amount: pointsToDeduct
         });
 
-        // The RPC might not exist yet, so we'll fallback to a raw update if needed
-        // Since we are Server-side with Anon Key, row level security allows 'update' using eq('id').
-        // Wait, safest fallback without RPC:
-        const { data: profileObj } = await supabase.from('profiles').select('points_balance').eq('id', user.id).single();
-        if (profileObj) {
-           await supabase.from('profiles').update({ points_balance: profileObj.points_balance - pointsToDeduct }).eq('id', user.id);
+        if (rpcError) {
+           // Fallback to manual update if RPC is missing
+           const { data: profileObj } = await supabase.from('profiles').select('points_balance').eq('id', user.id).single();
+           if (profileObj && profileObj.points_balance >= pointsToDeduct) {
+              await supabase.from('profiles').update({ points_balance: profileObj.points_balance - pointsToDeduct }).eq('id', user.id);
+           } else {
+              return NextResponse.json({ error: 'خطأ في خصم النقاط' }, { status: 500 });
+           }
         }
-
-        // Insert mapped history log
-        await supabase.from('orders').insert({
-          user_id: user.id,
-          provider_order_id: providerOrderId.toString(),
-          service_type: serviceType,
-          link: smmLink,
-          quantity: finalQuantity,
-          points_cost: pointsToDeduct,
-          status: 'Pending'
-        });
-
-        // Trigger the AI Speed-Up Request in the background (we don't await to avoid blocking the user)
-        sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
-
-        return NextResponse.json({ success: true, message: 'تم إرسال الطلب بنجاح وتم خصم النقاط' }, { status: 200 });
-
-      } else {
-        // Anonymous Flow: Enforce subsequent cooldown block
-        // Fetch dynamic cooldown value from settings
-        let cooldownMinutes = 2; // Default fallback
-        try {
-          const { data: setting } = await supabase.from('system_settings').select('value').eq('key', 'order_cooldown_minutes').single();
-          if (setting && typeof setting.value === 'number') {
-            cooldownMinutes = setting.value;
-          }
-        } catch (e) {
-          console.error('Failed to fetch cooldown setting');
-        }
-
-        await setCooldown(ip, cooldownMinutes);
-
-        // Trigger the AI Speed-Up Request in the background
-        sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
-
-        return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
       }
+
+      const params = new URLSearchParams({
+        key: SMM_API_KEY,
+        action: 'add',
+        service: serviceId,
+        link: smmLink,
+        quantity: finalQuantity.toString()
+      });
+
+      const smmRes = await fetch(SMM_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString()
+      });
+
+      const smmData = await smmRes.json();
+
+      if (smmData.error) {
+        console.error('SMM Panel Error:', smmData.error);
+        // REFUND POINTS
+        if (user) {
+           const { error: refundRpcError } = await supabase.rpc('increment_points', { user_id: user.id, amount: pointsToDeduct });
+           if (refundRpcError) {
+              const { data: profileObj } = await supabase.from('profiles').select('points_balance').eq('id', user.id).single();
+              if (profileObj) {
+                 await supabase.from('profiles').update({ points_balance: profileObj.points_balance + pointsToDeduct }).eq('id', user.id);
+              }
+           }
+        }
+        return NextResponse.json({ error: 'تعذر إرسال الطلب في الوقت الحالي' }, { status: 500 });
+      }
+
+      if (smmData.order) {
+        const providerOrderId = smmData.order;
+
+        if (user) {
+          // Insert mapped history log
+          await supabase.from('orders').insert({
+            user_id: user.id,
+            provider_order_id: providerOrderId.toString(),
+            service_type: serviceType,
+            link: smmLink,
+            quantity: finalQuantity,
+            points_cost: pointsToDeduct,
+            status: 'Pending'
+          });
+
+          sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+          return NextResponse.json({ success: true, message: 'تم إرسال الطلب بنجاح وتم خصم النقاط' }, { status: 200 });
+
+        } else {
+          // Anonymous Flow: Enforce subsequent cooldown block
+          let cooldownMinutes = 2;
+          try {
+            const { data: setting } = await supabase.from('system_settings').select('value').eq('key', 'order_cooldown_minutes').single();
+            if (setting && typeof setting.value === 'number') {
+              cooldownMinutes = setting.value;
+            }
+          } catch (e) {
+            console.error('Failed to fetch cooldown setting');
+          }
+
+          await setCooldown(ip, cooldownMinutes);
+          sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+
+          return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
+        }
+      }
+
+      return NextResponse.json({ error: 'Unexpected response from provider' }, { status: 500 });
+
+    } finally {
+      if (user) userLocks.delete(user.id);
     }
 
     return NextResponse.json({ error: 'Unexpected response from provider' }, { status: 500 });
