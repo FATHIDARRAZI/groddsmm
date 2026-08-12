@@ -58,6 +58,8 @@ export async function POST(req: Request) {
       } else {
         rateLimitMap.set(ip, { count: 1, timestamp: now });
       }
+    }
+    
     if (user) {
       if (userLocks.get(user.id)) {
         return NextResponse.json({ error: 'الرجاء الانتظار، جاري معالجة طلبك السابق' }, { status: 429 });
