@@ -82,6 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const desktopNavLinks: NavLink[] = [
     { href: '/dashboard/followers', icon: 'fa-user-friends', label: 'متابعين', iconColor: 'text-[#FF8577]' },
     { href: '/dashboard/posts', icon: 'fa-heart', label: 'منشورات', iconColor: 'text-[#FF8577]' },
+    { href: '/dashboard/story', icon: 'fa-camera-retro', label: 'القصص', iconColor: 'text-orange-500' },
     { href: '/dashboard/offerwall', icon: 'fa-clipboard-list', label: 'المهام (Offerwall)', iconColor: 'text-green-500' },
     { href: '/dashboard/daily', icon: 'fa-calendar-check', label: 'المكافآت اليومية', iconColor: 'text-purple-500' },
     { href: '/dashboard/orders', icon: 'fa-history', label: 'سجل الطلبات', iconColor: 'text-[#FF8577]', isSeparator: true },
@@ -95,6 +96,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: '#more', icon: 'fa-ellipsis-h', label: 'المزيد', isAction: true },
     { href: '/dashboard/followers', icon: 'fa-user-friends', label: 'متابعين' },
     { href: '/dashboard/posts', icon: 'fa-heart', label: 'منشورات' },
+    { href: '/dashboard/story', icon: 'fa-camera-retro', label: 'القصص' },
     { href: '/dashboard/offerwall', icon: 'fa-clipboard-list', label: 'المهام' },
   ];
 
