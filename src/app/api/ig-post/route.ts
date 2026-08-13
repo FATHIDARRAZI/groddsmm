@@ -25,6 +25,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Link is required' }, { status: 400 });
     }
 
+    const postUrl = link.trim();
+    if (!postUrl.includes('instagram.com/p/') && !postUrl.includes('instagram.com/reel/')) {
+      return NextResponse.json({ success: false, error: 'Invalid Instagram post URL' }, { status: 400 });
+    }
+
+    if (!proxyUrl) {
+      return NextResponse.json({ success: false, error: 'Missing IG_PROXY_URL in Vercel Environment Variables. Please add it.' }, { status: 500 });
+    }
+
     const shortcode = extractShortcode(link);
     if (!shortcode) {
       return NextResponse.json({ success: false, error: 'رابط انستقرام غير صحيح' }, { status: 400 });

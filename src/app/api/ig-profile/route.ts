@@ -24,6 +24,10 @@ export async function POST(request: Request) {
     if (!/^[a-zA-Z0-9._]+$/.test(cleanUsername)) {
       return NextResponse.json({ success: false, error: 'Invalid username format' }, { status: 400 });
     }
+
+    if (!proxyUrl) {
+      return NextResponse.json({ success: false, error: 'Missing IG_PROXY_URL in Vercel. Please add it in your Vercel Dashboard.' }, { status: 500 });
+    }
     
     // We are using IPRoyal Proxy as requested by the user
     const client = new ProxyAgent(proxyUrl);

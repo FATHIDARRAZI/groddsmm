@@ -23,6 +23,11 @@ export async function POST(request: Request) {
     if (!/^[a-zA-Z0-9._]+$/.test(cleanUsername)) {
       return NextResponse.json({ success: false, error: 'Invalid username format' }, { status: 400 });
     }
+
+    if (!proxyUrl) {
+      return NextResponse.json({ success: false, error: 'Missing IG_PROXY_URL in Vercel Environment Variables. Please add it.' }, { status: 500 });
+    }
+
     const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
     
     // Fire parallel requests to bypass rate limits using proxy
