@@ -50,8 +50,10 @@ export async function POST(req: Request) {
     const min = parseInt(targetService.min);
     const max = parseInt(targetService.max);
 
-    if (isNaN(min) || isNaN(max)) {
-      return NextResponse.json({ error: 'Invalid min/max returned from provider' }, { status: 500 });
+    const rate = parseFloat(targetService.rate);
+
+    if (isNaN(min) || isNaN(max) || isNaN(rate)) {
+      return NextResponse.json({ error: 'Invalid data returned from provider' }, { status: 500 });
     }
 
     const { error } = await supabase
@@ -59,7 +61,8 @@ export async function POST(req: Request) {
       .update({
         provider_service_id,
         min_quantity: min,
-        max_quantity: max
+        max_quantity: max,
+        provider_cost_per_1000: rate
       })
       .eq('id', id);
 
