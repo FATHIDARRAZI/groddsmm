@@ -26,13 +26,6 @@ export async function POST(req: Request) {
     // Determine target quantity
     const finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 10 ? requestedQuantity : 100;
 
-    // Securely calculate expected points to deduct
-    const pointsToDeduct = serviceType === 'followers'
-      ? finalQuantity * 2
-      : serviceType === 'views'
-        ? Math.ceil(finalQuantity / 50)
-        : finalQuantity;
-
     // 1. Session & Auth Check
     const supabase = await createSupabaseServerClient();
     const { data: { user } } = await supabase.auth.getUser();
@@ -68,19 +61,6 @@ export async function POST(req: Request) {
     }
 
     try {
-      if (user) {
-        // AUTHENTICATED: Enforce Points Balance logic
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('points_balance')
-          .eq('id', user.id)
-          .single();
-
-        if (!profile || profile.points_balance < pointsToDeduct) {
-          return NextResponse.json({ error: 'رصيد النقاط غير كافي' }, { status: 402 });
-        }
-      }
-
       // Verify Turnstile
       const turnstileSecret = process.env.TURNSTILE_SECRET_KEY || '';
       const formData = new URLSearchParams();
@@ -98,15 +78,16 @@ export async function POST(req: Request) {
       }
 
       // Fetch dynamic service configuration
-      const { data: serviceConfig } = await supabase
+      const { data: serviceConfig, error: configError } = await supabase
         .from('services')
-        .select('provider_service_id, min_quantity, max_quantity, is_active')
+        .select('provider_service_id, min_quantity, max_quantity, is_active, provider_cost_per_1000, markup_multiplier')
         .eq('category', category)
         .eq('service_type', serviceType)
         .single();
 
-      if (!serviceConfig) {
-        return NextResponse.json({ error: 'This specific service is not available for this platform.' }, { status: 400 });
+      if (configError || !serviceConfig) {
+        console.error("Service config fetch error:", configError);
+        return NextResponse.json({ error: 'الخدمة غير متوفرة حالياً' }, { status: 400 });
       }
 
       if (!serviceConfig.is_active) {
@@ -119,6 +100,29 @@ export async function POST(req: Request) {
 
       if (finalQuantity > serviceConfig.max_quantity) {
         return NextResponse.json({ error: `الحد الأقصى للطلب هو ${serviceConfig.max_quantity}` }, { status: 400 });
+      }
+
+      // Dynamic Pricing Calculation
+      // Default fallback values if not set in DB
+      const providerCostPer1000 = serviceConfig.provider_cost_per_1000 || 0.10; 
+      const markupMultiplier = serviceConfig.markup_multiplier || 3.0;
+      const EXCHANGE_RATE = 1000; // 1 Dollar = 1000 Coins
+
+      // Formula: (Quantity / 1000) * Provider Cost * Exchange Rate * Markup
+      const rawCost = (finalQuantity / 1000) * providerCostPer1000 * EXCHANGE_RATE * markupMultiplier;
+      const pointsToDeduct = Math.ceil(rawCost); // Round up to nearest coin
+
+      if (user) {
+        // AUTHENTICATED: Enforce Points Balance logic
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('points_balance')
+          .eq('id', user.id)
+          .single();
+
+        if (!profile || profile.points_balance < pointsToDeduct) {
+          return NextResponse.json({ error: 'رصيد النقاط غير كافي' }, { status: 402 });
+        }
       }
 
       const serviceId = serviceConfig.provider_service_id;

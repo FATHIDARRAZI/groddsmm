@@ -44,12 +44,23 @@ export default function StoryPage() {
   const [adWaitTime, setAdWaitTime] = useState(0);
   const [removeAds, setRemoveAds] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
+  const [serviceConfig, setServiceConfig] = useState<any>(null);
 
   const supabase = createSupabaseClient();
 
   useEffect(() => {
     fetchUserPoints();
+    fetchServiceConfig();
   }, []);
+
+  const fetchServiceConfig = async () => {
+    const { data } = await supabase.from('services')
+      .select('provider_cost_per_1000, markup_multiplier, min_quantity, max_quantity')
+      .eq('category', 'instagram')
+      .eq('service_type', 'story_views')
+      .single();
+    if (data) setServiceConfig(data);
+  };
 
   const fetchUserPoints = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -60,6 +71,13 @@ export default function StoryPage() {
         setRemoveAds(profile.remove_ads);
       }
     }
+  };
+
+  const calculateCost = (qty: number) => {
+    if (!serviceConfig) return qty * 1; // fallback
+    const cost = serviceConfig.provider_cost_per_1000 || 0.10;
+    const markup = serviceConfig.markup_multiplier || 3.0;
+    return Math.ceil((qty / 1000) * cost * 1000 * markup);
   };
 
   const formatNumber = (num: number) => {
@@ -395,20 +413,20 @@ export default function StoryPage() {
                </div>
              </div>
 
-             <div className="bg-slate-100 dark:bg-black/40 p-6 rounded-2xl border border-black/5 dark:border-white/5 space-y-6">
-               <div className="flex justify-between items-center">
-                 <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{quantity * 1}</span></span>
+               <div className="bg-slate-100 dark:bg-black/40 p-6 rounded-[2rem] border border-black/5 dark:border-white/5 space-y-4">
+                 <div className="flex justify-between items-center">
+                 <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{calculateCost(quantity)}</span></span>
                  <span className="text-sm font-black text-orange-500 uppercase">الكمية: <span className="text-slate-900 dark:text-white">{formatNumber(quantity)}</span></span>
-               </div>
-               <input 
+                 </div>
+                 <input 
                  type="range" 
-                 min={100} 
-                 max={50000} 
-                 step={100} 
+                 min={serviceConfig?.min_quantity || 100} 
+                 max={100000} 
+                 step={10} 
                  value={quantity} 
                  onChange={(e) => setQuantity(Number(e.target.value))} 
                  className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-orange-500" 
-               />
+                 />
              </div>
 
              <div className="flex flex-col items-center gap-4">

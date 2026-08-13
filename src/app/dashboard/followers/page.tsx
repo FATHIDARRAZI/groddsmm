@@ -24,12 +24,23 @@ export default function FollowersPage() {
   const [adWaitTime, setAdWaitTime] = useState(0);
   const [removeAds, setRemoveAds] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
+  const [serviceConfig, setServiceConfig] = useState<any>(null);
 
   const supabase = createSupabaseClient();
 
   useEffect(() => {
     fetchUserPoints();
+    fetchServiceConfig();
   }, []);
+
+  const fetchServiceConfig = async () => {
+    const { data } = await supabase.from('services')
+      .select('provider_cost_per_1000, markup_multiplier, min_quantity, max_quantity')
+      .eq('category', 'instagram')
+      .eq('service_type', 'followers')
+      .single();
+    if (data) setServiceConfig(data);
+  };
 
   const fetchUserPoints = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -40,6 +51,13 @@ export default function FollowersPage() {
         setRemoveAds(profile.remove_ads);
       }
     }
+  };
+
+  const calculateCost = (qty: number) => {
+    if (!serviceConfig) return qty * 2; // fallback
+    const cost = serviceConfig.provider_cost_per_1000 || 0.10;
+    const markup = serviceConfig.markup_multiplier || 3.0;
+    return Math.ceil((qty / 1000) * cost * 1000 * markup);
   };
 
   const formatNumber = (num: number) => {
@@ -202,12 +220,12 @@ export default function FollowersPage() {
                 {/* Quantity Selector */}
                 <div className="bg-slate-100 dark:bg-black/40 p-8 rounded-[2rem] border border-black/5 dark:border-white/5 space-y-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{quantity * 2}</span></span>
+                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{calculateCost(quantity)}</span></span>
                     <span className="text-sm font-black text-pink-500 uppercase">الكمية: <span className="text-slate-900 dark:text-white">{formatNumber(quantity)}</span></span>
                   </div>
                   <input 
                     type="range" 
-                    min={100} 
+                    min={serviceConfig?.min_quantity || 10} 
                     max={100000} 
                     step={10} 
                     value={quantity} 

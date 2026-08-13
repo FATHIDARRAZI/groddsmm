@@ -27,12 +27,27 @@ export default function PostsPage() {
   const [adWaitTime, setAdWaitTime] = useState(0);
   const [removeAds, setRemoveAds] = useState(false);
   const [userPoints, setUserPoints] = useState(0);
+  const [serviceConfigs, setServiceConfigs] = useState<any>({ likes: null, views: null });
 
   const supabase = createSupabaseClient();
 
   useEffect(() => {
     fetchUserPoints();
+    fetchServiceConfigs();
   }, []);
+
+  const fetchServiceConfigs = async () => {
+    const { data } = await supabase.from('services')
+      .select('service_type, provider_cost_per_1000, markup_multiplier, min_quantity, max_quantity')
+      .eq('category', 'instagram')
+      .in('service_type', ['likes', 'views']);
+      
+    if (data) {
+      const configs: any = {};
+      data.forEach((item: any) => configs[item.service_type] = item);
+      setServiceConfigs(configs);
+    }
+  };
 
   const fetchUserPoints = async () => {
     const { data: { user } } = await supabase.auth.getUser();
@@ -43,6 +58,14 @@ export default function PostsPage() {
         setRemoveAds(profile.remove_ads);
       }
     }
+  };
+
+  const calculateCost = (qty: number, type: string) => {
+    const conf = serviceConfigs[type];
+    if (!conf) return type === 'views' ? Math.ceil(qty / 50) : qty; // fallback
+    const cost = conf.provider_cost_per_1000 || 0.10;
+    const markup = conf.markup_multiplier || 3.0;
+    return Math.ceil((qty / 1000) * cost * 1000 * markup);
   };
 
   const formatNumber = (num: number) => {
@@ -273,14 +296,14 @@ export default function PostsPage() {
 
                 <div className="bg-slate-100 dark:bg-black/40 p-8 rounded-[2rem] border border-black/5 dark:border-white/5 space-y-6">
                   <div className="flex justify-between items-center">
-                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{service === 'views' ? Math.ceil(quantity / 50) : quantity}</span></span>
+                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{calculateCost(quantity, service)}</span></span>
                     <span className="text-sm font-black text-pink-500 uppercase">الكمية: <span className="text-slate-900 dark:text-white">{formatNumber(quantity)}</span></span>
                   </div>
                   <input 
                     type="range" 
-                    min={service === 'views' ? 100 : 50} 
-                    max={service === 'views' ? 10000000 : 100000} 
-                    step={service === 'views' ? 100 : 10} 
+                    min={serviceConfigs[service]?.min_quantity || 50} 
+                    max={serviceConfigs[service]?.max_quantity || 100000} 
+                    step={10} 
                     value={quantity} 
                     onChange={(e) => setQuantity(Number(e.target.value))} 
                     className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-pink-500" 
