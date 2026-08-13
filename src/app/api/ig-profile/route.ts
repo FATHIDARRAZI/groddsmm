@@ -56,9 +56,10 @@ export async function POST(request: Request) {
     let data;
     try {
       data = await Promise.any(fetchPromises);
-    } catch (aggregateError) {
-      console.error('All IG Profile fetches failed:', aggregateError);
-      return NextResponse.json({ success: false, error: 'لم يتم العثور على الحساب أو الحساب خاص.' });
+    } catch (aggregateError: any) {
+      console.error('All IG Profile fetches failed:', aggregateError.errors);
+      const errMsgs = aggregateError.errors ? aggregateError.errors.map((e: any) => e.message).join(', ') : aggregateError.message;
+      return NextResponse.json({ success: false, error: `خطأ في الاتصال: ${errMsgs}` });
     }
 
     const typedData = data as any;
