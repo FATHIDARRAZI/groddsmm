@@ -26,9 +26,9 @@ export async function GET(req: Request) {
 
     if (redError) throw redError;
 
-    const redeemedIds = new Set(redemptions?.map(r => r.coupon_id) || []);
+    const redeemedIds = new Set(redemptions?.map((r: any) => r.coupon_id) || []);
 
-    const publicCoupons = coupons.map(c => ({
+    const publicCoupons = coupons.map((c: any) => ({
       id: c.id,
       code: c.code,
       points: c.points,
