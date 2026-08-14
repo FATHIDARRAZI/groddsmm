@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase';
+import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SMART_LINK_URL = "https://evacuateenclose.com/zeyns3fb?key=cb01eb11742914d2a3e8c0cd74d17e70";
 
@@ -14,11 +16,13 @@ export default function DailyCoinsPage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isClaiming, setIsClaiming] = useState<boolean>(false);
   
-  // To handle the boost mechanic delay
+  // Ad & Timer
   const [isWatchingAd, setIsWatchingAd] = useState<boolean>(false);
-  const [adTimer, setAdTimer] = useState<number>(15); // Wait 15s for boosted
-
+  const [adTimer, setAdTimer] = useState<number>(15);
   const [isTabActive, setIsTabActive] = useState(true);
+
+  // Success Modal State
+  const [successState, setSuccessState] = useState<{ show: boolean; title: string; message: string }>({ show: false, title: '', message: '' });
 
   useEffect(() => {
     const handleVisibility = () => {
@@ -70,7 +74,6 @@ export default function DailyCoinsPage() {
     loadProfile();
   }, []);
 
-  // Timer Effect for Boosted Claim
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isWatchingAd && adTimer > 0) {
@@ -80,32 +83,56 @@ export default function DailyCoinsPage() {
         }
       }, 1000);
     } else if (isWatchingAd && adTimer <= 0) {
-      // Execute claim once timer finishes
       setIsWatchingAd(false);
       executeClaim('boosted');
     }
     return () => clearInterval(interval);
   }, [isWatchingAd, adTimer, isTabActive]);
 
-  // Update document title with daily timer
   useEffect(() => {
     if (isWatchingAd && adTimer > 0) {
       document.title = `⏱️ (${adTimer}ث) جاري المضاعفة | Grodd SMM`;
     } else {
       document.title = 'لوحة التحكم | Grodd SMM';
     }
-    
     return () => {
       document.title = 'لوحة التحكم | Grodd SMM';
     };
   }, [isWatchingAd, adTimer]);
+
+  const triggerConfetti = () => {
+    const duration = 3 * 1000;
+    const end = Date.now() + duration;
+
+    const frame = () => {
+      confetti({
+        particleCount: 5,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#ec4899', '#f43f5e', '#ffffff']
+      });
+      confetti({
+        particleCount: 5,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#ec4899', '#f43f5e', '#ffffff']
+      });
+
+      if (Date.now() < end) {
+        requestAnimationFrame(frame);
+      }
+    };
+    frame();
+  };
 
   const initiateBoost = () => {
     if (isClaiming || hasClaimedToday) return;
     window.open(SMART_LINK_URL, '_blank');
     setIsWatchingAd(true);
     setAdTimer(15);
-    setIsTabActive(false); // Immediately start counting!
+    setIsTabActive(false);
   };
 
   const executeClaim = async (type: 'base' | 'boosted') => {
@@ -125,20 +152,22 @@ export default function DailyCoinsPage() {
         setHasClaimedToday(true);
         setCurrentStreak(data.newStreak);
         
-        let message = `نجاح! حصلت على ${data.pointsAdded} نقطة.`;
+        let message = `حصلت على ${data.pointsAdded} نقطة بنجاح!`;
         if (data.chestOpened) {
-          message += ' لقد فتحت الصندوق الغامض وحصلت على الجائزة الكبرى!';
+          message = `تهانينا! لقد فتحت الصندوق الغامض وحصلت على ${data.pointsAdded} نقطة! 🎉`;
         }
-        alert(message);
+        
+        setSuccessState({ show: true, title: 'نجاح!', message });
+        triggerConfetti();
         
         router.refresh(); 
         window.dispatchEvent(new Event('pointsUpdated')); 
       } else {
-        alert(data.error || "Failed to claim reward.");
+        setSuccessState({ show: true, title: 'عذراً', message: data.error || "Failed to claim reward." });
       }
     } catch (err) {
       console.error(err);
-      alert("Network error.");
+      setSuccessState({ show: true, title: 'خطأ بالاتصال', message: "الرجاء المحاولة مرة أخرى." });
     } finally {
       setIsClaiming(false);
     }
@@ -147,22 +176,54 @@ export default function DailyCoinsPage() {
   const renderStreakDays = () => {
     const days = [1, 2, 3, 4, 5];
     return (
-      <div className="flex flex-wrap justify-center gap-2 md:gap-4 my-8">
-        {days.map(day => {
+      <div className="relative w-full my-12 flex justify-between items-center z-0 px-2 md:px-8">
+        {/* Connecting Line */}
+        <div className="absolute top-1/2 left-0 right-0 h-1 bg-white/5 -z-10 rounded-full mx-6 md:mx-16 transform -translate-y-1/2"></div>
+        {/* Active Line */}
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: `${(Math.min(currentStreak, 4) / 4) * 100}%` }}
+          transition={{ duration: 1, ease: 'easeOut' }}
+          className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-pink-600 to-rose-400 -z-10 rounded-full mx-6 md:mx-16 transform -translate-y-1/2 shadow-[0_0_15px_rgba(236,72,153,0.5)]"
+          style={{ transformOrigin: 'right' }} // RTL support
+        ></motion.div>
+
+        {days.map((day, idx) => {
           const isAchieved = day <= currentStreak;
           const isNext = day === currentStreak + 1 && !hasClaimedToday;
           const isChest = day === 5;
           
           return (
-            <div key={day} className={`flex flex-col items-center p-3 md:p-4 rounded-xl border ${isAchieved ? 'border-pink-500 bg-pink-500/10' : isNext ? 'border-white/20 bg-white/5 animate-pulse' : 'border-white/5 bg-[#1C1C1E] opacity-50'} w-20 md:w-24 relative overflow-hidden transition-all`}>
-              <div className="text-[10px] text-slate-400 font-bold mb-2 tracking-widest uppercase">اليوم {day}</div>
-              <i className={`fas ${isChest ? 'fa-treasure-chest' : 'fa-fire'} text-2xl md:text-3xl ${isAchieved ? 'text-pink-500' : 'text-slate-600'}`}></i>
+            <motion.div 
+              key={day} 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="relative flex flex-col items-center"
+            >
+              {/* Day Bubble */}
+              <div 
+                className={`w-14 h-14 md:w-20 md:h-20 rounded-2xl flex items-center justify-center text-2xl md:text-3xl border-2 shadow-xl backdrop-blur-md transition-all duration-300
+                  ${isAchieved ? 'bg-pink-500/20 border-pink-500 text-pink-400 shadow-[0_0_20px_rgba(236,72,153,0.3)]' : 
+                    isNext ? 'bg-white/10 border-white/30 text-white/90 animate-pulse shadow-[0_0_15px_rgba(255,255,255,0.1)]' : 
+                    'bg-black/40 border-white/5 text-white/20'}`}
+              >
+                <i className={`fas ${isChest ? 'fa-treasure-chest text-yellow-500' : 'fa-fire'}`}></i>
+              </div>
+              {/* Label */}
+              <div className={`mt-3 text-xs md:text-sm font-bold ${isAchieved ? 'text-pink-400' : isNext ? 'text-white' : 'text-slate-600'}`}>
+                اليوم {day}
+              </div>
+              {/* Checkmark */}
               {isAchieved && (
-                <div className="absolute -bottom-1 -right-1 text-green-500 bg-[#0B0F19] rounded-full w-5 h-5 flex items-center justify-center text-[10px] border border-green-500">
+                <motion.div 
+                  initial={{ scale: 0 }} animate={{ scale: 1 }}
+                  className="absolute -top-2 -right-2 bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 border-[#121214] shadow-lg"
+                >
                   <i className="fas fa-check"></i>
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           );
         })}
       </div>
@@ -170,74 +231,151 @@ export default function DailyCoinsPage() {
   };
 
   if (isLoading) {
-    return <div className="w-full flex justify-center py-20"><i className="fas fa-spinner fa-spin text-4xl text-pink-500"></i></div>;
+    return (
+      <div className="w-full flex justify-center py-32">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 border-4 border-pink-500/20 rounded-full"></div>
+          <div className="absolute inset-0 border-4 border-pink-500 rounded-full border-t-transparent animate-spin"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto animate-fade-in relative z-10 pt-4">
+    <div className="w-full max-w-4xl mx-auto py-8 px-4 relative z-10">
       
-      <div className="text-center mb-8 space-y-4">
-        <h1 className="text-4xl md:text-5xl font-black text-white tracking-tighter drop-shadow-lg">
-          المكافآت <span className="text-pink-500">اليومية</span>
+      {/* Header */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12 space-y-4"
+      >
+        <div className="inline-block px-4 py-1 rounded-full bg-pink-500/10 border border-pink-500/20 text-pink-400 text-sm font-bold mb-2">
+          💰 نقاط مجانية كل يوم
+        </div>
+        <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter drop-shadow-xl">
+          المكافآت <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-400">اليومية</span>
         </h1>
-        <p className="text-slate-400 font-bold text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-          سجل دخولك يومياً واحصل على نقاط مجانية. استخدم الرابط الممول لمضاعفة مكافأتك 3 أضعاف وبناء سلسلة الانتصارات للحصول على الصندوق الغامض!
+        <p className="text-slate-400 font-medium text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+          سجل دخولك يومياً لجمع النقاط. استخدم زر <span className="text-pink-400 font-bold">المضاعفة x3</span> لجمع النقاط بسرعة وبناء سلسلة الأيام لفتح الصندوق الغامض!
         </p>
-      </div>
+      </motion.div>
 
-      <div className="bg-[#121214] border border-white/10 p-6 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden text-center max-w-3xl mx-auto">
-        
-        <h2 className="text-2xl font-black text-white mb-2">سلسلة المضاعفة 🚀</h2>
-        <p className="text-sm text-slate-500">اجمع المكافأة المضاعفة 5 أيام متتالية لفتح الصندوق!</p>
+      {/* Main Card */}
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+        className="bg-gradient-to-b from-[#1c1c1e] to-[#121214] border border-white/5 p-6 md:p-12 rounded-3xl shadow-2xl relative overflow-hidden text-center max-w-3xl mx-auto"
+      >
+        {/* Glow Effect */}
+        <div className="absolute -top-32 -left-32 w-64 h-64 bg-pink-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-rose-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <h2 className="text-2xl md:text-3xl font-black text-white mb-2 relative z-10">سلسلة المضاعفة 🚀</h2>
+        <p className="text-sm md:text-base text-slate-400 relative z-10">اجمع المكافأة المضاعفة <span className="text-pink-400 font-bold">5 أيام متتالية</span> لفتح الصندوق!</p>
 
         {renderStreakDays()}
 
-        {hasClaimedToday ? (
-          <div className="bg-green-500/10 border border-green-500/20 p-6 rounded-2xl animate-fade-in">
-            <i className="fas fa-check-circle text-5xl text-green-500 mb-4 drop-shadow-[0_0_15px_rgba(34,197,94,0.5)]"></i>
-            <h3 className="text-2xl font-black text-green-400 mb-2">تم الاستلام بنجاح</h3>
-            <p className="text-slate-400 font-bold">عُد غداً للحصول على مكافأتك القادمة!</p>
-          </div>
-        ) : isWatchingAd ? (
-          <div className="bg-yellow-500/10 border border-yellow-500/20 p-8 rounded-2xl flex flex-col items-center">
-            {isTabActive ? (
-              <>
-                <i className="fas fa-pause text-5xl text-yellow-500 mb-4 animate-bounce"></i>
-                <h3 className="text-2xl font-black text-yellow-500 mb-2">متوقف مؤقتاً</h3>
-                <p className="text-slate-400 font-bold">يرجى العودة إلى صفحة الإعلان لإكمال العداد.</p>
-              </>
-            ) : (
-              <>
-                <i className="fas fa-spinner fa-spin text-5xl text-pink-500 mb-4"></i>
-                <h3 className="text-2xl font-black text-pink-500 mb-2">جاري التحقق...</h3>
-                <p className="text-slate-300 font-bold text-xl mb-2">{adTimer} ثانية</p>
-                <p className="text-slate-500 text-sm">لا تغلق صفحة الإعلان حتى ينتهي الوقت.</p>
-              </>
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col md:flex-row gap-4 mt-8 w-full max-w-2xl mx-auto">
-            <button 
-              onClick={() => executeClaim('base')}
-              disabled={isClaiming}
-              className="flex-1 py-5 rounded-2xl font-black text-slate-300 bg-white/5 border border-white/10 hover:bg-white/10 transition-all flex flex-col items-center justify-center gap-1 shadow-inner active:scale-95"
+        <AnimatePresence mode="wait">
+          {successState.show ? (
+            <motion.div 
+              key="success"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }}
+              className="bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 p-8 rounded-3xl max-w-lg mx-auto backdrop-blur-sm"
             >
-              <span className="text-lg">مكافأة عادية</span>
-              <span className="text-sm font-bold text-slate-500">+10 نقاط (بدون سلسلة)</span>
-            </button>
-            
-            <button 
-              onClick={initiateBoost}
-              disabled={isClaiming}
-              className="flex-[2] py-5 rounded-2xl font-black text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:scale-105 transition-all flex flex-col items-center justify-center gap-1 shadow-[0_0_30px_rgba(236,72,153,0.3)] border border-pink-400/50 active:scale-95"
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i className="fas fa-check text-3xl text-green-400"></i>
+              </div>
+              <h3 className="text-2xl font-black text-green-400 mb-2">{successState.title}</h3>
+              <p className="text-slate-300 text-lg">{successState.message}</p>
+              <p className="text-slate-500 text-sm mt-4 font-medium">عُد غداً للحصول على المزيد!</p>
+            </motion.div>
+          ) : hasClaimedToday ? (
+            <motion.div 
+              key="claimed"
+              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+              className="bg-white/5 border border-white/10 p-8 rounded-3xl max-w-lg mx-auto backdrop-blur-sm"
             >
-              <span className="text-2xl flex items-center gap-2"><i className="fas fa-rocket"></i> ضاعف المكافأة x3</span>
-              <span className="text-sm font-bold text-pink-200">+30 نقطة & زيادة السلسلة</span>
-            </button>
-          </div>
-        )}
+              <i className="fas fa-clock text-4xl text-slate-400 mb-4"></i>
+              <h3 className="text-xl font-bold text-white mb-2">تم استلام المكافأة اليوم</h3>
+              <p className="text-slate-400">لقد قمت بجمع مكافأتك بالفعل. عُد غداً لإكمال السلسلة!</p>
+            </motion.div>
+          ) : isWatchingAd ? (
+            <motion.div 
+              key="ad"
+              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+              className="bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 p-8 rounded-3xl flex flex-col items-center max-w-lg mx-auto relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-white/5">
+                <motion.div 
+                  className="h-full bg-gradient-to-r from-indigo-500 to-pink-500"
+                  animate={{ width: isTabActive ? '0%' : `${((15 - adTimer) / 15) * 100}%` }}
+                />
+              </div>
 
-      </div>
+              {isTabActive ? (
+                <>
+                  <div className="w-20 h-20 bg-yellow-500/10 rounded-full flex items-center justify-center mb-6">
+                    <i className="fas fa-pause text-3xl text-yellow-500 animate-pulse"></i>
+                  </div>
+                  <h3 className="text-2xl font-black text-yellow-500 mb-3">العداد متوقف! ⏸️</h3>
+                  <p className="text-slate-300 text-lg leading-relaxed">يرجى العودة إلى صفحة الإعلان التي فُتحت للتو والبقاء هناك حتى ينتهي الوقت.</p>
+                </>
+              ) : (
+                <>
+                  <div className="relative w-24 h-24 mb-6">
+                    <svg className="w-full h-full transform -rotate-90">
+                      <circle cx="48" cy="48" r="45" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="6" />
+                      <circle 
+                        cx="48" cy="48" r="45" fill="none" stroke="#ec4899" strokeWidth="6"
+                        strokeDasharray="283"
+                        strokeDashoffset={283 - (283 * ((15 - adTimer) / 15))}
+                        className="transition-all duration-1000 ease-linear"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-3xl font-black text-white">{adTimer}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-black text-pink-400 mb-2">جاري التحقق...</h3>
+                  <p className="text-slate-400">لا تغلق صفحة الإعلان، يتم تجهيز المكافأة المضاعفة.</p>
+                </>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="buttons"
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="flex flex-col md:flex-row gap-4 mt-8 w-full max-w-2xl mx-auto"
+            >
+              <button 
+                onClick={() => executeClaim('base')}
+                disabled={isClaiming}
+                className="group flex-1 py-6 rounded-3xl font-black text-slate-300 bg-[#2C2C2E] border border-white/5 hover:bg-[#3C3C3E] hover:border-white/10 transition-all flex flex-col items-center justify-center gap-2 relative overflow-hidden"
+              >
+                <i className="fas fa-coins text-2xl text-slate-400 group-hover:text-yellow-500 transition-colors"></i>
+                <span className="text-xl">مكافأة عادية</span>
+                <span className="text-xs font-bold text-slate-500 bg-black/30 px-3 py-1 rounded-full">+10 نقاط فقط</span>
+              </button>
+              
+              <button 
+                onClick={initiateBoost}
+                disabled={isClaiming}
+                className="group flex-[2] py-6 rounded-3xl font-black text-white bg-gradient-to-r from-pink-600 to-rose-500 hover:from-pink-500 hover:to-rose-400 transition-all flex flex-col items-center justify-center gap-2 shadow-[0_10px_40px_rgba(236,72,153,0.4)] border-2 border-pink-400/50 hover:scale-[1.02] active:scale-95"
+              >
+                <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
+                <div className="flex items-center gap-3">
+                  <i className="fas fa-rocket text-3xl animate-bounce"></i>
+                  <span className="text-2xl md:text-3xl">ضاعف المكافأة x3</span>
+                </div>
+                <span className="text-sm font-bold text-pink-100 bg-black/20 px-4 py-1.5 rounded-full mt-1 backdrop-blur-md">
+                  +30 نقطة & تقدم السلسلة للصندوق!
+                </span>
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+      </motion.div>
     </div>
   );
 }
