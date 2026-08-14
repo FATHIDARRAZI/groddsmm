@@ -24,7 +24,7 @@ export async function POST(req: Request) {
     }
 
     // Determine target quantity
-    const finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 10 ? requestedQuantity : 100;
+    let finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= 10 ? requestedQuantity : 100;
 
     // 1. Session & Auth Check
     const supabase = await createSupabaseServerClient();
@@ -92,6 +92,15 @@ export async function POST(req: Request) {
 
       if (!serviceConfig.is_active) {
         return NextResponse.json({ error: 'هذه الخدمة معطلة حالياً. الرجاء المحاولة لاحقاً.' }, { status: 400 });
+      }
+
+      // If user is not logged in, ALWAYS force the absolute minimum quantity to save admin funds
+      finalQuantity = typeof requestedQuantity === 'number' && requestedQuantity >= serviceConfig.min_quantity 
+        ? requestedQuantity 
+        : serviceConfig.min_quantity;
+
+      if (!user) {
+        finalQuantity = serviceConfig.min_quantity;
       }
 
       if (finalQuantity < serviceConfig.min_quantity) {

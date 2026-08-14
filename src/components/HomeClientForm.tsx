@@ -5,18 +5,15 @@ import Link from 'next/link';
 import { Turnstile } from '@marsidev/react-turnstile';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { createSupabaseClient } from '@/lib/supabase';
+import Image from 'next/image';
 
-type ServiceType = 'likes' | 'views';
-
-const SOCIAL_CATEGORIES = [
-  { id: 'instagram', icon: 'fa-instagram', color: 'text-[#E1306C]', name: 'انستقرام', size: 'text-3xl md:text-4xl scale-[0.9]' },
-  { id: 'tiktok', icon: 'fa-tiktok', color: 'text-white', name: 'تيك توك', size: 'text-4xl md:text-5xl' },
-];
+type ServiceType = 'likes' | 'views' | 'followers';
 
 export default function HomeClientForm() {
-  const [category, setCategory] = useState<string>('instagram');
-  const [postLink, setPostLink] = useState('');
-  const [service, setService] = useState<ServiceType>('likes');
+  const [username, setUsername] = useState('');
+  const [profile, setProfile] = useState<any>(null);
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false);
+  const [service, setService] = useState<ServiceType>('followers');
   const [step, setStep] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [errorMsg, setErrorMsg] = useState('');
@@ -70,12 +67,56 @@ export default function HomeClientForm() {
     return () => clearInterval(timer);
   }, [step, timeLeft]);
 
+  const handleFetchProfile = async () => {
+    if (!username.trim()) {
+      setErrorMsg('الرجاء إدخال اسم المستخدم (Username)');
+      return;
+    }
+    setErrorMsg('');
+    setIsFetchingProfile(true);
+    setProfile(null);
+
+    try {
+      const res = await fetch('/api/ig-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: username.trim() }),
+      });
+      const data = await res.json();
+      
+      if (data.success && data.data) {
+        if (data.data.is_private) {
+          setErrorMsg(data.data.private_error_message || 'الحساب خاص. يرجى تحويله إلى عام.');
+        } else {
+          setProfile(data.data);
+        }
+      } else {
+        setErrorMsg(data.error || 'تعذر العثور على الحساب. تأكد من اسم المستخدم.');
+      }
+    } catch (err) {
+      setErrorMsg('حدث خطأ في جلب بيانات الحساب.');
+    } finally {
+      setIsFetchingProfile(false);
+    }
+  };
+
   const submitSmmRequest = useCallback(async () => {
     try {
+      let finalLink = username.trim();
+      
+      if (service === 'likes' || service === 'views') {
+        if (!profile?.recent_posts || profile.recent_posts.length === 0) {
+          setErrorMsg('لا يوجد منشورات حديثة في هذا الحساب لتطبيق الخدمة عليها.');
+          setStep(1);
+          return;
+        }
+        finalLink = profile.recent_posts[0].url;
+      }
+
       const res = await fetch('/api/smm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: postLink.trim(), serviceType: service, category, recaptchaToken })
+        body: JSON.stringify({ link: finalLink, serviceType: service, category: 'instagram', recaptchaToken })
       });
       const data = await res.json();
       
@@ -99,16 +140,17 @@ export default function HomeClientForm() {
       setTimeLeft(2 * 60);
       setStep(3);
       setShowUnlockModal(true);
-      setPostLink('');
+      setUsername('');
+      setProfile(null);
       setRecaptchaToken('');
     } catch (err) {
       setErrorMsg('فشل الاتصال بالخادم.');
     }
-  }, [postLink, service, recaptchaToken, category]);
+  }, [username, service, recaptchaToken, profile]);
 
   const handleStartProcess = () => {
-    if (!postLink.trim()) {
-      setErrorMsg('الرجاء إدخال رابط المنشور الخاص بك');
+    if (!profile) {
+      setErrorMsg('الرجاء البحث عن الحساب أولاً');
       setTimeout(() => setErrorMsg(''), 3000);
       return;
     }
@@ -152,39 +194,33 @@ export default function HomeClientForm() {
       <div className="relative z-10">
         {(step === 1 || step === 1.5) && (
           <div className={`space-y-6 transition-all duration-500 relative ${step === 1.5 ? 'blur-sm pointer-events-none opacity-50' : 'animate-fade-in'}`}>
-            <div className="flex flex-col gap-3 relative group/input mb-8">
-              <label className="text-sm font-bold text-slate-400 tracking-widest block text-right w-full mb-2">رابط المحتوى (Post Link)</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-500 font-bold transition-colors">
-                  <i className="fas fa-link text-xl"></i>
+            
+            <div className="flex flex-col gap-3 relative mb-6">
+              <label className="text-sm font-bold text-slate-400 tracking-widest block text-right w-full mb-2">اسم المستخدم (Username)</label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 right-5 flex items-center pointer-events-none text-slate-500 font-bold">
+                    <i className="fas fa-at text-xl"></i>
+                  </div>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      if(profile) setProfile(null);
+                    }}
+                    placeholder="مثال: cristiano"
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl py-4 pr-14 pl-4 text-left dir-ltr text-white text-lg placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={postLink}
-                  onChange={(e) => setPostLink(e.target.value)}
-                  placeholder="ضع الرابط هنا..."
-                  className="w-full bg-slate-950 border border-slate-800 rounded-xl py-6 pr-14 pl-4 text-left dir-ltr text-white text-lg placeholder-slate-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-4 items-center w-full mb-8">
-              <label className="text-sm font-black text-slate-400 uppercase tracking-widest text-center w-full block">اختر المنصة (Platform)</label>
-              <div className="flex justify-center gap-3 md:gap-5">
-                {SOCIAL_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat.id}
-                    onClick={() => setCategory(cat.id)}
-                    className={`w-20 h-20 md:w-24 md:h-24 rounded-2xl flex flex-col items-center justify-center gap-1 transition-all group ${
-                      category === cat.id 
-                        ? 'bg-blue-600/10 border-2 border-blue-500 scale-110 shadow-[0_0_20px_rgba(59,130,246,0.2)]' 
-                        : 'bg-slate-950 border border-slate-800 opacity-70 hover:opacity-100 hover:scale-105'
-                    }`}
-                    title={cat.name}
-                  >
-                    <i className={`fab ${cat.icon} ${category === cat.id ? 'text-blue-500' : 'text-slate-500'} ${cat.size} drop-shadow-md transition-all`}></i>
-                  </button>
-                ))}
+                <button
+                  onClick={handleFetchProfile}
+                  disabled={isFetchingProfile || !username.trim()}
+                  className="px-6 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {isFetchingProfile ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-search"></i>}
+                  <span className="hidden sm:inline">بحث</span>
+                </button>
               </div>
             </div>
 
@@ -194,47 +230,79 @@ export default function HomeClientForm() {
               </div>
             )}
 
-            <div className="flex flex-col gap-3 mt-4">
-              <label className="text-sm font-bold text-slate-400 tracking-widest block text-right w-full mb-2">الخطة الإعلانية (Strategy)</label>
-              <div className="flex flex-col sm:flex-row bg-slate-950 p-1.5 rounded-xl w-full border border-slate-800 gap-1 sm:gap-0">
-                <button
-                  onClick={() => setService('likes')}
-                  className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-lg font-bold text-base md:text-lg transition-all duration-300 ${
-                    service === 'likes' ? 'bg-blue-600 text-white shadow-sm border border-blue-500' : 'text-slate-500 hover:text-white border border-transparent'
-                  }`}
-                >
-                  <i className={`fas fa-heart text-xl ${service === 'likes' ? 'text-white' : 'text-slate-600'}`}></i> زيادة لايكات
-                </button>
-                <button
-                  onClick={() => setService('views')}
-                  className={`flex-1 flex items-center justify-center gap-3 py-4 rounded-lg font-bold text-base md:text-lg transition-all duration-300 ${
-                    service === 'views' ? 'bg-blue-600 text-white shadow-sm border border-blue-500' : 'text-slate-500 hover:text-white border border-transparent'
-                  }`}
-                >
-                  <i className={`fas fa-eye text-xl ${service === 'views' ? 'text-white' : 'text-slate-600'}`}></i> زيادة مشاهدات
-                </button>
+            {profile && (
+              <div className="bg-slate-950 rounded-xl p-4 border border-slate-800 flex items-center gap-4 animate-fade-in mb-6">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-blue-500/50 relative shrink-0">
+                  {profile.profile_pic ? (
+                    <Image src={profile.profile_pic} alt={profile.username} fill className="object-cover" />
+                  ) : (
+                    <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400"><i className="fas fa-user"></i></div>
+                  )}
+                </div>
+                <div className="flex flex-col text-right flex-1 min-w-0">
+                  <span className="text-white font-bold truncate text-lg dir-ltr text-left w-fit" dir="ltr">@{profile.username}</span>
+                  <span className="text-slate-400 text-sm truncate">{profile.full_name}</span>
+                </div>
+                <div className="text-center shrink-0 pl-2">
+                  <div className="text-white font-black text-lg">{new Intl.NumberFormat('en-US', { notation: "compact", compactDisplay: "short" }).format(profile.followers)}</div>
+                  <div className="text-slate-500 text-xs">متابع</div>
+                </div>
               </div>
-            </div>
+            )}
 
-            <div className="flex justify-center w-full my-8 max-w-full">
-              <div 
-                className="bg-slate-950 p-3 rounded-xl shadow-inner border border-slate-800 flex justify-center min-h-[85px] items-center"
+            {profile && (
+              <div className="flex flex-col gap-3 mt-4 animate-fade-in">
+                <label className="text-sm font-bold text-slate-400 tracking-widest block text-right w-full mb-2">الخدمة المجانية (Service)</label>
+                <div className="flex flex-col sm:flex-row bg-slate-950 p-1.5 rounded-xl w-full border border-slate-800 gap-1 sm:gap-0">
+                  <button
+                    onClick={() => setService('followers')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
+                      service === 'followers' ? 'bg-blue-600 text-white shadow-sm border border-blue-500' : 'text-slate-500 hover:text-white border border-transparent'
+                    }`}
+                  >
+                    <i className={`fas fa-user-plus text-lg ${service === 'followers' ? 'text-white' : 'text-slate-600'}`}></i> متابعين
+                  </button>
+                  <button
+                    onClick={() => setService('likes')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
+                      service === 'likes' ? 'bg-blue-600 text-white shadow-sm border border-blue-500' : 'text-slate-500 hover:text-white border border-transparent'
+                    }`}
+                  >
+                    <i className={`fas fa-heart text-lg ${service === 'likes' ? 'text-white' : 'text-slate-600'}`}></i> لايكات
+                  </button>
+                  <button
+                    onClick={() => setService('views')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-lg font-bold text-sm md:text-base transition-all duration-300 ${
+                      service === 'views' ? 'bg-blue-600 text-white shadow-sm border border-blue-500' : 'text-slate-500 hover:text-white border border-transparent'
+                    }`}
+                  >
+                    <i className={`fas fa-eye text-lg ${service === 'views' ? 'text-white' : 'text-slate-600'}`}></i> مشاهدات
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {profile && (
+              <div className="flex justify-center w-full my-8 max-w-full animate-fade-in">
+                <div className="bg-slate-950 p-3 rounded-xl shadow-inner border border-slate-800 flex justify-center min-h-[85px] items-center">
+                  <Turnstile
+                    siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
+                    onSuccess={(token: string) => setRecaptchaToken(token)}
+                    onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
+                    options={{ theme: 'dark' }}
+                  />
+                </div>
+              </div>
+            )}
+
+            {profile && (
+              <button
+                onClick={handleStartProcess}
+                className="w-full py-5 mt-4 rounded-xl font-extrabold text-white text-xl bg-blue-600 hover:bg-blue-500 hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-[0_4px_20px_rgba(37,99,235,0.3)] flex items-center justify-center gap-3 animate-fade-in"
               >
-                <Turnstile
-                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || ''}
-                  onSuccess={(token: string) => setRecaptchaToken(token)}
-                  onError={() => setErrorMsg('فشل التحقق، يرجى المحاولة مرة أخرى')}
-                  options={{ theme: 'dark' }}
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={handleStartProcess}
-              className="w-full py-5 mt-4 rounded-xl font-extrabold text-white text-xl bg-blue-600 hover:bg-blue-500 hover:scale-[1.02] active:scale-[0.98] transition-all focus:outline-none focus:ring-4 focus:ring-blue-500/30 shadow-[0_4px_20px_rgba(37,99,235,0.3)] flex items-center justify-center gap-3"
-            >
-              بدء إطلاق الحملة <i className="fas fa-rocket text-lg"></i>
-            </button>
+                بدء إطلاق الحملة <i className="fas fa-rocket text-lg"></i>
+              </button>
+            )}
 
             <div className="w-full flex items-center gap-4 mt-6">
               <div className="h-px bg-white/5 flex-1"></div>
@@ -299,75 +367,60 @@ export default function HomeClientForm() {
               <h3 className="text-xl font-bold text-slate-900 dark:text-white text-center mb-4 flex justify-center items-center gap-2">
                 <i className="fas fa-spinner fa-spin text-[#FF8577]"></i> جاري تحضير طلبك...
               </h3>
-              <div className="relative w-full h-3 bg-slate-100 dark:bg-[#0B0F19] rounded-full overflow-hidden shadow-inner flex">
-                 <div className="absolute top-0 right-0 h-full luminary-gradient-bg transition-all duration-1000 ease-linear" style={{ width: `${(1 - sponsorTimeLeft / 30) * 100}%` }}></div>
+              <p className="text-slate-600 dark:text-slate-400 text-center text-sm mb-6">
+                يرجى عدم إغلاق هذه الصفحة. جاري التواصل مع السيرفرات وإرسال الطلب.
+              </p>
+              
+              <div className="w-full bg-slate-100 dark:bg-[#0D0D0E] h-2 rounded-full overflow-hidden">
+                <div 
+                  className="h-full bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] transition-all duration-1000 ease-linear"
+                  style={{ width: `${((30 - sponsorTimeLeft) / 30) * 100}%` }}
+                ></div>
               </div>
-              <p className="text-center text-slate-500 text-xs mt-4">نحن نعتمد على الإعلانات لإبقاء الخدمة مجانية للجميع.</p>
             </div>
           </div>
         </div>
       )}
 
       {step === 3 && (
-        <div className="text-center py-6 animate-fade-in space-y-6 mt-12 w-full max-w-xl mx-auto z-10 relative">
-          <div className="w-24 h-24 mx-auto bg-[#FF8577]/10 rounded-full flex items-center justify-center border border-[#FF8577]/20 mb-2 shadow-[0_0_30px_rgba(255,133,119,0.2)]">
-            <i className="fas fa-check text-4xl text-[#FF8577]"></i>
+        <div className="flex flex-col items-center justify-center text-center space-y-6 animate-fade-in py-10 relative z-10">
+          <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mb-4">
+            <i className="fas fa-check-circle text-5xl text-green-500 drop-shadow-[0_0_15px_rgba(34,197,94,0.3)]"></i>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">تم اطلاق حملتك التسويقية المجانية بنجاح!</h3>
-            <p className="text-slate-600 dark:text-slate-400 text-sm">بدأ تحسين الخوارزميات ونشر المحتوى. يرجى الانتظار لاستقرار النتائج وبداية فترة التقييم المدرجة بالعداد الزمني.</p>
+          <h2 className="text-3xl font-black text-slate-900 dark:text-white">تم إرسال طلبك بنجاح!</h2>
+          
+          <div className="bg-slate-50 dark:bg-black/20 p-6 rounded-2xl border border-black/5 dark:border-white/5 w-full">
+            <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed font-bold">
+              لقد وضعنا طلبك في طابور التنفيذ السريع.
+            </p>
+            <p className="text-slate-500 text-sm mt-3">
+              الرجاء الانتظار قليلاً قبل إرسال طلب جديد.
+            </p>
           </div>
 
-          <div className="bg-white dark:bg-[#1C1C1E] rounded-2xl p-6 border border-black/5 dark:border-white/5 shadow-2xl">
-            <div className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-bold block w-full text-center">الوقت المتبقي للطلب القادم</div>
-            <div className="text-5xl font-mono font-extrabold luminary-gradient-text tabular-nums text-center w-full block">
-              {formatTime(timeLeft)}
-            </div>
+          <div className="flex flex-col items-center bg-white dark:bg-black/30 w-full py-6 rounded-2xl border border-black/5 dark:border-white/5">
+            <span className="text-slate-500 text-sm font-bold uppercase tracking-widest mb-2">الوقت المتبقي للطلب القادم</span>
+            <span className="text-5xl font-black text-slate-900 dark:text-white tabular-nums tracking-tight font-outfit">{formatTime(timeLeft)}</span>
           </div>
-        </div>
-      )}
-
-      {showUnlockModal && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#0B0F19]/90 backdrop-blur-md transition-all"></div>
-          <div className="relative z-10 w-full max-w-[450px] bg-gradient-to-br from-white to-slate-50 dark:from-[#1C1C1E] dark:to-[#121827] border border-[#FF8577]/30 rounded-3xl p-8 shadow-[0_0_50px_rgba(255,133,119,0.2)] animate-fade-in flex flex-col items-center text-center">
-             
-             <button 
-               onClick={() => setShowUnlockModal(false)}
-               className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/5"
-             >
-               <i className="fas fa-times text-xl"></i>
-             </button>
-
-             <div className="w-20 h-20 bg-[#FF8577]/10 rounded-full flex items-center justify-center text-[#FF8577] text-3xl mb-6 shadow-inner border border-[#FF8577]/20">
-                <i className="fas fa-gift"></i>
-             </div>
-
-             <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">تهانينا! تمت إضافة طلبك 🚀</h2>
-             <p className="text-slate-600 dark:text-slate-300 text-sm mb-6 leading-relaxed">
-               تمت الجدولة بنجاح. هل تريد الحصول على <strong>1,000 مشاهدة إضافية</strong> فوراً وبشكل مجاني تماماً؟
-             </p>
-
-             <div className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl p-4 mb-6">
-                <p className="text-xs text-slate-600 dark:text-slate-400 font-bold mb-3">أنشئ حساب مجاني في المنصة لفتح برنامج شركاء النجاح وتحصل على:</p>
-                <ul className="text-right text-xs text-slate-700 dark:text-slate-300 space-y-2 dir-rtl">
-                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> رصيد مجاني ترحيبي.</li>
-                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مكافآت يومية متجددة.</li>
-                  <li className="flex gap-2 items-center"><i className="fas fa-check text-green-500"></i> مهام سهلة بآلاف النقاط.</li>
-                </ul>
-             </div>
-
-             <div className="w-full flex flex-col gap-3">
-               <Link href="/auth/signup" onClick={() => setShowUnlockModal(false)} className="w-full py-4 bg-gradient-to-r from-[#FF8577] to-[#FF6B6B] text-[#1F0A07] rounded-xl font-black text-sm hover:opacity-90 transition-all shadow-[0_0_20px_rgba(255,133,119,0.3)] flex items-center justify-center gap-2 hover:scale-[1.02]">
-                 <i className="fas fa-user-plus"></i> إنشاء حساب مجاني الآن
-               </Link>
-               <button onClick={() => setShowUnlockModal(false)} className="w-full py-3 text-slate-500 hover:text-slate-300 text-xs font-bold transition-all underline decoration-slate-600 hover:decoration-slate-400">
-                 لا شكراً، سأكتفي بالطلب الحالي
-               </button>
-             </div>
+          
+          <div className="w-full h-px bg-black/5 dark:bg-white/5 my-4"></div>
+          
+          <div className="flex flex-col gap-3 w-full">
+            <button
+              onClick={() => {
+                const target = document.getElementById('pricing-plans');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="w-full py-4 rounded-xl font-bold bg-[#1F0A07] dark:bg-white text-white dark:text-slate-900 hover:scale-[1.02] active:scale-[0.98] transition-all"
+            >
+              🚀 تخطى الانتظار واشتري الآن
+            </button>
           </div>
         </div>
       )}
+
     </div>
   );
 }

@@ -7,11 +7,7 @@ const proxyUrl = process.env.IG_PROXY_URL || '';
 export async function POST(request: Request) {
   try {
     const supabase = await createSupabaseServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      return NextResponse.json({ success: false, error: 'Unauthorized. You must be logged in.' }, { status: 401 });
-    }
+    // Allowed for both anonymous (public page) and authenticated users
 
     const { username } = await request.json();
 
