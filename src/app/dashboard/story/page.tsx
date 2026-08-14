@@ -455,6 +455,7 @@ export default function StoryPage() {
                 />
                 <div className="flex justify-start">
                    <button 
+                     type="button"
                      onClick={() => setQuantity(getMaxAffordableQty())}
                      className="text-xs font-bold text-orange-500 hover:text-white bg-orange-500/10 hover:bg-orange-500 px-4 py-2 rounded-full transition-all border border-orange-500/20 shadow-sm"
                    >

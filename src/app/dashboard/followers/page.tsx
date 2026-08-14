@@ -259,6 +259,7 @@ export default function FollowersPage() {
                   />
                   <div className="flex justify-start">
                      <button 
+                       type="button"
                        onClick={() => setQuantity(getMaxAffordableQty())}
                        className="text-xs font-bold text-pink-500 hover:text-white bg-pink-500/10 hover:bg-pink-500 px-4 py-2 rounded-full transition-all border border-pink-500/20 shadow-sm"
                      >
