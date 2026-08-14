@@ -80,6 +80,21 @@ export default function StoryPage() {
     return Math.ceil((qty / 1000) * cost * 1000 * markup);
   };
 
+  const getMaxAffordableQty = () => {
+    if (!serviceConfig || userPoints <= 0) return serviceConfig?.min_quantity || 10;
+    const cost = serviceConfig.provider_cost_per_1000 || 0.10;
+    const markup = serviceConfig.markup_multiplier || 3.0;
+    const costPerItem = cost * markup;
+    const affordable = Math.floor(userPoints / costPerItem);
+    const roundedAffordable = Math.floor(affordable / 10) * 10;
+    
+    const absoluteMax = serviceConfig.max_quantity || 100000;
+    const minQty = serviceConfig.min_quantity || 10;
+    
+    if (roundedAffordable < minQty) return minQty;
+    return Math.min(roundedAffordable, absoluteMax);
+  };
+
   const formatNumber = (num: number) => {
     if (!num) return '0';
     if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -420,12 +435,12 @@ export default function StoryPage() {
                  </div>
                  <input 
                  type="range" 
-                 min={serviceConfig?.min_quantity || 100} 
-                 max={100000} 
+                 min={serviceConfig?.min_quantity || 10} 
+                 max={getMaxAffordableQty()} 
                  step={10} 
                  value={quantity} 
                  onChange={(e) => setQuantity(Number(e.target.value))} 
-                 className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-orange-500" 
+                 className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-pink-500" 
                  />
              </div>
 
