@@ -310,20 +310,39 @@ export default function PostsPage() {
                   )}
                 </div>
 
+                {/* Quantity Selector */}
                 <div className="bg-slate-100 dark:bg-black/40 p-8 rounded-[2rem] border border-black/5 dark:border-white/5 space-y-6">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-slate-900 dark:text-white">{calculateCost(quantity, service)}</span></span>
-                    <span className="text-sm font-black text-pink-500 uppercase">الكمية: <span className="text-slate-900 dark:text-white">{formatNumber(quantity)}</span></span>
+                  <div className="flex justify-between items-center flex-wrap gap-4">
+                    <span className="text-sm font-black text-slate-500 uppercase">تكلفة النقاط: <span className="text-pink-500 text-lg">{calculateCost(quantity, service)}</span></span>
+                    <div className="flex items-center gap-3">
+                       <span className="text-sm font-black text-slate-500 uppercase">الكمية:</span>
+                       <input 
+                          type="number"
+                          min={serviceConfigs[service]?.min_quantity || 10}
+                          max={serviceConfigs[service]?.max_quantity || 100000}
+                          value={quantity}
+                          onChange={(e) => setQuantity(Number(e.target.value))}
+                          className="w-28 bg-white dark:bg-black/50 border border-black/10 dark:border-white/10 rounded-xl px-3 py-2 text-center font-bold text-slate-900 dark:text-white outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 transition-all shadow-inner"
+                       />
+                    </div>
                   </div>
                   <input 
                     type="range" 
                     min={serviceConfigs[service]?.min_quantity || 10} 
-                    max={getMaxAffordableQty(service)} 
+                    max={serviceConfigs[service]?.max_quantity || 100000} 
                     step={10} 
                     value={quantity} 
                     onChange={(e) => setQuantity(Number(e.target.value))} 
-                    className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-pink-500" 
+                    className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full accent-pink-500 cursor-pointer" 
                   />
+                  <div className="flex justify-start">
+                     <button 
+                       onClick={() => setQuantity(getMaxAffordableQty(service))}
+                       className="text-xs font-bold text-pink-500 hover:text-white bg-pink-500/10 hover:bg-pink-500 px-4 py-2 rounded-full transition-all border border-pink-500/20 shadow-sm"
+                     >
+                       <i className="fas fa-coins mr-1"></i> الحد الأقصى المتاح لك
+                     </button>
+                  </div>
                 </div>
 
                 <div className="flex flex-col items-center gap-4 mt-2">
