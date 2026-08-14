@@ -60,6 +60,7 @@ export async function proxy(request: NextRequest) {
     path.startsWith('/api/auth') ||
     path.startsWith('/api/ig-profile') ||
     path.startsWith('/api/smm') ||
+    path.startsWith('/api/proxy-image') ||
     path.startsWith('/terms') ||
     path.startsWith('/privacy') ||
     path.startsWith('/disclaimer') ||
