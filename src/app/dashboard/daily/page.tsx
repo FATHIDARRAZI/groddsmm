@@ -179,13 +179,12 @@ export default function DailyCoinsPage() {
       <div className="relative w-full my-12 flex justify-between items-center z-0 px-2 md:px-8">
         {/* Connecting Line */}
         <div className="absolute top-1/2 left-0 right-0 h-1 bg-white/5 -z-10 rounded-full mx-6 md:mx-16 transform -translate-y-1/2"></div>
-        {/* Active Line */}
+        {/* Active Line (RTL) */}
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${(Math.min(currentStreak, 4) / 4) * 100}%` }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          className="absolute top-1/2 left-0 h-1 bg-gradient-to-r from-pink-600 to-rose-400 -z-10 rounded-full mx-6 md:mx-16 transform -translate-y-1/2 shadow-[0_0_15px_rgba(236,72,153,0.5)]"
-          style={{ transformOrigin: 'right' }} // RTL support
+          className="absolute top-1/2 right-0 h-1 bg-gradient-to-l from-pink-600 to-rose-400 -z-10 rounded-full mx-6 md:mx-16 transform -translate-y-1/2 shadow-[0_0_15px_rgba(236,72,153,0.5)]"
         ></motion.div>
 
         {days.map((day, idx) => {
@@ -368,7 +367,7 @@ export default function DailyCoinsPage() {
                   <span className="text-2xl md:text-3xl">ضاعف المكافأة x3</span>
                 </div>
                 <span className="text-sm font-bold text-pink-100 bg-black/20 px-4 py-1.5 rounded-full mt-1 backdrop-blur-md">
-                  +30 نقطة & تقدم السلسلة للصندوق!
+                  +30 نقطة (يتطلب الانتظار 15 ثانية)
                 </span>
               </button>
             </motion.div>
