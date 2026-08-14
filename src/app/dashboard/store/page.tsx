@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default function StorePage() {
   const packages = [
     { 
-      points: 30000, 
+      points: 5000, 
       price: '50', 
       name: 'الباقة المبتدئة', 
       highlight: false, 
@@ -14,10 +14,10 @@ export default function StorePage() {
       color: 'from-blue-500 to-cyan-400',
       shadow: 'shadow-blue-500/20',
       features: ['تسليم فوري بعد الدفع', 'آمن على الخوارزميات', 'دعم فني خلال 24 ساعة'],
-      conversions: { likes: '30K إعجاب', views: '3M مشاهدة' }
+      conversions: { likes: '16K إعجاب', views: '1M مشاهدة' }
     },
     { 
-      points: 150000, 
+      points: 20000, 
       price: '200', 
       name: 'باقة المحترفين', 
       highlight: true, 
@@ -25,18 +25,18 @@ export default function StorePage() {
       color: 'from-[#FF8577] to-pink-500',
       shadow: 'shadow-pink-500/30',
       features: ['تسليم فوري (أولوية قصوى)', 'حماية متقدمة للحسابات', 'تعويض النقص (Non-Drop)', 'دعم فني VIP فوري'],
-      conversions: { likes: '150K إعجاب', views: '15M مشاهدة' }
+      conversions: { likes: '66K إعجاب', views: '4M مشاهدة' }
     },
     { 
-      points: 450000, 
+      points: 55000, // Added 5000 points bonus for biggest package
       price: '500', 
       name: 'باقة الوكالات', 
       highlight: false, 
       icon: 'fa-crown', 
       color: 'from-purple-500 to-indigo-500',
       shadow: 'shadow-purple-500/20',
-      features: ['تقارير حملات مفصلة', 'آمن على الخوارزميات 100%', 'تعويض النقص الدائم', 'مدير حساب شخصي'],
-      conversions: { likes: '450K إعجاب', views: '45M مشاهدة' }
+      features: ['تقارير حملات مفصلة', 'آمن على الخوارزميات 100%', 'تعويض النقص الدائم', 'مدير حساب شخصي', 'مكافأة 5000 نقطة إضافية'],
+      conversions: { likes: '180K إعجاب', views: '11M مشاهدة' }
     },
   ];
 
