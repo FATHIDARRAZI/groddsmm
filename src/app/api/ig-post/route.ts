@@ -131,8 +131,8 @@ export async function POST(request: Request) {
       }
     });
 
-  } catch (error) {
-    console.error('IG API Error:', error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ أثناء جلب المنشور' }, { status: 500 });
+  } catch (error: any) {
+    console.error('IG Post API Error:', error);
+    return NextResponse.json({ success: false, error: `حدث خطأ أثناء جلب المنشور: ${error.message}` }, { status: 500 });
   }
 }

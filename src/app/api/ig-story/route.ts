@@ -148,8 +148,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: false, error: 'لم يتم العثور على الحساب.' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('IG Story API Error:', error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ أثناء جلب بيانات القصص' }, { status: 500 });
+    return NextResponse.json({ success: false, error: `حدث خطأ أثناء جلب بيانات القصص: ${error.message}` }, { status: 500 });
   }
 }

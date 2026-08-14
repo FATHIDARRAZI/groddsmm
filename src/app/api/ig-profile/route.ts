@@ -107,8 +107,8 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: false, error: 'لم يتم العثور على الحساب. يرجى التأكد من اسم المستخدم.' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('IG API Error:', error);
-    return NextResponse.json({ success: false, error: 'حدث خطأ أثناء جلب بيانات الحساب' }, { status: 500 });
+    return NextResponse.json({ success: false, error: `حدث خطأ أثناء جلب بيانات الحساب: ${error.message}` }, { status: 500 });
   }
 }
