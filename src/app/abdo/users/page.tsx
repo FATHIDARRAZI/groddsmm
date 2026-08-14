@@ -417,24 +417,38 @@ export default function AdminUsersPage() {
                              )}
                            </td>
                          <td className="px-6 py-4">
-                            <div className="flex items-center justify-center gap-2 max-w-[200px] mx-auto">
-                               <input 
-                                  type="number"
-                                  placeholder="+/-"
-                                  className="w-20 bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-white focus:outline-none focus:border-blue-500"
-                                  value={amounts[user.id] || ''}
-                                  onChange={(e) => setAmounts(prev => ({ ...prev, [user.id]: parseInt(e.target.value) || 0 }))}
-                               />
+                            <div className="flex items-center justify-center gap-2 max-w-[250px] mx-auto">
+                               <div className="flex flex-col gap-1">
+                                 <div className="flex items-center gap-1 border border-slate-800 rounded bg-slate-950 p-0.5 overflow-hidden focus-within:border-blue-500">
+                                   <input 
+                                      type="number"
+                                      placeholder="MAD"
+                                      title="المبلغ بالدرهم (1 MAD = 100 Points)"
+                                      className="w-16 bg-transparent px-1 py-1 text-xs text-green-400 focus:outline-none text-center font-bold"
+                                      value={amounts[user.id] ? amounts[user.id] / 100 : ''}
+                                      onChange={(e) => setAmounts(prev => ({ ...prev, [user.id]: (parseFloat(e.target.value) || 0) * 100 }))}
+                                   />
+                                   <span className="text-slate-600 text-xs select-none">|</span>
+                                   <input 
+                                      type="number"
+                                      placeholder="Points"
+                                      title="عدد النقاط"
+                                      className="w-20 bg-transparent px-1 py-1 text-xs text-white focus:outline-none text-center"
+                                      value={amounts[user.id] || ''}
+                                      onChange={(e) => setAmounts(prev => ({ ...prev, [user.id]: parseInt(e.target.value) || 0 }))}
+                                   />
+                                 </div>
+                               </div>
                                <button 
                                  onClick={() => handleAdjustBalance(user.id)}
                                  disabled={!!updating || !amounts[user.id]}
-                                 className="w-8 h-8 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-50 flex items-center justify-center transition-all"
+                                 className="w-8 h-8 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:opacity-50 flex items-center justify-center transition-all shrink-0"
                                >
                                   <i className={`fas ${updating === user.id ? 'fa-spinner fa-spin' : 'fa-check'} text-xs`}></i>
                                </button>
                                <button 
                                  onClick={() => handleFetchLogs(user)}
-                                 className="w-8 h-8 bg-slate-800 text-slate-400 rounded hover:bg-slate-700 hover:text-white flex items-center justify-center transition-all ml-2"
+                                 className="w-8 h-8 bg-slate-800 text-slate-400 rounded hover:bg-slate-700 hover:text-white flex items-center justify-center transition-all shrink-0"
                                  title="سجل النشاطات"
                                >
                                  <i className="fas fa-history text-xs"></i>
