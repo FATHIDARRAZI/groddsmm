@@ -135,9 +135,27 @@ export async function POST(req: Request) {
       }
 
       const serviceId = serviceConfig.provider_service_id;
-      const smmLink = link.includes('http') ? link : `https://${link}`;
-
-      // PRE-ORDER: Deduct Points First to prevent free orders if SMM API hangs or fails
+      
+      let smmLink = link.trim();
+      
+      // If it's not a full HTTP URL, we need to construct it properly
+      if (!smmLink.includes('http')) {
+        // Remove @ and any accidental spaces from usernames
+        const cleanUsername = smmLink.replace(/^@/, '').replace(/\\s+/g, '');
+        
+        if (category === 'instagram') {
+          smmLink = `https://www.instagram.com/${cleanUsername}/`;
+        } else if (category === 'tiktok') {
+          smmLink = `https://www.tiktok.com/@${cleanUsername}`;
+        } else if (category === 'facebook') {
+          smmLink = `https://www.facebook.com/${cleanUsername}`;
+        } else {
+          smmLink = `https://${cleanUsername}`;
+        }
+      } else {
+        // Even if it's a URL, let's remove spaces just in case
+        smmLink = smmLink.replace(/\\s+/g, '');
+      }
       if (user) {
         const { error: rpcError } = await supabase.rpc('decrement_points', {
           user_id: user.id,
