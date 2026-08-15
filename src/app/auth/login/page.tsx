@@ -40,8 +40,8 @@ export default function LoginPage() {
       <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-600 to-transparent opacity-50"></div>
 
       <div className="text-center mb-8">
-        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2 font-outfit uppercase tracking-tighter">Login Center</h1>
-        <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Access your command terminal</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-white mb-2 font-outfit uppercase tracking-tighter">تسجيل الدخول</h1>
+        <p className="text-[11px] font-black text-slate-500 uppercase tracking-widest">قم بتسجيل الدخول للوصول إلى لوحة التحكم</p>
       </div>
 
       {errorMsg && (
@@ -63,7 +63,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-[#0B0F19] border border-white/5 rounded-2xl py-3.5 sm:py-4 pr-11 sm:pr-12 pl-4 text-white text-sm sm:text-base focus:outline-none focus:border-[#FF8577]/50 focus:ring-1 focus:ring-[#FF8577]/50 transition-all dir-ltr text-left font-mono"
-              placeholder="yourname@gamil.com"
+              placeholder="user@groddmedia.com"
             />
           </div>
         </div>
