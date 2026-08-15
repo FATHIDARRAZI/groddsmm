@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     let data;
     let lastErrorMsgs: string[] = [];
     
-    // Attempt up to 3 sequential requests. Sequential is safer to avoid instant proxy/session bans.
+    // Attempt up to 3 sequential requests. Sequential is safer to avoid instant proxy bans.
     for (let i = 0; i < 3; i++) {
       try {
         const client = new ProxyAgent(proxyUrl);
@@ -46,10 +46,6 @@ export async function POST(request: Request) {
           'Sec-Fetch-Mode': 'cors',
           'Sec-Fetch-Site': 'same-origin'
         };
-        
-        if (sessionid) {
-          headers['Cookie'] = `sessionid=${sessionid};`;
-        }
 
         const res = await undiciFetch(url, {
           dispatcher: client,

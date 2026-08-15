@@ -30,32 +30,40 @@ export async function POST(request: Request) {
 
     const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
     
-    // Fire parallel requests to bypass rate limits using proxy
-    const fetchPromises = Array.from({ length: 3 }).map(async () => {
-      const client = new ProxyAgent(proxyUrl);
-      const res = await undiciFetch(url, {
-        dispatcher: client,
-        headers: {
+    let data;
+    let lastErrorMsgs: string[] = [];
+    
+    // Attempt up to 3 sequential requests.
+    for (let i = 0; i < 3; i++) {
+      try {
+        const client = new ProxyAgent(proxyUrl);
+        const headers: Record<string, string> = {
           'x-ig-app-id': '936619743392459',
           'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${Math.floor(Math.random()*100)} Safari/537.36`,
           'Sec-Fetch-Dest': 'empty',
           'Sec-Fetch-Mode': 'cors',
           'Sec-Fetch-Site': 'same-origin'
-        }
-      });
-      if (res.status === 200) {
-        return await res.json();
-      }
-      throw new Error(`Status ${res.status}`);
-    });
+        };
 
-    let data;
-    try {
-      data = await Promise.any(fetchPromises);
-    } catch (aggregateError: any) {
-      console.error('All IG Profile fetches failed:', aggregateError.errors);
-      const errMsgs = aggregateError.errors ? aggregateError.errors.map((e: any) => e.message).join(', ') : aggregateError.message;
-      return NextResponse.json({ success: false, error: `خطأ في الاتصال: ${errMsgs}` });
+        const res = await undiciFetch(url, {
+          dispatcher: client,
+          headers
+        });
+
+        if (res.status === 200) {
+          data = await res.json();
+          break; // Success, exit retry loop
+        } else {
+          lastErrorMsgs.push(`Status ${res.status}`);
+        }
+      } catch (err: any) {
+        lastErrorMsgs.push(err.message);
+      }
+    }
+
+    if (!data) {
+      console.error('All IG Profile sequential fetches failed:', lastErrorMsgs);
+      return NextResponse.json({ success: false, error: `خطأ في الاتصال: ${lastErrorMsgs.join(', ')}` });
     }
 
     const typedData = data as any;
