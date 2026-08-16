@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Turnstile } from '@marsidev/react-turnstile';
+import Swal from 'sweetalert2';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from '@/components/SafeAdSlot';
 
@@ -200,7 +201,21 @@ export default function StoryPage() {
       if (data.success) {
         setRecaptchaToken('');
         fetchUserPoints();
-        alert(data.message || 'تم إرسال المشاهدات بنجاح!');
+        Swal.fire({
+          title: 'نجاح!',
+          text: data.message || 'تم إرسال المشاهدات بنجاح!',
+          icon: 'success',
+          confirmButtonText: 'إغلاق',
+          background: '#121214',
+          color: '#ffffff',
+          confirmButtonColor: '#FF8577',
+          customClass: {
+            popup: 'border border-white/5 rounded-3xl',
+            confirmButton: 'rounded-xl font-black px-6 py-3'
+          }
+        }).then(() => {
+          window.location.reload();
+        });
         window.dispatchEvent(new Event('pointsUpdated'));
         setShowOrderModal(false);
       } else {

@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Turnstile } from '@marsidev/react-turnstile';
+import Swal from 'sweetalert2';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from '@/components/SafeAdSlot';
 
@@ -160,7 +163,21 @@ export default function FollowersPage() {
       if (data.success) {
         setRecaptchaToken('');
         fetchUserPoints();
-        alert(data.message);
+        Swal.fire({
+          title: 'نجاح!',
+          text: data.message,
+          icon: 'success',
+          confirmButtonText: 'إغلاق',
+          background: '#121214',
+          color: '#ffffff',
+          confirmButtonColor: '#FF8577',
+          customClass: {
+            popup: 'border border-white/5 rounded-3xl',
+            confirmButton: 'rounded-xl font-black px-6 py-3'
+          }
+        }).then(() => {
+          window.location.reload();
+        });
         // Dispatch event to update points in layout
         window.dispatchEvent(new Event('pointsUpdated'));
       } else {

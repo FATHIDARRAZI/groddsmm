@@ -90,7 +90,12 @@ export default function DashboardOrdersPage() {
                         <span className="font-mono text-xs font-bold text-[#FF8577]">#{order.provider_order_id}</span>
                      </td>
                      <td className="p-4">
-                        <div className="font-bold text-sm text-white">{order.service_type === 'followers' ? 'متابعين' : 'مشاهدات'}</div>
+                        <div className="font-bold text-sm text-white">
+                           {order.service_type === 'followers' ? 'متابعين' : 
+                            order.service_type === 'likes' ? 'إعجابات' : 
+                            order.service_type === 'story' ? 'ستوري' : 
+                            'مشاهدات'}
+                        </div>
                      </td>
                      <td className="p-4 max-w-[150px] truncate">
                         <a href={order.link} target="_blank" rel="noreferrer" className="text-xs text-blue-400 hover:underline dir-ltr inline-block truncate w-full text-left">
