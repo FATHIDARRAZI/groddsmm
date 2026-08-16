@@ -5,6 +5,7 @@ import { Turnstile } from '@marsidev/react-turnstile';
 import Swal from 'sweetalert2';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from '@/components/SafeAdSlot';
+import { checkAdBlock } from '@/lib/adBlockDetector';
 
 interface Story {
   id: string;
@@ -169,9 +170,37 @@ export default function StoryPage() {
     return () => clearInterval(timer);
   }, [showAdModal, adWaitTime]);
 
-  const handleLaunch = () => {
-    if (!selectedStory) return;
+  const handleLaunch = async () => {
+    if (!selectedStory) return setErrorMsg('الرجاء اختيار القصة أولاً');
     if (!recaptchaToken) return setErrorMsg('يرجى تأكيد أنك لست روبوت');
+
+    if (!removeAds) {
+      const isBlocked = await checkAdBlock();
+      if (isBlocked) {
+        Swal.fire({
+          title: 'مانع الإعلانات مفعل!',
+          text: 'يبدو أنك تستخدم مانع إعلانات (AdBlock). هذه الخدمة مجانية وتعتمد على الإعلانات لتغطية التكاليف. يرجى تعطيل مانع الإعلانات للاستمرار، أو ترقية حسابك إلى VIP.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'ترقية الحساب (VIP)',
+          cancelButtonText: 'إغلاق',
+          background: '#121214',
+          color: '#ffffff',
+          confirmButtonColor: '#a855f7',
+          cancelButtonColor: '#334155',
+          customClass: {
+            popup: 'border border-white/5 rounded-3xl',
+            confirmButton: 'rounded-xl font-black px-6 py-3',
+            cancelButton: 'rounded-xl font-black px-6 py-3'
+          }
+        }).then((result) => {
+          if (result.isConfirmed) {
+            router.push('/remove-ads');
+          }
+        });
+        return;
+      }
+    }
 
     if (removeAds) {
       postAdAction();

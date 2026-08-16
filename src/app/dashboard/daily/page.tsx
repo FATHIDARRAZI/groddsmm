@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { checkAdBlock } from '@/lib/adBlockDetector';
 import { useRouter } from 'next/navigation';
 import { createSupabaseClient } from '@/lib/supabase';
 import confetti from 'canvas-confetti';
@@ -127,8 +129,35 @@ export default function DailyCoinsPage() {
     frame();
   };
 
-  const initiateBoost = () => {
+  const initiateBoost = async () => {
     if (isClaiming || hasClaimedToday) return;
+
+    const isBlocked = await checkAdBlock();
+    if (isBlocked) {
+      Swal.fire({
+        title: 'مانع الإعلانات مفعل!',
+        text: 'يبدو أنك تستخدم مانع إعلانات (AdBlock). هذه الخدمة مجانية وتعتمد على الإعلانات لتغطية التكاليف. يرجى تعطيل مانع الإعلانات للاستمرار.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ترقية الحساب (VIP)',
+        cancelButtonText: 'إغلاق',
+        background: '#121214',
+        color: '#ffffff',
+        confirmButtonColor: '#a855f7',
+        cancelButtonColor: '#334155',
+        customClass: {
+          popup: 'border border-white/5 rounded-3xl',
+          confirmButton: 'rounded-xl font-black px-6 py-3',
+          cancelButton: 'rounded-xl font-black px-6 py-3'
+        }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/remove-ads');
+        }
+      });
+      return;
+    }
+
     window.open(SMART_LINK_URL, '_blank');
     setIsWatchingAd(true);
     setAdTimer(15);
