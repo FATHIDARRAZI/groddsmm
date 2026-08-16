@@ -344,7 +344,7 @@ export default function HomeClientForm() {
           <div className="relative z-10 w-full max-w-[728px] flex flex-col items-center animate-fade-in">
             <div className="w-full flex justify-between items-end mb-2">
               <div className="bg-white dark:bg-[#1C1C1E] px-3 py-1 rounded-t-lg border border-black/5 dark:border-white/5 border-b-0">
-                <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+                <Link href="/remove-ads" className="text-[10px] text-purple-600 dark:text-purple-400 hover:text-purple-500 dark:hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
               </div>
               <div className="bg-white dark:bg-[#1C1C1E] px-3 py-1 rounded-t-lg text-[#FF8577] text-[10px] font-bold tracking-widest cursor-not-allowed border border-black/5 dark:border-white/5 border-b-0 flex items-center gap-2 dir-ltr">
                 <span>يرجى الانتظار {sponsorTimeLeft} ثانية</span>

@@ -79,7 +79,7 @@ export default function HomeClientAds() {
           >
             <i className={`fas fa-chevron-${isStickyVisible ? 'down' : 'up'} text-gray-500 text-xs`}></i>
           </button>
-          <Link href="/dashboard/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors flex items-center gap-1">
+          <Link href="/remove-ads" className="bg-purple-600 text-white text-[8px] font-bold px-3 py-1 rounded-t-lg shadow-md hover:bg-purple-500 transition-colors flex items-center gap-1">
             <i className="fas fa-crown text-amber-300"></i> إزالة الإعلانات؟
           </Link>
         </div>
@@ -106,7 +106,7 @@ export default function HomeClientAds() {
             <div className="w-full flex justify-between items-center mb-4 mt-2 h-8">
               <h3 className="text-xl font-bold text-white">إعلان مدعوم</h3>
               <div className={`transition-all duration-1000 ease-out flex items-center ${showRemoveAdsLink ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95 pointer-events-none'}`}>
-                <Link href="/dashboard/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-white font-bold hover:scale-105 transition-transform flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-white/20">
+                <Link href="/remove-ads" onClick={() => setShowIdleAd(false)} className="text-xs text-white font-bold hover:scale-105 transition-transform flex items-center gap-1.5 bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1.5 rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)] border border-white/20">
                   <i className="fas fa-crown text-amber-300"></i>
                   إزالة الإعلانات؟
                 </Link>
@@ -139,7 +139,7 @@ export function HomeTopAd() {
   return (
     <div className="w-full flex flex-col items-center justify-center mb-10 overflow-hidden rounded-2xl border border-white/10 bg-[#121827]/40 p-2 shadow-inner min-h-[106px] max-w-4xl mx-auto relative animate-fade-in">
       <div className="w-full flex justify-end px-2 mb-1">
-        <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+        <Link href="/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
       </div>
       <div className="hidden md:flex w-full justify-center">
         <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="lazy" className="bg-transparent rounded-lg" />
@@ -167,7 +167,7 @@ export function HomeNativeAd() {
     <div className="w-full max-w-5xl mt-12 bg-white/5 border border-white/10 rounded-2xl p-6 text-center shadow-inner overflow-hidden relative animate-fade-in">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-slate-400 font-bold text-xs font-mono uppercase tracking-widest opacity-50">Sponsored Advertisement</h3>
-        <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+        <Link href="/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
       </div>
       <SafeAdSlot 
          src="/ad-native.html" 
@@ -196,7 +196,7 @@ export function HomeMiddleAd() {
     <div className="w-full max-w-4xl mt-8 flex flex-col items-center p-4 sm:p-8 bg-[#0B0F19]/50 rounded-2xl border border-white/5 shadow-inner overflow-hidden relative animate-fade-in">
       <div className="w-full flex justify-between items-center mb-4">
         <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest">إعلان سبونسر</p>
-        <Link href="/dashboard/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
+        <Link href="/remove-ads" className="text-[10px] text-purple-400 hover:text-purple-300 font-bold hover:underline">إزالة الإعلانات؟</Link>
       </div>
       <div className="hidden md:flex w-full justify-center">
         <SafeAdSlot src="/ad-728.html" width="728" height="90" loading="lazy" className="bg-transparent rounded-lg" />
