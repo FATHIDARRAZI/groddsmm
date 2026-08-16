@@ -3,6 +3,31 @@ import { getCooldownEnd, setCooldown } from '@/lib/cooldown';
 import { createSupabaseServerClient } from '@/lib/supabaseServer';
 import { sendSpeedUpRequest } from '@/lib/speedUpService';
 
+// Telegram Configuration
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
+
+async function sendTelegramNotification(orderId: string, serviceType: string, link: string, quantity: number) {
+  if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
+  
+  const message = `🚀 *New Order Placed!*\n\n*Order ID:* \`${orderId}\`\n*Service:* ${serviceType}\n*Quantity:* ${quantity}\n*Link:* ${link}`;
+  
+  try {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: 'Markdown'
+      })
+    });
+  } catch (err) {
+    console.error('Failed to send Telegram notification:', err);
+  }
+}
+
 const SMM_API_KEY = process.env.SMM_API_KEY || '';
 const SMM_API_URL = 'https://bestsmmprovider.com/api/v2';
 const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
@@ -222,6 +247,10 @@ export async function POST(req: Request) {
           });
 
           sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+          
+          // Send Telegram Notification
+          sendTelegramNotification(providerOrderId.toString(), serviceType, smmLink, finalQuantity).catch(console.error);
+          
           return NextResponse.json({ success: true, message: 'تم إرسال الطلب بنجاح وتم خصم النقاط' }, { status: 200 });
 
         } else {
@@ -238,6 +267,9 @@ export async function POST(req: Request) {
 
           await setCooldown(ip, cooldownMinutes);
           sendSpeedUpRequest(providerOrderId.toString(), serviceType, smmLink).catch(console.error);
+          
+          // Send Telegram Notification
+          sendTelegramNotification(providerOrderId.toString(), serviceType, smmLink, finalQuantity).catch(console.error);
 
           return NextResponse.json({ success: true, message: 'Request submitted successfully' }, { status: 200 });
         }
