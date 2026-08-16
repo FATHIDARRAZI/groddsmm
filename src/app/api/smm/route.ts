@@ -10,7 +10,7 @@ const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
 async function sendTelegramNotification(orderId: string, serviceType: string, link: string, quantity: number) {
   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
   
-  const message = `🚀 *New Order Placed!*\n\n*Order ID:* \`${orderId}\`\n*Service:* ${serviceType}\n*Quantity:* ${quantity}\n*Link:* ${link}`;
+  const message = `🚀 *New Order Placed!*\n\n*Order ID:* \`${orderId}\`\n*Service:* ${serviceType}\n*Quantity:* ${quantity}\n*Link:* ${link}\n\n@bestsmmprovidersupport`;
   
   try {
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
