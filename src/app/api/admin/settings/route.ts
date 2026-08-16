@@ -31,6 +31,17 @@ export async function GET() {
       throw error;
     }
 
+    // Also get the current global multiplier from the 'followers' service
+    let currentMultiplier = 3.0;
+    const { data: svcData } = await adminSupabase.from('services').select('markup_multiplier').eq('service_type', 'followers').single();
+    if (svcData && svcData.markup_multiplier) {
+      currentMultiplier = svcData.markup_multiplier;
+    }
+
+    if (settings) {
+      settings.push({ key: 'global_markup_multiplier', value: currentMultiplier });
+    }
+
     return NextResponse.json({ success: true, settings });
   } catch (error) {
     console.error('Settings API Error:', error);
@@ -52,6 +63,17 @@ export async function POST(req: Request) {
     const { key, value } = body;
 
     const adminSupabase = await createSupabaseAdminClient();
+
+    if (key === 'global_markup_multiplier') {
+      // Update all services
+      const { error } = await adminSupabase
+        .from('services')
+        .update({ markup_multiplier: parseFloat(value) })
+        .not('id', 'is', null);
+      if (error) throw error;
+      return NextResponse.json({ success: true });
+    }
+
     const { error } = await adminSupabase
       .from('system_settings')
       .upsert({ key, value }, { onConflict: 'key' });

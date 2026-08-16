@@ -11,6 +11,7 @@ export default function AdminDashboardPage() {
   
   // Settings State
   const [cooldownMinutes, setCooldownMinutes] = useState(2);
+  const [globalMarkup, setGlobalMarkup] = useState(3.0);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [dbError, setDbError] = useState<string | null>(null);
 
@@ -43,6 +44,9 @@ export default function AdminDashboardPage() {
       if (data.success) {
         const cooldown = data.settings?.find((s: any) => s.key === 'order_cooldown_minutes');
         if (cooldown) setCooldownMinutes(cooldown.value);
+
+        const markup = data.settings?.find((s: any) => s.key === 'global_markup_multiplier');
+        if (markup) setGlobalMarkup(parseFloat(markup.value) || 3.0);
       } else if (data.sql_hint) {
         setDbError(data.sql_hint);
       }
@@ -239,6 +243,29 @@ export default function AdminDashboardPage() {
                            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2 rounded-lg font-bold transition-all disabled:opacity-50"
                         >
                            {settingsLoading ? <i className="fas fa-spinner fa-spin"></i> : 'حفظ'}
+                        </button>
+                     </div>
+                  </div>
+
+                  <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-4">
+                     <div>
+                        <p className="text-white font-bold">مضاعف أرباح المنصة (الخصم/الربح)</p>
+                        <p className="text-slate-400 text-xs">يتم ضرب سعر المزود الأساسي في هذا الرقم (مثال: x3 يعني ربح 200%). يمكنك تقليله لعمل خصم للمستخدمين.</p>
+                     </div>
+                     <div className="flex items-center gap-3">
+                        <input 
+                           type="number" 
+                           step="0.1"
+                           className="w-24 bg-slate-900 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-green-500 text-center font-bold"
+                           value={globalMarkup}
+                           onChange={(e) => setGlobalMarkup(parseFloat(e.target.value) || 1.0)}
+                        />
+                        <button 
+                           onClick={() => handleUpdateSetting('global_markup_multiplier', globalMarkup)}
+                           disabled={settingsLoading}
+                           className="bg-green-600 hover:bg-green-500 text-white px-6 py-2 rounded-lg font-bold transition-all disabled:opacity-50"
+                        >
+                           {settingsLoading ? <i className="fas fa-spinner fa-spin"></i> : 'تحديث الكل'}
                         </button>
                      </div>
                   </div>
