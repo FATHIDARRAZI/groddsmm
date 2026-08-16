@@ -352,15 +352,28 @@ export default function FollowersPage() {
                 <i className="fas fa-user-search text-3xl"></i>
              </div>
              
-             <h2 className="text-xl font-black text-slate-900 dark:text-white mb-6 text-center">أدخل اسم المستخدم</h2>
+             <h2 className="text-xl font-black text-slate-900 dark:text-white mb-6 text-center">أدخل اليوزر أو رابط الحساب</h2>
              
              <div className="w-full relative mb-6">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-xl font-mono">@</span>
                 <input
                   type="text"
                   value={targetUsername}
-                  onChange={(e) => setTargetUsername(e.target.value.replace('@', ''))}
-                  placeholder="username"
+                  onChange={(e) => {
+                    let val = e.target.value.trim();
+                    if (val.includes('instagram.com/')) {
+                      try {
+                        const urlStr = val.startsWith('http') ? val : `https://${val}`;
+                        const url = new URL(urlStr);
+                        const parts = url.pathname.split('/').filter(Boolean);
+                        if (parts.length > 0 && !['p', 'reel', 'tv', 'stories'].includes(parts[0])) {
+                          val = parts[0];
+                        }
+                      } catch(err) {}
+                    }
+                    setTargetUsername(val.replace('@', '').split('?')[0]);
+                  }}
+                  placeholder="username أو رابط الحساب"
                   className="w-full bg-slate-50 dark:bg-black/40 border border-black/5 dark:border-white/10 rounded-xl py-4 pl-12 pr-4 text-left text-slate-900 dark:text-white font-outfit text-lg focus:outline-none focus:border-pink-500/50 transition-colors"
                   dir="ltr"
                   autoFocus
