@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/sync-services",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/speedup-bot",
+      "schedule": "0 10 * * *"
     }
   ]
 }
