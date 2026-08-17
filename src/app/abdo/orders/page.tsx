@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { TableRowSkeleton } from '@/components/admin/AdminSkeleton';
+import { toast } from 'react-hot-toast';
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -41,15 +42,34 @@ export default function AdminOrdersPage() {
             <h1 className="text-2xl font-bold text-white">جميع طلبات المنصة</h1>
             <p className="text-slate-400 text-sm">متابعة حية لكل العمليات التي تتم عبر النظام</p>
          </div>
-         <div className="relative">
-            <input 
-              type="text" 
-              placeholder="البحث بالرابط أو معرف الطلب..." 
-              className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 w-full md:w-80 pr-10"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <i className="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+         <div className="relative flex items-center gap-4">
+            <button
+               onClick={() => {
+                  const stuckOrders = orders.filter(o => !['Completed', 'Canceled', 'Partial'].includes(o.status));
+                  if (stuckOrders.length === 0) {
+                     toast.error('لا توجد طلبات معلقة حالياً');
+                     return;
+                  }
+                  const ids = stuckOrders.map(o => o.provider_order_id).filter(id => id).join('\n');
+                  const message = `please speedup these orders:\n${ids}`;
+                  navigator.clipboard.writeText(message);
+                  toast.success(`تم نسخ ${stuckOrders.length} طلب معلق بنجاح!`);
+               }}
+               className="bg-yellow-600 hover:bg-yellow-500 text-white px-4 py-2 rounded-lg font-bold text-sm transition-all whitespace-nowrap flex items-center gap-2"
+            >
+               <i className="fas fa-copy"></i>
+               نسخ الطلبات المعلقة
+            </button>
+            <div className="relative">
+               <input 
+                 type="text" 
+                 placeholder="البحث بالرابط أو معرف الطلب..." 
+                 className="bg-slate-900 border border-slate-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 w-full md:w-80 pr-10"
+                 value={searchTerm}
+                 onChange={(e) => setSearchTerm(e.target.value)}
+               />
+               <i className="fas fa-search absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+            </div>
          </div>
       </div>
 
