@@ -4,14 +4,12 @@ import './globals.css';
 
 const cairo = Cairo({
   subsets: ['arabic', 'latin'],
-  weight: ['400', '600', '700', '800', '900'],
   variable: '--font-cairo',
   display: 'swap',
 });
 
 const outfit = Outfit({
   subsets: ['latin'],
-  weight: ['300', '400', '600', '800', '900'],
   variable: '--font-outfit',
   display: 'swap',
 });
