@@ -10,6 +10,7 @@ import SafeAdSlot from '@/components/SafeAdSlot';
 import { checkAdBlock } from '@/lib/adBlockDetector';
 
 export default function FollowersPage() {
+  const router = useRouter();
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [targetUsername, setTargetUsername] = useState('');
   

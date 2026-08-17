@@ -6,8 +6,10 @@ import Swal from 'sweetalert2';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { checkAdBlock } from '@/lib/adBlockDetector';
+import { useRouter } from 'next/navigation';
 
 export default function PostsPage() {
+  const router = useRouter();
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [targetUsername, setTargetUsername] = useState('');

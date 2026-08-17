@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { createSupabaseClient } from '@/lib/supabase';
 import SafeAdSlot from '@/components/SafeAdSlot';
 import { checkAdBlock } from '@/lib/adBlockDetector';
+import { useRouter } from 'next/navigation';
 
 interface Story {
   id: string;
@@ -26,6 +27,7 @@ interface ProfileData {
 }
 
 export default function StoryPage() {
+  const router = useRouter();
   const [showTargetModal, setShowTargetModal] = useState(false);
   const [targetUsername, setTargetUsername] = useState('');
   
