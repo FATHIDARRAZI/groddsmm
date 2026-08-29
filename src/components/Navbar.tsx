@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { createSupabaseClient } from '@/lib/supabase';
@@ -11,10 +12,12 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [removeAds, setRemoveAds] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = async () => {
       const supabase = createSupabaseClient();
+      if (!supabase) return;
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         setIsLoggedIn(true);
@@ -26,7 +29,13 @@ export default function Navbar() {
         if (profile?.remove_ads) {
           setRemoveAds(true);
         }
+      } else {
+        setIsLoggedIn(false);
       }
+      
+      supabase.auth.onAuthStateChange((_event, session) => {
+        setIsLoggedIn(!!session);
+      });
     };
     checkAuth();
 
@@ -34,6 +43,11 @@ export default function Navbar() {
     window.addEventListener('focus', checkAuth);
     return () => window.removeEventListener('focus', checkAuth);
   }, []);
+
+  // Hide navbar entirely on dashboard or admin routes
+  if (pathname?.startsWith('/dashboard') || pathname?.startsWith('/admin')) {
+    return null;
+  }
 
   return (
     <nav className="relative z-50 w-full border-b border-black/5 dark:border-white/5 bg-white/80 dark:bg-[#121827]/80 backdrop-blur-xl transition-colors duration-300">
