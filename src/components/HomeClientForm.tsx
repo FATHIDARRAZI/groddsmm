@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { createSupabaseClient } from '@/lib/supabase';
+import { Turnstile } from '@marsidev/react-turnstile';
 
 export default function HomeClientForm() {
   const [profileUrl, setProfileUrl] = useState('');
   const [step, setStep] = useState<number>(1);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState<string>('');
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -32,7 +34,7 @@ export default function HomeClientForm() {
       if (remainingMs > 0) {
         setTimeout(() => {
           setTimeLeft(Math.ceil(remainingMs / 1000));
-          setStep(3);
+          // Do not force step 3 on reload, let them see the timer in step 1
         }, 0);
       } else {
         localStorage.removeItem('smm_cooldown');
@@ -42,13 +44,15 @@ export default function HomeClientForm() {
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
-    if (step === 3 && timeLeft > 0) {
+    if (timeLeft > 0) {
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
       }, 1000);
-    } else if (timeLeft <= 0 && step === 3) {
+    } else if (timeLeft === 0 && step === 3) {
       localStorage.removeItem('smm_cooldown');
       window.location.reload();
+    } else if (timeLeft === 0 && step === 1) {
+      localStorage.removeItem('smm_cooldown');
     }
     return () => clearInterval(timer);
   }, [step, timeLeft]);
@@ -96,15 +100,42 @@ export default function HomeClientForm() {
             </div>
 
             <div className="text-center">
-              <span className="text-slate-500 text-sm font-medium">انتظر 5 دقائق، ويمكنك الطلب مرة أخرى.</span>
+              {timeLeft > 0 ? (
+                <span className="text-orange-500 text-sm font-bold flex items-center justify-center gap-2">
+                  <i className="fas fa-clock"></i>
+                  الرجاء الانتظار {formatTime(timeLeft)} قبل الطلب مرة أخرى.
+                </span>
+              ) : (
+                <span className="text-slate-500 text-sm font-medium">انتظر 5 دقائق، ويمكنك الطلب مرة أخرى.</span>
+              )}
             </div>
+
+            {/* Real Cloudflare Turnstile Widget */}
+            {step === 1 && timeLeft <= 0 && (
+              <div className="flex justify-center w-full my-2" dir="ltr">
+                <Turnstile
+                  siteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => setTurnstileToken('')}
+                  onExpire={() => setTurnstileToken('')}
+                  theme="dark"
+                />
+              </div>
+            )}
 
             <button
               onClick={handleGet}
-              disabled={!profileUrl.trim()}
-              className="w-full py-4 rounded-xl font-bold text-white text-lg bg-[#E11D48] hover:bg-[#BE123C] transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!profileUrl.trim() || timeLeft > 0 || !turnstileToken}
+              className="w-full py-4 rounded-xl font-bold text-white text-lg bg-[#E11D48] hover:bg-[#BE123C] transition-all focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              طلب المجاني
+              {timeLeft > 0 ? (
+                <>
+                  <i className="fas fa-hourglass-half animate-pulse"></i>
+                  انتظر {formatTime(timeLeft)}
+                </>
+              ) : (
+                'طلب المجاني'
+              )}
             </button>
             
             {!isLoggedIn ? (
