@@ -18,7 +18,7 @@ export default function HomeClientForm() {
       const { data: { session } } = await supabase.auth.getSession();
       setIsLoggedIn(!!session);
       
-      supabase.auth.onAuthStateChange((_event, session) => {
+      supabase.auth.onAuthStateChange((_event: any, session: any) => {
         setIsLoggedIn(!!session);
       });
     };
