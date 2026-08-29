@@ -118,7 +118,7 @@ export default function HomeClientForm() {
                   onSuccess={(token) => setTurnstileToken(token)}
                   onError={() => setTurnstileToken('')}
                   onExpire={() => setTurnstileToken('')}
-                  theme="dark"
+                  options={{ theme: 'dark' }}
                 />
               </div>
             )}
