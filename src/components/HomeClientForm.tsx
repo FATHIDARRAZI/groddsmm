@@ -99,16 +99,14 @@ export default function HomeClientForm() {
               />
             </div>
 
-            <div className="text-center">
-              {timeLeft > 0 ? (
+            {timeLeft > 0 && (
+              <div className="text-center">
                 <span className="text-orange-500 text-sm font-bold flex items-center justify-center gap-2">
                   <i className="fas fa-clock"></i>
                   الرجاء الانتظار {formatTime(timeLeft)} قبل الطلب مرة أخرى.
                 </span>
-              ) : (
-                <span className="text-slate-500 text-sm font-medium">انتظر 5 دقائق، ويمكنك الطلب مرة أخرى.</span>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Real Cloudflare Turnstile Widget */}
             {step === 1 && timeLeft <= 0 && (
