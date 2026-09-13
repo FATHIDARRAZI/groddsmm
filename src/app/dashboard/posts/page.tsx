@@ -112,7 +112,13 @@ export default function PostsPage() {
         setProfileData(data.data);
         setShowTargetModal(false);
       } else {
-        setErrorMsg(data.error || 'فشل جلب الحساب');
+        if (data.error === 'api_limit_reached') {
+          setShowTargetModal(false);
+          setShowLinkModal(true);
+          setErrorMsg('');
+        } else {
+          setErrorMsg(data.error || 'فشل جلب الحساب');
+        }
       }
     } catch (e) {
       setErrorMsg('حدث خطأ أثناء الاتصال.');

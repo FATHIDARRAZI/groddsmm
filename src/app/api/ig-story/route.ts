@@ -24,46 +24,37 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Invalid username format' }, { status: 400 });
     }
 
-    if (!proxyUrl) {
-      return NextResponse.json({ success: false, error: 'Missing IG_PROXY_URL in Vercel Environment Variables. Please add it.' }, { status: 500 });
+    const scrapeToken = process.env.SCRAPE_DO_TOKEN || '';
+    if (!scrapeToken) {
+      return NextResponse.json({ success: false, error: 'api_limit_reached' });
     }
 
-    const url = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
+    const targetUrl = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${cleanUsername}`;
+    const url = `http://api.scrape.do?token=${scrapeToken}&url=${encodeURIComponent(targetUrl)}`;
     
-    let data;
-    let lastErrorMsgs: string[] = [];
+    let data: any;
+    let fetchError = '';
     
-    // Attempt up to 3 sequential requests.
-    for (let i = 0; i < 3; i++) {
-      try {
-        const client = new ProxyAgent(proxyUrl);
-        const headers: Record<string, string> = {
-          'x-ig-app-id': '936619743392459',
-          'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${Math.floor(Math.random()*100)} Safari/537.36`,
-          'Sec-Fetch-Dest': 'empty',
-          'Sec-Fetch-Mode': 'cors',
-          'Sec-Fetch-Site': 'same-origin'
-        };
+    try {
+      const headers: Record<string, string> = {
+        'x-ig-app-id': '936619743392459',
+        'User-Agent': `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.${Math.floor(Math.random()*100)} Safari/537.36`,
+      };
 
-        const res = await undiciFetch(url, {
-          dispatcher: client,
-          headers
-        });
+      const res = await undiciFetch(url, { headers });
 
-        if (res.status === 200) {
-          data = await res.json();
-          break; // Success, exit retry loop
-        } else {
-          lastErrorMsgs.push(`Status ${res.status}`);
-        }
-      } catch (err: any) {
-        lastErrorMsgs.push(err.message);
+      if (res.status === 200) {
+        data = await res.json();
+      } else {
+        fetchError = `Status ${res.status}`;
       }
+    } catch (err: any) {
+      fetchError = err.message;
     }
 
-    if (!data) {
-      console.error('All IG Profile sequential fetches failed:', lastErrorMsgs);
-      return NextResponse.json({ success: false, error: `خطأ في الاتصال: ${lastErrorMsgs.join(', ')}` });
+    if (!data || !data.data || !data.data.user) {
+      console.error('IG Story scrape.do failed:', fetchError);
+      return NextResponse.json({ success: false, error: 'api_limit_reached' });
     }
 
     const typedData = data as any;
@@ -91,17 +82,14 @@ export async function POST(request: Request) {
       let realStories: any[] = [];
       
       try {
-        const client = new ProxyAgent(proxyUrl);
-        const storyRes = await undiciFetch(`https://i.instagram.com/api/v1/feed/reels_media/?reel_ids=${user.id}`, {
-          dispatcher: client,
+        const targetStoryUrl = `https://i.instagram.com/api/v1/feed/reels_media/?reel_ids=${user.id}`;
+        const storyUrl = `http://api.scrape.do?token=${scrapeToken}&url=${encodeURIComponent(targetStoryUrl)}`;
+        
+        const storyRes = await undiciFetch(storyUrl, {
           headers: {
             'User-Agent': 'Instagram 219.0.0.12.117 Android',
             'Cookie': `sessionid=${sessionId}`,
-            'x-ig-app-id': '936619743392459',
-            'Accept': '*/*',
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
+            'x-ig-app-id': '936619743392459'
           }
         });
         
@@ -140,6 +128,10 @@ export async function POST(request: Request) {
         }
       } catch (err) {
         console.error('Failed to fetch real stories:', err);
+      }
+
+      if (realStories.length === 0) {
+        return NextResponse.json({ success: false, error: 'api_limit_reached' });
       }
 
       return NextResponse.json({

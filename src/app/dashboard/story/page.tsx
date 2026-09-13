@@ -124,7 +124,33 @@ export default function StoryPage() {
         setProfileData(data.data);
         setShowTargetModal(false);
       } else {
-        setErrorMsg(data.error || 'فشل جلب الحساب');
+        if (data.error === 'api_limit_reached') {
+          setShowTargetModal(false);
+          Swal.fire({
+            title: 'الرجاء إدخال رابط القصة',
+            text: 'لم نتمكن من جلب القصص التلقائية، يرجى وضع الرابط يدوياً.',
+            input: 'url',
+            inputPlaceholder: 'https://instagram.com/stories/...',
+            showCancelButton: true,
+            confirmButtonText: 'متابعة',
+            cancelButtonText: 'إلغاء',
+            background: '#121214',
+            color: '#ffffff',
+            inputValidator: (value) => {
+              if (!value || !value.includes('instagram.com/')) {
+                return 'يرجى إدخال رابط قصة صحيح';
+              }
+            }
+          }).then((result) => {
+            if (result.isConfirmed && result.value) {
+               setSelectedStory({ id: result.value, type: 'video', media_url: result.value, taken_at: Date.now() / 1000 });
+               setShowOrderModal(true);
+            }
+          });
+          setErrorMsg('');
+        } else {
+          setErrorMsg(data.error || 'فشل جلب الحساب');
+        }
       }
     } catch (e) {
       setErrorMsg('حدث خطأ أثناء الاتصال. يرجى المحاولة مرة أخرى.');
@@ -220,7 +246,7 @@ export default function StoryPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          link: `https://instagram.com/stories/${profileData?.username}/${selectedStory?.id}/`, 
+          link: selectedStory?.id.includes('http') ? selectedStory.id : `https://instagram.com/stories/${profileData?.username}/${selectedStory?.id}/`, 
           serviceType: 'story_views', 
           category: 'instagram', 
           recaptchaToken, 

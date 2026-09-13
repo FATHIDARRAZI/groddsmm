@@ -57,11 +57,31 @@ export default function TestimonialsCarousel() {
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
-      const { scrollLeft, clientWidth } = scrollRef.current;
-      const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
+      const { scrollLeft, clientWidth, scrollWidth } = scrollRef.current;
+      
+      let scrollTo = direction === 'left' ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2;
+      
+      // Auto-looping logic
+      if (direction === 'left' && Math.abs(scrollLeft) >= scrollWidth - clientWidth - 10) {
+         scrollTo = 0; // Back to start (RTL)
+      } else if (direction === 'left' && scrollLeft <= 0 && document.dir !== 'rtl') {
+          // LTR back to start
+          if (scrollLeft + clientWidth >= scrollWidth - 10) {
+              scrollTo = 0;
+          }
+      }
+
       scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
     }
   };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      scroll('left'); // In RTL, scrolling left usually advances the items
+    }, 3000); // 3 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="w-full max-w-full mx-auto mt-20 mb-16 overflow-hidden bg-[#11131a] py-16" dir="rtl">
